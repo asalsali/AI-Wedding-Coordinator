@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
 import { z } from "zod";
-import { validateTwilioWebhook } from "@/src/lib/twilio/validate";
-import { getSupabaseServerClient } from "@/src/lib/supabase/server";
+import { validateTwilioWebhook } from "@/lib/twilio/validate";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 // POST only — no GET handler exported
 export const dynamic = "force-dynamic";
