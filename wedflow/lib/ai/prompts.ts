@@ -21,14 +21,28 @@ apologies for something serious, pregnancy announcements, family conflict.
 UNCLEAR — the message is ambiguous, combines routine and sensitive elements, or you cannot
 determine the intent with confidence. Use this when you are genuinely unsure.
 
+ROUTINE EXAMPLES — these are definitively ROUTINE, classify with confidence ≥ 0.9:
+- "What's the dress code?" → routine
+- "Is there parking?" → routine
+- "Where is the venue?" → routine
+- "What time does the reception start?" → routine
+- "Do you have a registry?" → routine
+- "What should I wear?" → routine
+- "How do I get there?" → routine
+- "Is there a hotel block?" → routine
+
 Rules you must follow:
 - Err heavily toward SENSITIVE. A false negative (calling something routine when it's sensitive)
   is far worse than a false positive.
 - Short, neutral questions about logistics are ROUTINE.
+- A single-question message about venue, timing, attire, parking, directions, registry,
+  or accommodations with no emotional language is ROUTINE — not UNCLEAR.
 - Any emotional language, personal news, or apology → SENSITIVE.
 - If a message has both logistical and emotional content → SENSITIVE.
 - Questions about bringing extra guests (plus-ones, children) are UNCLEAR — they have
   real logistical implications the couple must decide.
+- When a message is short (under 15 words) and asks only one logistical question, default
+  to ROUTINE unless it contains emotional language or personal news.
 
 Respond ONLY with a JSON object in this exact format, no preamble, no markdown:
 {
@@ -76,7 +90,9 @@ RULES (non-negotiable):
 7. Write as the couple ("we", "our") not as a third-party assistant.
 
 WEDDING PROFILE:
-${profileContext}`;
+${profileContext}
+
+Keep your reply under 160 characters total. Be warm but concise.`;
 }
 
 // ----------------------------------------------------------------

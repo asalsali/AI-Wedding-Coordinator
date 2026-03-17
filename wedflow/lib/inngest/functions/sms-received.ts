@@ -210,11 +210,26 @@ export const smsReceived = inngest.createFunction(
     // Step 5: Send outbound SMS via Twilio
     await step.run("send-reply", async () => {
       const twilioClient = getTwilioClient();
-      await twilioClient.messages.create({
+
+      console.log("[send-reply] Sending SMS", {
+        toNumber: guestPhone,
+        fromNumber: twilioNumber,
+        messageLength: reply.length,
+      });
+
+      const twilioResponse = await twilioClient.messages.create({
         body: reply,
         from: twilioNumber,
         to: guestPhone,
       });
+
+      console.log("[send-reply] Twilio response", twilioResponse);
+
+      if (twilioResponse == null) {
+        throw new Error(
+          `[send-reply] Twilio returned null/undefined for messageId=${messageId}`
+        );
+      }
     });
 
     // Step 6: Persist outbound message and mark inbound as classified
