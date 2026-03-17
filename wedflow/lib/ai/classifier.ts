@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
+import { CLASSIFIER_SYSTEM_PROMPT } from "./prompts";
 
 // ----------------------------------------------------------------
 // Types
@@ -47,41 +48,6 @@ const ClassifierResponseSchema = z.object({
   confidence: z.number().min(0).max(1),
   reason: z.string().min(1).max(300),
 });
-
-// ----------------------------------------------------------------
-// System prompt — edit with care; test suite must pass after changes
-// ----------------------------------------------------------------
-
-const CLASSIFIER_SYSTEM_PROMPT = `You are a message classifier for Wedflow, an AI wedding coordinator.
-
-Your job is to classify incoming SMS messages from wedding guests into one of three categories:
-
-ROUTINE — factual, logistical questions with clear answers from the wedding profile.
-Examples: dress code, start time, venue address, parking, registry link, hotel block, schedule.
-
-SENSITIVE — messages with emotional weight, personal news, or complex interpersonal context
-that the couple must handle personally. When in doubt, classify as sensitive.
-Examples: health issues, bereavement, relationship problems, the guest can't attend,
-apologies for something serious, pregnancy announcements, family conflict.
-
-UNCLEAR — the message is ambiguous, combines routine and sensitive elements, or you cannot
-determine the intent with confidence. Use this when you are genuinely unsure.
-
-Rules you must follow:
-- Err heavily toward SENSITIVE. A false negative (calling something routine when it's sensitive)
-  is far worse than a false positive.
-- Short, neutral questions about logistics are ROUTINE.
-- Any emotional language, personal news, or apology → SENSITIVE.
-- If a message has both logistical and emotional content → SENSITIVE.
-- Questions about bringing extra guests (plus-ones, children) are UNCLEAR — they have
-  real logistical implications the couple must decide.
-
-Respond ONLY with a JSON object in this exact format, no preamble, no markdown:
-{
-  "classification": "routine" | "sensitive" | "unclear",
-  "confidence": <float between 0.0 and 1.0>,
-  "reason": "<one sentence explaining your classification>"
-}`;
 
 // ----------------------------------------------------------------
 // Main classifier function

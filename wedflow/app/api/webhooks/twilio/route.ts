@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import { z } from "zod";
 import { validateTwilioWebhook } from "@/lib/twilio/validate";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { inngest } from "@/lib/inngest/client";
 
 // POST only — no GET handler exported
 export const dynamic = "force-dynamic";
@@ -26,6 +27,10 @@ const PhoneNumberRowSchema = z.object({
 });
 
 const ConversationRowSchema = z.object({
+  id: z.string().uuid(),
+});
+
+const MessageRowSchema = z.object({
   id: z.string().uuid(),
 });
 
@@ -162,21 +167,56 @@ export async function POST(request: Request): Promise<Response> {
     conversationId = parsed.data.id;
   }
 
-  // Step 5: Persist the inbound message
-  const { error: msgError } = await supabase.from("messages").insert({
-    conversation_id: conversationId,
-    direction: "inbound",
-    body: Body,
-  });
+  // Step 5: Persist the inbound message and capture its ID for the pipeline
+  const { data: msgData, error: msgError } = await supabase
+    .from("messages")
+    .insert({
+      conversation_id: conversationId,
+      direction: "inbound",
+      body: Body,
+    })
+    .select("id")
+    .single();
 
-  if (msgError) {
+  if (msgError || !msgData) {
     console.error("wedflow/sms.received: failed to persist message", {
       messageSid: MessageSid,
     });
     return new Response("", { status: 500 });
   }
 
-  console.info("wedflow/sms.received: message persisted", {
+  const msgParsed = MessageRowSchema.safeParse(msgData);
+  if (!msgParsed.success) {
+    console.error("wedflow/sms.received: unexpected messages row shape", {
+      messageSid: MessageSid,
+    });
+    return new Response("", { status: 500 });
+  }
+
+  // Step 6: Enqueue the AI pipeline — return 200 immediately (Twilio 15s timeout)
+  // The full classifier → reply → safety → send flow runs inside Inngest.
+  try {
+    await inngest.send({
+      name: "wedflow/sms.received",
+      data: {
+        messageId: msgParsed.data.id,
+        conversationId,
+        coupleId,
+        body: Body,
+        guestPhone: From,
+        twilioNumber: To,
+      },
+    });
+  } catch (err) {
+    // Message is safely persisted — log the enqueue failure but don't return 500,
+    // which would cause Twilio to retry and potentially duplicate the DB write.
+    console.error("wedflow/sms.received: failed to enqueue Inngest job", {
+      messageSid: MessageSid,
+      error: err instanceof Error ? err.message : String(err),
+    });
+  }
+
+  console.info("wedflow/sms.received: message persisted and pipeline enqueued", {
     messageSid: MessageSid,
     coupleId,
   });
