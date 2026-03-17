@@ -70,23 +70,14 @@ export async function saveOnboardingStep2(data: {
 }): Promise<void> {
   const supabase = getSupabaseServerClient()
 
-  const toIso = (date: string, time: string): string | null => {
-    if (!date || !time) return null
-    try {
-      return new Date(`${date}T${time}:00`).toISOString()
-    } catch {
-      return null
-    }
-  }
-
   const { error } = await supabase
     .from('wedding_profiles')
     .update({
       venue_name: data.venueName || null,
       venue_address: data.venueAddress || null,
       wedding_date: data.weddingDate || null,
-      ceremony_time: toIso(data.weddingDate, data.ceremonyTime),
-      reception_time: toIso(data.weddingDate, data.receptionTime),
+      ceremony_time: data.ceremonyTime || null,
+      reception_time: data.receptionTime || null,
       parking_info: data.parkingInfo || null,
     })
     .eq('couple_id', data.coupleId)
@@ -260,15 +251,6 @@ export async function getOnboardingData(clerkUserId: string): Promise<{
       .order('display_order'),
   ])
 
-  const extractTime = (iso: string | null): string => {
-    if (!iso) return ''
-    try {
-      return new Date(iso).toISOString().slice(11, 16)
-    } catch {
-      return ''
-    }
-  }
-
   const p = profileResult.data
 
   return {
@@ -280,8 +262,8 @@ export async function getOnboardingData(clerkUserId: string): Promise<{
           venueName: (p.venue_name as string | null) ?? '',
           venueAddress: (p.venue_address as string | null) ?? '',
           weddingDate: (p.wedding_date as string | null) ?? '',
-          ceremonyTime: extractTime(p.ceremony_time as string | null),
-          receptionTime: extractTime(p.reception_time as string | null),
+          ceremonyTime: (p.ceremony_time as string | null) ?? '',
+          receptionTime: (p.reception_time as string | null) ?? '',
           parkingInfo: (p.parking_info as string | null) ?? '',
           dressCode: (p.dress_code as string | null) ?? '',
           registryLinks: (p.registry_links as string[] | null) ?? [],
