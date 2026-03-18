@@ -191,11 +191,16 @@ export async function sendReplyAction(conversationId: string, replyBody: string)
 
   // 3. Send the SMS via Twilio — must succeed before we mark was_sent
   const twilioClient = getTwilioClient()
-  await twilioClient.messages.create({
-    body: parsed.data.replyBody,
-    from: phoneParsed.data.twilio_number,
-    to: convParsed.data.guest_phone,
-  })
+  try {
+    await twilioClient.messages.create({
+      body: parsed.data.replyBody,
+      from: phoneParsed.data.twilio_number,
+      to: convParsed.data.guest_phone,
+    })
+  } catch (error) {
+    console.error('[send-reply-action]', error)
+    throw error
+  }
 
   const now = new Date().toISOString()
 

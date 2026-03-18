@@ -539,12 +539,26 @@ export default function DashboardClient({
 
   function handleSendReply(replyText: string) {
     if (!replyModal) return
+    const { inboundMsg, draftMsgId } = replyModal
     startSendReply(async () => {
       try {
-        await sendReplyAction(replyModal.inboundMsg.conversation_id, replyText)
+        await sendReplyAction(inboundMsg.conversation_id, replyText)
         setReplyModal(null)
-        const fresh = await refreshInboxMessages()
-        setMessages(fresh)
+        setMessages((prev) =>
+          prev.map((m) => {
+            // Mark the existing outbound draft as sent (matched by id if we have it,
+            // otherwise fall back to matching by conversation_id + direction + unsent)
+            if (draftMsgId ? m.id === draftMsgId : (
+              m.conversation_id === inboundMsg.conversation_id &&
+              m.direction === 'outbound' &&
+              m.classified_as === 'escalated' &&
+              !m.was_sent
+            )) {
+              return { ...m, was_sent: true }
+            }
+            return m
+          }),
+        )
         setToast({ type: 'success', text: 'Reply sent!' })
       } catch (err) {
         setToast({
