@@ -4,10 +4,6 @@ import twilio from "twilio";
 export async function validateTwilioWebhook(
   request: Request
 ): Promise<boolean> {
-  if (process.env.NODE_ENV === 'development') {
-    return true;
-  }
-  
   try {
     const authToken = process.env.TWILIO_AUTH_TOKEN;
     if (!authToken) return false;
@@ -15,7 +11,17 @@ export async function validateTwilioWebhook(
     const signature = request.headers.get("x-twilio-signature");
     if (!signature) return false;
 
-    const url = request.url;
+    // On Vercel, request.url is the internal URL. Reconstruct the public URL
+    // from x-forwarded-host and x-forwarded-proto so the HMAC matches what
+    // Twilio signed against.
+    const forwardedHost = request.headers.get("x-forwarded-host");
+    const forwardedProto = request.headers.get("x-forwarded-proto");
+    const parsedUrl = new URL(request.url);
+    const url =
+      forwardedHost && forwardedProto
+        ? `${forwardedProto}://${forwardedHost}${parsedUrl.pathname}${parsedUrl.search}`
+        : request.url;
+
     const body = await request.clone().text();
 
     return twilio.validateRequestWithBody(authToken, signature, url, body);
