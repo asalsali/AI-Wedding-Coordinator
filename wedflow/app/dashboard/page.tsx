@@ -71,13 +71,32 @@ export default async function DashboardPage() {
       (convo.messages ?? []).map((msg) => ({
         ...msg,
         guest_phone_hash: convo.guest_phone_hash,
+        conversation_id: convo.id,
       })),
   )
   messages.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
   const totalMessages = messages.filter((m) => m.direction === 'inbound').length
+  const escalatedInboundConvIds = new Set(
+    messages
+      .filter((m) => m.direction === 'inbound' && m.classified_as === 'escalated')
+      .map((m) => m.conversation_id),
+  )
+  const repliedConvIds = new Set(
+    messages
+      .filter(
+        (m) =>
+          m.direction === 'outbound' &&
+          m.was_sent &&
+          escalatedInboundConvIds.has(m.conversation_id),
+      )
+      .map((m) => m.conversation_id),
+  )
   const needsReply = messages.filter(
-    (m) => m.classified_as === 'escalated' && !m.was_sent,
+    (m) =>
+      m.direction === 'inbound' &&
+      m.classified_as === 'escalated' &&
+      !repliedConvIds.has(m.conversation_id),
   ).length
 
   const weddingDate = profileRes.data?.wedding_date as string | null | undefined

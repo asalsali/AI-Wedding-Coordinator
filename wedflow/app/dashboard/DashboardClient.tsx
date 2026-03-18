@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import Image from 'next/image'
 import { SignOutButton } from '@clerk/nextjs'
 import {
   updateWeddingProfileField,
   updatePartnerEmailAction,
   refreshInboxMessages,
+  sendReplyAction,
 } from './actions'
 import type { MessageRow, ProfileUpdateFields } from './actions'
 
@@ -176,7 +177,7 @@ function StatCard({
   )
 }
 
-function MessageCard({ message }: { message: MessageRow }) {
+function MessageCard({ message, onReply }: { message: MessageRow; onReply?: () => void }) {
   const badge = classificationBadge(message.classified_as)
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-4 flex items-start gap-4">
@@ -197,17 +198,16 @@ function MessageCard({ message }: { message: MessageRow }) {
         </div>
         <p className="text-sm text-stone-700 line-clamp-2">{message.body}</p>
       </div>
-      <div className="flex-shrink-0 relative group">
-        <button
-          disabled
-          className="px-3 py-1.5 text-xs font-medium text-stone-400 bg-stone-100 rounded-lg cursor-not-allowed"
-        >
-          Reply
-        </button>
-        <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 text-xs bg-stone-800 text-white rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-          Coming soon
-        </span>
-      </div>
+      {onReply && (
+        <div className="flex-shrink-0">
+          <button
+            onClick={onReply}
+            className="px-3 py-1.5 text-xs font-medium text-white bg-rose-500 hover:bg-rose-600 rounded-lg transition-colors"
+          >
+            Reply
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -309,6 +309,92 @@ function ProfileField({
   )
 }
 
+function ReplyModal({
+  inboundBody,
+  initialDraft,
+  onClose,
+  onSend,
+  isSending,
+}: {
+  inboundBody: string
+  initialDraft: string
+  onClose: () => void
+  onSend: (text: string) => void
+  isSending: boolean
+}) {
+  const [text, setText] = useState(initialDraft)
+  const charCount = text.length
+  const isOverLimit = charCount > 160
+
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg">
+        <div className="p-6 border-b border-stone-100 flex items-center justify-between">
+          <h3 className="text-base font-semibold text-stone-900">Reply to guest</h3>
+          <button
+            onClick={onClose}
+            disabled={isSending}
+            className="text-stone-400 hover:text-stone-600 disabled:opacity-50 transition-colors text-xl leading-none"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="p-6 space-y-4">
+          <div>
+            <p className="text-xs font-medium text-stone-400 uppercase tracking-wide mb-2">
+              Guest&apos;s message
+            </p>
+            <p className="text-sm text-stone-700 bg-stone-50 rounded-lg px-4 py-3">
+              {inboundBody}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs font-medium text-stone-400 uppercase tracking-wide mb-2">
+              Your reply
+            </p>
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              rows={4}
+              disabled={isSending}
+              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none disabled:opacity-50"
+              placeholder="Type your reply…"
+            />
+            <p
+              className={`text-xs mt-1 text-right ${
+                isOverLimit ? 'text-amber-600 font-medium' : 'text-stone-400'
+              }`}
+            >
+              {charCount} / 160 chars
+              {isOverLimit ? ' — message may split into multiple SMS' : ''}
+            </p>
+          </div>
+        </div>
+
+        <div className="p-6 pt-0 flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            disabled={isSending}
+            className="px-4 py-2 text-sm font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 disabled:opacity-50 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onSend(text)}
+            disabled={isSending || !text.trim()}
+            className="px-4 py-2 text-sm font-medium text-white bg-rose-500 hover:bg-rose-600 disabled:opacity-50 rounded-lg transition-colors"
+          >
+            {isSending ? 'Sending…' : 'Send reply'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ----------------------------------------------------------------
 // Main component
 // ----------------------------------------------------------------
@@ -339,11 +425,46 @@ export default function DashboardClient({
   // Inbox refresh
   const [isRefreshing, startRefresh] = useTransition()
 
+  // Reply modal
+  const [replyModal, setReplyModal] = useState<{
+    inboundMsg: MessageRow
+    draftBody: string
+    draftMsgId: string | null
+  } | null>(null)
+  const [isSendingReply, startSendReply] = useTransition()
+
+  // Toast
+  const [toast, setToast] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  useEffect(() => {
+    if (!toast) return
+    const t = setTimeout(() => setToast(null), 3500)
+    return () => clearTimeout(t)
+  }, [toast])
+
   const coupleNames =
     [couple.your_name, couple.partner_name].filter(Boolean).join(' & ') || 'Your Wedding'
 
+  // "Needs reply" = inbound escalated messages for which no sent outbound reply exists yet
+  const escalatedInboundConvIds = new Set(
+    messages
+      .filter((m) => m.direction === 'inbound' && m.classified_as === 'escalated')
+      .map((m) => m.conversation_id),
+  )
+  const repliedConvIds = new Set(
+    messages
+      .filter(
+        (m) =>
+          m.direction === 'outbound' &&
+          m.was_sent &&
+          escalatedInboundConvIds.has(m.conversation_id),
+      )
+      .map((m) => m.conversation_id),
+  )
   const needsReplyMessages = messages.filter(
-    (m) => m.classified_as === 'escalated' && !m.was_sent,
+    (m) =>
+      m.direction === 'inbound' &&
+      m.classified_as === 'escalated' &&
+      !repliedConvIds.has(m.conversation_id),
   )
 
   // ----------------------------------------------------------------
@@ -392,6 +513,38 @@ export default function DashboardClient({
     })
   }
 
+  function handleReplyClick(inboundMsg: MessageRow) {
+    const draftMsg = messages.find(
+      (m) =>
+        m.conversation_id === inboundMsg.conversation_id &&
+        m.direction === 'outbound' &&
+        !m.was_sent,
+    )
+    setReplyModal({
+      inboundMsg,
+      draftBody: draftMsg?.body ?? '',
+      draftMsgId: draftMsg?.id ?? null,
+    })
+  }
+
+  function handleSendReply(replyText: string) {
+    if (!replyModal) return
+    startSendReply(async () => {
+      try {
+        await sendReplyAction(replyModal.inboundMsg.conversation_id, replyText)
+        setReplyModal(null)
+        const fresh = await refreshInboxMessages()
+        setMessages(fresh)
+        setToast({ type: 'success', text: 'Reply sent!' })
+      } catch (err) {
+        setToast({
+          type: 'error',
+          text: err instanceof Error ? err.message : 'Failed to send reply. Please try again.',
+        })
+      }
+    })
+  }
+
   // ----------------------------------------------------------------
   // Nav
   // ----------------------------------------------------------------
@@ -434,8 +587,8 @@ export default function DashboardClient({
           <StatCard label="Total messages" value={stats.totalMessages} sub="from your guests" />
           <StatCard
             label="Needs reply"
-            value={stats.needsReply}
-            sub={stats.needsReply === 0 ? 'All caught up!' : 'waiting for you'}
+            value={needsReplyMessages.length}
+            sub={needsReplyMessages.length === 0 ? 'All caught up!' : 'waiting for you'}
           />
           <StatCard
             label="Days until wedding"
@@ -528,7 +681,13 @@ export default function DashboardClient({
         ) : (
           <div className="space-y-3">
             {displayed.map((msg) => (
-              <MessageCard key={msg.id} message={msg} />
+              <MessageCard
+                key={msg.id}
+                message={msg}
+                onReply={
+                  inboxTab === 'needs-reply' ? () => handleReplyClick(msg) : undefined
+                }
+              />
             ))}
           </div>
         )}
@@ -749,9 +908,9 @@ export default function DashboardClient({
             >
               <span className="text-base leading-none">{item.icon}</span>
               {item.label}
-              {item.id === 'inbox' && stats.needsReply > 0 && (
+              {item.id === 'inbox' && needsReplyMessages.length > 0 && (
                 <span className="ml-auto inline-flex items-center justify-center w-5 h-5 text-xs font-semibold bg-rose-500 text-white rounded-full">
-                  {stats.needsReply}
+                  {needsReplyMessages.length}
                 </span>
               )}
             </button>
@@ -778,6 +937,28 @@ export default function DashboardClient({
           {view === 'settings' && renderSettings()}
         </div>
       </main>
+
+      {/* Reply modal */}
+      {replyModal && (
+        <ReplyModal
+          inboundBody={replyModal.inboundMsg.body}
+          initialDraft={replyModal.draftBody}
+          onClose={() => setReplyModal(null)}
+          onSend={handleSendReply}
+          isSending={isSendingReply}
+        />
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div
+          className={`fixed bottom-6 right-6 px-4 py-3 rounded-xl shadow-lg text-sm font-medium text-white z-50 transition-opacity ${
+            toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+          }`}
+        >
+          {toast.text}
+        </div>
+      )}
     </div>
   )
 }

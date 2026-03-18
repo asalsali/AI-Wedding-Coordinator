@@ -129,10 +129,10 @@ export async function POST(request: Request): Promise<Response> {
     }
     conversationId = parsed.data.id;
 
-    // Update last_message_at on the existing conversation
+    // Update last_message_at (and backfill guest_phone if missing) on the existing conversation
     const { error: updateError } = await supabase
       .from("conversations")
-      .update({ last_message_at: new Date().toISOString() })
+      .update({ last_message_at: new Date().toISOString(), guest_phone: From })
       .eq("id", conversationId);
 
     if (updateError) {
@@ -145,7 +145,7 @@ export async function POST(request: Request): Promise<Response> {
     // Create a new conversation
     const { data: newConv, error: convCreateError } = await supabase
       .from("conversations")
-      .insert({ couple_id: coupleId, guest_phone_hash: guestPhoneHash })
+      .insert({ couple_id: coupleId, guest_phone_hash: guestPhoneHash, guest_phone: From })
       .select("id")
       .single();
 
