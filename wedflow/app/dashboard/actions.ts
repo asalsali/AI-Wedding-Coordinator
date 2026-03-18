@@ -1,7 +1,9 @@
 'use server'
 
 import { auth } from '@clerk/nextjs/server'
-import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { SupabaseClient } from '@supabase/supabase-js'
+import { getClerkToken } from '@/lib/supabase/get-clerk-token'
+import { getSupabaseUserClient } from '@/lib/supabase/client-user'
 import type { ToneStyle } from '@/types'
 
 // ----------------------------------------------------------------
@@ -36,13 +38,15 @@ export type ProfileUpdateFields = {
 }
 
 // ----------------------------------------------------------------
-// Internal: resolve couple_id from the authed Clerk session
+// Internal: create a user-scoped Supabase client and resolve couple_id
 // ----------------------------------------------------------------
-async function getAuthedCoupleId(): Promise<string> {
+async function getAuthedContext(): Promise<{ supabase: SupabaseClient; coupleId: string }> {
   const { userId } = await auth()
   if (!userId) throw new Error('Not authenticated')
 
-  const supabase = getSupabaseServerClient()
+  const token = await getClerkToken()
+  const supabase = getSupabaseUserClient(token)
+
   const { data, error } = await supabase
     .from('couples')
     .select('id')
@@ -50,15 +54,14 @@ async function getAuthedCoupleId(): Promise<string> {
     .maybeSingle()
 
   if (error || !data) throw new Error('Couple not found')
-  return data.id as string
+  return { supabase, coupleId: data.id as string }
 }
 
 // ----------------------------------------------------------------
 // Update wedding profile fields
 // ----------------------------------------------------------------
 export async function updateWeddingProfileField(updates: ProfileUpdateFields): Promise<void> {
-  const coupleId = await getAuthedCoupleId()
-  const supabase = getSupabaseServerClient()
+  const { supabase, coupleId } = await getAuthedContext()
 
   const { error } = await supabase
     .from('wedding_profiles')
@@ -72,8 +75,7 @@ export async function updateWeddingProfileField(updates: ProfileUpdateFields): P
 // Update partner email
 // ----------------------------------------------------------------
 export async function updatePartnerEmailAction(email: string): Promise<void> {
-  const coupleId = await getAuthedCoupleId()
-  const supabase = getSupabaseServerClient()
+  const { supabase, coupleId } = await getAuthedContext()
 
   const { error } = await supabase
     .from('couples')
@@ -100,8 +102,7 @@ type ConvoRow = {
 }
 
 export async function refreshInboxMessages(): Promise<MessageRow[]> {
-  const coupleId = await getAuthedCoupleId()
-  const supabase = getSupabaseServerClient()
+  const { supabase, coupleId } = await getAuthedContext()
 
   const { data, error } = await supabase
     .from('conversations')

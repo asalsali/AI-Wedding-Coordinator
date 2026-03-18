@@ -1,6 +1,7 @@
 'use server'
 
-import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getClerkToken } from '@/lib/supabase/get-clerk-token'
+import { getSupabaseUserClient } from '@/lib/supabase/client-user'
 import type { ToneStyle } from '@/types'
 
 // ----------------------------------------------------------------
@@ -12,7 +13,7 @@ export async function saveOnboardingStep1(data: {
   yourName: string
   partnerName: string
 }): Promise<{ coupleId: string; profileId: string }> {
-  const supabase = getSupabaseServerClient()
+  const supabase = getSupabaseUserClient(await getClerkToken())
 
   const { data: couple, error: coupleError } = await supabase
     .from('couples')
@@ -68,7 +69,7 @@ export async function saveOnboardingStep2(data: {
   receptionTime: string // "HH:MM"
   parkingInfo: string
 }): Promise<void> {
-  const supabase = getSupabaseServerClient()
+  const supabase = getSupabaseUserClient(await getClerkToken())
 
   const { error } = await supabase
     .from('wedding_profiles')
@@ -94,7 +95,7 @@ export async function saveOnboardingStep3(data: {
   registryLinks: string[]
   hotelBlock: string
 }): Promise<void> {
-  const supabase = getSupabaseServerClient()
+  const supabase = getSupabaseUserClient(await getClerkToken())
 
   const { error } = await supabase
     .from('wedding_profiles')
@@ -117,7 +118,7 @@ export async function saveOnboardingStep4(data: {
   vibeWord: string
   sampleMessage: string
 }): Promise<void> {
-  const supabase = getSupabaseServerClient()
+  const supabase = getSupabaseUserClient(await getClerkToken())
 
   const { error } = await supabase
     .from('wedding_profiles')
@@ -138,7 +139,7 @@ export async function saveOnboardingStep5(data: {
   coupleId: string
   faqs: Array<{ question: string; answer: string; display_order: number }>
 }): Promise<void> {
-  const supabase = getSupabaseServerClient()
+  const supabase = getSupabaseUserClient(await getClerkToken())
 
   const { error: deleteError } = await supabase
     .from('faqs')
@@ -169,7 +170,7 @@ export async function saveOnboardingStep6(data: {
   coupleId: string
   readinessScore: number
 }): Promise<void> {
-  const supabase = getSupabaseServerClient()
+  const supabase = getSupabaseUserClient(await getClerkToken())
 
   const { error } = await supabase
     .from('wedding_profiles')
@@ -186,7 +187,7 @@ export async function saveOnboardingStep7(data: {
   coupleId: string
   partnerEmail: string
 }): Promise<void> {
-  const supabase = getSupabaseServerClient()
+  const supabase = getSupabaseUserClient(await getClerkToken())
 
   const [coupleRes, profileRes] = await Promise.all([
     supabase
@@ -226,7 +227,7 @@ export async function getOnboardingData(clerkUserId: string): Promise<{
   } | null
   faqs: Array<{ question: string; answer: string }>
 } | null> {
-  const supabase = getSupabaseServerClient()
+  const supabase = getSupabaseUserClient(await getClerkToken())
 
   const { data: couple } = await supabase
     .from('couples')

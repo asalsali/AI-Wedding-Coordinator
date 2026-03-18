@@ -1,6 +1,7 @@
 import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getClerkToken } from '@/lib/supabase/get-clerk-token'
+import { getSupabaseUserClient } from '@/lib/supabase/client-user'
 import DashboardClient from './DashboardClient'
 import type { MessageRow } from './actions'
 
@@ -21,7 +22,8 @@ export default async function DashboardPage() {
   const user = await currentUser()
   if (!user) redirect('/sign-in')
 
-  const supabase = getSupabaseServerClient()
+  const token = await getClerkToken()
+  const supabase = getSupabaseUserClient(token)
 
   const { data: couple } = await supabase
     .from('couples')
