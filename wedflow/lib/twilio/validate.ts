@@ -22,9 +22,15 @@ export async function validateTwilioWebhook(
         ? `${forwardedProto}://${forwardedHost}${parsedUrl.pathname}${parsedUrl.search}`
         : request.url;
 
-    const body = await request.clone().text();
+    const bodyText = await request.clone().text();
+    const params: Record<string, string> = {};
+    for (const [key, value] of new URLSearchParams(bodyText)) {
+      params[key] = value;
+    }
 
-    return twilio.validateRequestWithBody(authToken, signature, url, body);
+    const result = twilio.validateRequest(authToken, signature, url, params);
+
+    return result;
   } catch {
     return false;
   }
