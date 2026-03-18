@@ -22,6 +22,7 @@ export interface MessageRow {
   direction: string
   guest_phone_hash: string
   conversation_id: string
+  replied_to_message_id: string | null
 }
 
 // ----------------------------------------------------------------
@@ -105,6 +106,7 @@ type ConvoRow = {
     created_at: string
     direction: string
     conversation_id: string
+    replied_to_message_id: string | null
   }[] | null
 }
 
@@ -127,7 +129,8 @@ export async function refreshInboxMessages(): Promise<MessageRow[]> {
         was_sent,
         created_at,
         direction,
-        conversation_id
+        conversation_id,
+        replied_to_message_id
       )
     `)
     .eq('couple_id', coupleId)
@@ -151,20 +154,25 @@ export async function refreshInboxMessages(): Promise<MessageRow[]> {
 }
 
 // ----------------------------------------------------------------
-// Send reply to guest and mark outbound draft as sent
+// Send reply to guest — inserts a new outbound message linked to
+// the specific inbound message being answered.
 // ----------------------------------------------------------------
 
 const SendReplySchema = z.object({
   conversationId: z.string().uuid(),
   replyBody: z.string().min(1).max(1600),
+  inboundMessageId: z.string().uuid(),
 })
 
 const ConvPhoneRowSchema = z.object({ guest_phone: z.string().min(1) })
 const TwilioNumberRowSchema = z.object({ twilio_number: z.string().min(1) })
-const OutboundDraftRowSchema = z.object({ id: z.string().uuid() })
 
-export async function sendReplyAction(conversationId: string, replyBody: string): Promise<void> {
-  const parsed = SendReplySchema.safeParse({ conversationId, replyBody })
+export async function sendReplyAction(
+  conversationId: string,
+  replyBody: string,
+  inboundMessageId: string,
+): Promise<void> {
+  const parsed = SendReplySchema.safeParse({ conversationId, replyBody, inboundMessageId })
   if (!parsed.success) throw new Error('Invalid reply parameters')
 
   const { supabase, coupleId } = await getAuthedContext()
@@ -200,7 +208,7 @@ export async function sendReplyAction(conversationId: string, replyBody: string)
   const phoneParsed = TwilioNumberRowSchema.safeParse(phoneRow)
   if (!phoneParsed.success) throw new Error('No active Wedflow number found for your account')
 
-  // 3. Send the SMS via Twilio — must succeed before we mark was_sent
+  // 3. Send the SMS via Twilio — must succeed before we write to DB
   const twilioClient = getTwilioClient()
   try {
     await twilioClient.messages.create({
@@ -213,38 +221,16 @@ export async function sendReplyAction(conversationId: string, replyBody: string)
     throw error
   }
 
-  const now = new Date().toISOString()
+  // 4. Insert a new outbound message linked to the specific inbound message
+  const { error: insertErr } = await supabase.from('messages').insert({
+    conversation_id: conversationId,
+    direction: 'outbound',
+    body: parsed.data.replyBody,
+    classified_as: 'escalated',
+    was_sent: true,
+    sent_at: new Date().toISOString(),
+    replied_to_message_id: parsed.data.inboundMessageId,
+  })
 
-  // 4. Update the existing unsent outbound draft if one exists, otherwise insert
-  const { data: draftRow } = await supabase
-    .from('messages')
-    .select('id')
-    .eq('conversation_id', conversationId)
-    .eq('direction', 'outbound')
-    .eq('was_sent', false)
-    .eq('classified_as', 'escalated')
-    .limit(1)
-    .maybeSingle()
-
-  const draftParsed = OutboundDraftRowSchema.safeParse(draftRow)
-
-  if (draftParsed.success) {
-    const { error: updateErr } = await supabase
-      .from('messages')
-      .update({ was_sent: true, sent_at: now, body: parsed.data.replyBody })
-      .eq('id', draftParsed.data.id)
-
-    if (updateErr) throw new Error(`Failed to update message: ${updateErr.message}`)
-  } else {
-    const { error: insertErr } = await supabase.from('messages').insert({
-      conversation_id: conversationId,
-      direction: 'outbound',
-      body: parsed.data.replyBody,
-      classified_as: 'escalated',
-      was_sent: true,
-      sent_at: now,
-    })
-
-    if (insertErr) throw new Error(`Failed to record sent message: ${insertErr.message}`)
-  }
+  if (insertErr) throw new Error(`Failed to record sent message: ${insertErr.message}`)
 }

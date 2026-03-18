@@ -15,6 +15,7 @@ type ConvoRow = {
     was_sent: boolean
     created_at: string
     direction: string
+    replied_to_message_id: string | null
   }[] | null
 }
 
@@ -60,7 +61,8 @@ export default async function DashboardPage() {
           classified_as,
           was_sent,
           created_at,
-          direction
+          direction,
+          replied_to_message_id
         )
       `)
       .eq('couple_id', coupleId),
@@ -77,26 +79,22 @@ export default async function DashboardPage() {
   messages.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
   const totalMessages = messages.filter((m) => m.direction === 'inbound').length
-  const escalatedInboundConvIds = new Set(
-    messages
-      .filter((m) => m.direction === 'inbound' && m.classified_as === 'escalated')
-      .map((m) => m.conversation_id),
-  )
-  const repliedConvIds = new Set(
+  const repliedInboundMsgIds = new Set(
     messages
       .filter(
         (m) =>
           m.direction === 'outbound' &&
           m.was_sent &&
-          escalatedInboundConvIds.has(m.conversation_id),
+          m.classified_as === 'escalated' &&
+          m.replied_to_message_id !== null,
       )
-      .map((m) => m.conversation_id),
+      .map((m) => m.replied_to_message_id as string),
   )
   const needsReply = messages.filter(
     (m) =>
       m.direction === 'inbound' &&
       m.classified_as === 'escalated' &&
-      !repliedConvIds.has(m.conversation_id),
+      !repliedInboundMsgIds.has(m.id),
   ).length
 
   const weddingDate = profileRes.data?.wedding_date as string | null | undefined

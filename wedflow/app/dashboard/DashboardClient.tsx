@@ -450,28 +450,24 @@ export default function DashboardClient({
   const coupleNames =
     [couple.your_name, couple.partner_name].filter(Boolean).join(' & ') || 'Your Wedding'
 
-  // "Needs reply" = inbound escalated messages for which no sent outbound reply exists yet
-  const escalatedInboundConvIds = new Set(
-    messages
-      .filter((m) => m.direction === 'inbound' && m.classified_as === 'escalated')
-      .map((m) => m.conversation_id),
-  )
-  const repliedConvIds = new Set(
+  // "Needs reply" = inbound escalated messages that have no outbound sent reply
+  // linked to them specifically via replied_to_message_id.
+  const repliedInboundMsgIds = new Set(
     messages
       .filter(
         (m) =>
           m.direction === 'outbound' &&
           m.was_sent &&
           m.classified_as === 'escalated' &&
-          escalatedInboundConvIds.has(m.conversation_id),
+          m.replied_to_message_id !== null,
       )
-      .map((m) => m.conversation_id),
+      .map((m) => m.replied_to_message_id as string),
   )
   const needsReplyMessages = messages.filter(
     (m) =>
       m.direction === 'inbound' &&
       m.classified_as === 'escalated' &&
-      !repliedConvIds.has(m.conversation_id),
+      !repliedInboundMsgIds.has(m.id),
   )
 
   // ----------------------------------------------------------------
@@ -540,7 +536,7 @@ export default function DashboardClient({
     const { inboundMsg } = replyModal
     startSendReply(async () => {
       try {
-        await sendReplyAction(inboundMsg.conversation_id, replyText)
+        await sendReplyAction(inboundMsg.conversation_id, replyText, inboundMsg.id)
         setReplyModal(null)
         const fresh = await refreshInboxMessages()
         setMessages(fresh)
