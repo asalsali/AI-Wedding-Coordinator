@@ -540,13 +540,7 @@ export default function DashboardClient({
         setReplyModal(null)
         const fresh = await refreshInboxMessages()
         setMessages(fresh)
-        console.log('[after-refresh]', {
-          totalMessages: fresh.length,
-          escalatedInbound: fresh.filter(m => m.direction === 'inbound' && m.classified_as === 'escalated').length,
-          escalatedOutbound: fresh.filter(m => m.direction === 'outbound' && m.classified_as === 'escalated').length,
-          sentReplies: fresh.filter(m => m.direction === 'outbound' && m.classified_as === 'escalated' && m.was_sent === true).length,
-        })
-        setToast({ type: 'success', text: 'Reply sent!' })
+setToast({ type: 'success', text: 'Reply sent!' })
       } catch (err) {
         setToast({
           type: 'error',

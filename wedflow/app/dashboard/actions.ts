@@ -112,8 +112,6 @@ type ConvoRow = {
 
 export async function refreshInboxMessages(): Promise<MessageRow[]> {
   const token = await getClerkToken()
-  console.log('[refresh-inbox] Clerk token retrieved:', !!token)
-
   const { supabase, coupleId } = await getAuthedContext()
 
   const { data, error } = await supabase
@@ -146,8 +144,6 @@ export async function refreshInboxMessages(): Promise<MessageRow[]> {
       conversation_id: convo.id,
     })),
   )
-
-  console.log('[refresh-inbox] conversationCount:', conversations.length, 'messageCount:', rows.length)
 
   rows.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
   return rows
