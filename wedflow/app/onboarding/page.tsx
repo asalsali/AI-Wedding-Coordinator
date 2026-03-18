@@ -20,7 +20,6 @@ import {
 // ----------------------------------------------------------------
 
 const TOTAL_STEPS = 7
-const PLACEHOLDER_NUMBER = '+1 (555) 000-1234'
 
 const DEFAULT_FAQS: LocalFaq[] = [
   { question: 'What is the dress code?', answer: '' },
@@ -191,6 +190,11 @@ export default function OnboardingPage() {
   const [partnerEmail, setPartnerEmail] = useState('')
   const [partnerSaved, setPartnerSaved] = useState(false)
 
+  // Step 7 number provisioning
+  const [provisionedNumber, setProvisionedNumber] = useState<string | null>(null)
+  const [provisionLoading, setProvisionLoading] = useState(false)
+  const [provisionError, setProvisionError] = useState<string | null>(null)
+
   // Load existing progress on mount (resume support)
   useEffect(() => {
     if (!isLoaded || !user) return
@@ -222,6 +226,24 @@ export default function OnboardingPage() {
       }))
     })
   }, [isLoaded, user])
+
+  // Trigger number provisioning when the couple reaches Step 7
+  useEffect(() => {
+    if (step !== 7 || !coupleId || provisionedNumber || provisionLoading) return
+    setProvisionLoading(true)
+    setProvisionError(null)
+    fetch('/onboarding/provision-number', { method: 'POST' })
+      .then((res) => res.json())
+      .then((data: { phoneNumber?: string; error?: string }) => {
+        if (data.phoneNumber) {
+          setProvisionedNumber(data.phoneNumber)
+        } else {
+          setProvisionError(data.error ?? 'Failed to provision your number. Please contact support.')
+        }
+      })
+      .catch(() => setProvisionError('Network error — please refresh and try again.'))
+      .finally(() => setProvisionLoading(false))
+  }, [step, coupleId, provisionedNumber, provisionLoading])
 
   const update = <K extends keyof FormData>(field: K, value: FormData[K]) =>
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -864,18 +886,30 @@ export default function OnboardingPage() {
               </p>
             </div>
 
-            {/* Placeholder number */}
+            {/* Provisioned number */}
             <div className="p-6 bg-rose-50 border border-rose-100 rounded-2xl mb-6 text-center">
               <p className="text-xs text-rose-400 uppercase tracking-widest font-medium mb-3">
                 Your wedding number
               </p>
-              <p className="text-3xl font-semibold text-rose-600 font-mono tracking-wide">
-                {PLACEHOLDER_NUMBER}
-              </p>
-              <p className="text-xs text-stone-400 mt-4">
-                Number provisioning is coming soon. Your real number will appear here once it&apos;s
-                assigned.
-              </p>
+              {provisionLoading ? (
+                <div className="flex flex-col items-center gap-3 py-2">
+                  <div className="w-6 h-6 border-2 border-rose-400 border-t-transparent rounded-full animate-spin" />
+                  <p className="text-sm text-stone-400">Reserving your number&hellip;</p>
+                </div>
+              ) : provisionError ? (
+                <div>
+                  <p className="text-sm text-red-500 leading-relaxed">{provisionError}</p>
+                </div>
+              ) : provisionedNumber ? (
+                <div>
+                  <p className="text-3xl font-semibold text-rose-600 font-mono tracking-wide">
+                    {provisionedNumber}
+                  </p>
+                  <p className="text-xs text-stone-400 mt-4">
+                    Share this number with your guests so they can text your wedding coordinator.
+                  </p>
+                </div>
+              ) : null}
             </div>
 
             {/* Partner invite */}
