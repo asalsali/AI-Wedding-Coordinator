@@ -96,6 +96,7 @@ export async function updatePartnerEmailAction(email: string): Promise<void> {
 type ConvoRow = {
   id: string
   guest_phone_hash: string
+  guest_phone: string | null
   messages: {
     id: string
     body: string
@@ -103,10 +104,14 @@ type ConvoRow = {
     was_sent: boolean
     created_at: string
     direction: string
+    conversation_id: string
   }[] | null
 }
 
 export async function refreshInboxMessages(): Promise<MessageRow[]> {
+  const token = await getClerkToken()
+  console.log('[refresh-inbox] Clerk token retrieved:', !!token)
+
   const { supabase, coupleId } = await getAuthedContext()
 
   const { data, error } = await supabase
@@ -114,26 +119,32 @@ export async function refreshInboxMessages(): Promise<MessageRow[]> {
     .select(`
       id,
       guest_phone_hash,
+      guest_phone,
       messages (
         id,
         body,
         classified_as,
         was_sent,
         created_at,
-        direction
+        direction,
+        conversation_id
       )
     `)
     .eq('couple_id', coupleId)
 
   if (error) throw new Error(`Failed to fetch messages: ${error.message}`)
 
-  const rows: MessageRow[] = ((data ?? []) as unknown as ConvoRow[]).flatMap((convo) =>
+  const conversations = (data ?? []) as unknown as ConvoRow[]
+
+  const rows: MessageRow[] = conversations.flatMap((convo) =>
     (convo.messages ?? []).map((msg) => ({
       ...msg,
       guest_phone_hash: convo.guest_phone_hash,
       conversation_id: convo.id,
     })),
   )
+
+  console.log('[refresh-inbox] conversationCount:', conversations.length, 'messageCount:', rows.length)
 
   rows.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
   return rows
