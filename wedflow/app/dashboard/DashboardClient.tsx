@@ -467,6 +467,14 @@ export default function DashboardClient({
       !repliedConvIds.has(m.conversation_id),
   )
 
+  console.log('[needs-reply-debug]', {
+    totalMessages: messages.length,
+    escalatedInbound: messages.filter(m => m.direction === 'inbound' && m.classified_as === 'escalated').length,
+    escalatedOutbound: messages.filter(m => m.direction === 'outbound' && m.classified_as === 'escalated').length,
+    sentReplies: messages.filter(m => m.direction === 'outbound' && m.was_sent === true).length,
+    needsReplyCount: needsReplyMessages.length
+  })
+
   // ----------------------------------------------------------------
   // Handlers
   // ----------------------------------------------------------------
@@ -518,6 +526,7 @@ export default function DashboardClient({
       (m) =>
         m.conversation_id === inboundMsg.conversation_id &&
         m.direction === 'outbound' &&
+        m.classified_as === 'escalated' &&
         !m.was_sent,
     )
     setReplyModal({
