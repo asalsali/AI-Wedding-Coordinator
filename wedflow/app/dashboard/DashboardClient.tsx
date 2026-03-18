@@ -456,6 +456,7 @@ export default function DashboardClient({
         (m) =>
           m.direction === 'outbound' &&
           m.was_sent &&
+          m.classified_as === 'escalated' &&
           escalatedInboundConvIds.has(m.conversation_id),
       )
       .map((m) => m.conversation_id),
