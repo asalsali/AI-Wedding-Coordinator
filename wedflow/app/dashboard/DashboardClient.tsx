@@ -322,9 +322,14 @@ function ReplyModal({
   onSend: (text: string) => void
   isSending: boolean
 }) {
-  const [text, setText] = useState(initialDraft)
+  const TRIAL_CHAR_LIMIT = 120
+  const truncated =
+    initialDraft.length > TRIAL_CHAR_LIMIT
+      ? initialDraft.slice(0, TRIAL_CHAR_LIMIT - 3) + '...'
+      : initialDraft
+  const [text, setText] = useState(truncated)
   const charCount = text.length
-  const isOverLimit = charCount > 160
+  const isOverLimit = charCount > TRIAL_CHAR_LIMIT
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
@@ -363,14 +368,15 @@ function ReplyModal({
               className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none disabled:opacity-50"
               placeholder="Type your reply…"
             />
-            <p
-              className={`text-xs mt-1 text-right ${
-                isOverLimit ? 'text-amber-600 font-medium' : 'text-stone-400'
-              }`}
-            >
-              {charCount} / 160 chars
-              {isOverLimit ? ' — message may split into multiple SMS' : ''}
-            </p>
+            {isOverLimit ? (
+              <p className="text-xs mt-1 text-red-600 font-medium">
+                {charCount} / {TRIAL_CHAR_LIMIT} chars — Message too long for trial account — keep under {TRIAL_CHAR_LIMIT} characters
+              </p>
+            ) : (
+              <p className="text-xs mt-1 text-right text-stone-400">
+                {charCount} / {TRIAL_CHAR_LIMIT} chars
+              </p>
+            )}
           </div>
         </div>
 
@@ -384,7 +390,7 @@ function ReplyModal({
           </button>
           <button
             onClick={() => onSend(text)}
-            disabled={isSending || !text.trim()}
+            disabled={isSending || !text.trim() || isOverLimit}
             className="px-4 py-2 text-sm font-medium text-white bg-rose-500 hover:bg-rose-600 disabled:opacity-50 rounded-lg transition-colors"
           >
             {isSending ? 'Sending…' : 'Send reply'}
@@ -468,14 +474,6 @@ export default function DashboardClient({
       !repliedConvIds.has(m.conversation_id),
   )
 
-  console.log('[needs-reply-debug]', {
-    totalMessages: messages.length,
-    escalatedInbound: messages.filter(m => m.direction === 'inbound' && m.classified_as === 'escalated').length,
-    escalatedOutbound: messages.filter(m => m.direction === 'outbound' && m.classified_as === 'escalated').length,
-    sentReplies: messages.filter(m => m.direction === 'outbound' && m.was_sent === true).length,
-    needsReplyCount: needsReplyMessages.length
-  })
-
   // ----------------------------------------------------------------
   // Handlers
   // ----------------------------------------------------------------
@@ -539,26 +537,13 @@ export default function DashboardClient({
 
   function handleSendReply(replyText: string) {
     if (!replyModal) return
-    const { inboundMsg, draftMsgId } = replyModal
+    const { inboundMsg } = replyModal
     startSendReply(async () => {
       try {
         await sendReplyAction(inboundMsg.conversation_id, replyText)
         setReplyModal(null)
-        setMessages((prev) =>
-          prev.map((m) => {
-            // Mark the existing outbound draft as sent (matched by id if we have it,
-            // otherwise fall back to matching by conversation_id + direction + unsent)
-            if (draftMsgId ? m.id === draftMsgId : (
-              m.conversation_id === inboundMsg.conversation_id &&
-              m.direction === 'outbound' &&
-              m.classified_as === 'escalated' &&
-              !m.was_sent
-            )) {
-              return { ...m, was_sent: true }
-            }
-            return m
-          }),
-        )
+        const fresh = await refreshInboxMessages()
+        setMessages(fresh)
         setToast({ type: 'success', text: 'Reply sent!' })
       } catch (err) {
         setToast({

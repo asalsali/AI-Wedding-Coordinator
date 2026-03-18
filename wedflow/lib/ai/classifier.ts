@@ -29,6 +29,8 @@ const ALWAYS_SENSITIVE_PATTERNS: RegExp[] = [
   /\b(pregnant|expecting|due date|having a baby)\b/i,
   /\b(fight|argument|issue between|problem with|falling out)\b/i,
   /\b(mental health|anxiety|depression|panic)\b/i,
+  // Food safety — must escalate; AI cannot make commitments about dietary needs
+  /\b(allerg(y|ic|ies)|food allerg|nut allerg|peanut|tree nut|shellfish|gluten|celiac|coeliac|dairy free|lactose|vegan|vegetarian|kosher|halal|dietary restriction|food restriction|medical diet|cannot eat|can't eat|don't eat)\b/i,
 ];
 
 function matchesHardRule(message: string): string | null {

@@ -16,7 +16,8 @@ Examples: dress code, start time, venue address, parking, registry link, hotel b
 SENSITIVE — messages with emotional weight, personal news, or complex interpersonal context
 that the couple must handle personally. When in doubt, classify as sensitive.
 Examples: health issues, bereavement, relationship problems, the guest can't attend,
-apologies for something serious, pregnancy announcements, family conflict.
+apologies for something serious, pregnancy announcements, family conflict,
+dietary restrictions, food allergies, medical dietary needs.
 
 UNCLEAR — the message is ambiguous, combines routine and sensitive elements, or you cannot
 determine the intent with confidence. Use this when you are genuinely unsure.
@@ -43,6 +44,9 @@ Rules you must follow:
   real logistical implications the couple must decide.
 - When a message is short (under 15 words) and asks only one logistical question, default
   to ROUTINE unless it contains emotional language or personal news.
+- Any mention of a food allergy, dietary restriction, or food safety need (allergy, allergic,
+  gluten, nut, vegan, kosher, halal, lactose, shellfish, etc.) → SENSITIVE. The couple must
+  coordinate directly with their caterer; getting this wrong could cause a medical emergency.
 
 Respond ONLY with a JSON object in this exact format, no preamble, no markdown:
 {
