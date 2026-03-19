@@ -24,3 +24,47 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ── Wedflow brand font utilities ─────────────────────────────────────────── */
+
+.wf-serif {
+  font-family: var(--newsreader, Georgia, "Times New Roman", serif);
+}
+
+.wf-sans {
+  font-family: var(
+    --plus-jakarta,
+    system-ui,
+    -apple-system,
+    "Helvetica Neue",
+    Arial,
+    sans-serif
+  );
+}
+
+/* ── Hero fade-in animation ───────────────────────────────────────────────── */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.75s ease-out forwards;
+}
+
+.animate-fade-in-up-delay {
+  opacity: 0;
+  animation: fadeInUp 0.75s ease-out 0.18s forwards;
+}
+
+.animate-fade-in-up-delay-2 {
+  opacity: 0;
+  animation: fadeInUp 0.75s ease-out 0.36s forwards;
+}
