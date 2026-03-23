@@ -111,7 +111,6 @@ type ConvoRow = {
 }
 
 export async function refreshInboxMessages(): Promise<MessageRow[]> {
-  const _token = await getClerkToken()
   const { supabase, coupleId } = await getAuthedContext()
 
   const { data, error } = await supabase

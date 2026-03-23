@@ -426,11 +426,17 @@ export default function DashboardClient({
   const [messages, setMessages] = useState<MessageRow[]>(initialMessages)
   const [localProfile, setLocalProfile] = useState<Profile | null>(profile)
 
+  const [now, setNow] = useState(() => Date.now())
+
+  useEffect(() => {
+    setNow(Date.now())
+  }, [])
+
   const daysUntilWedding = useMemo(() => {
     if (!localProfile?.wedding_date) return null
-    const diff = new Date(localProfile.wedding_date).getTime() - Date.now()
+    const diff = new Date(localProfile.wedding_date).getTime() - now
     return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
-  }, [localProfile?.wedding_date])
+  }, [localProfile?.wedding_date, now])
 
   // Inline edit state — profile
   const [editField, setEditField] = useState<string | null>(null)
