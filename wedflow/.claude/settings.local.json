@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__clerk__list_clerk_sdk_snippets",
+      "mcp__clerk__clerk_sdk_snippet",
+      "Bash(npm install:*)",
+      "Bash(grep '\"\"next\"\"' package.json)",
+      "Bash(npx next:*)",
+      "Bash(npx kill-port:*)",
+      "Bash(npx tsc:*)",
+      "Bash(find 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/node_modules/@clerk' -name *.d.ts -type f)",
+      "Bash(find 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/node_modules/@clerk/nextjs' -name *.d.ts -type f)",
+      "Bash(find 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/node_modules/@clerk/react' -name *.d.ts -type f)",
+      "Bash(find 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/node_modules/@clerk/react/dist' -name *.d.ts)",
+      "Bash(find 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/node_modules/@clerk/shared' -name *.d.ts)",
+      "Bash(grep -r \"useSignIn\\\\|useSignUp\" 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/app' --include=*.tsx --include=*.ts)"
+    ]
+  }
+}

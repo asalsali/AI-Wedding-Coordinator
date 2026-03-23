@@ -1,6 +1,13 @@
 'use client'
 
 import { useState, useEffect, useTransition } from 'react'
+
+const C = {
+  forest: '#1C3B2B',
+  cream: '#FDFBF7',
+  terracotta: '#C4714A',
+  text: '#1A1A1A',
+}
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import type { ToneStyle } from '@/types'
@@ -163,7 +170,8 @@ function NavButtons({
       <button
         onClick={onContinue}
         disabled={continueDisabled || isPending}
-        className="px-8 py-3 bg-rose-500 text-white text-sm font-medium rounded-full hover:bg-rose-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="px-8 py-3 text-white text-sm font-medium rounded-full disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        style={{ backgroundColor: C.forest }}
       >
         {isPending ? 'Saving\u2026' : continueLabel}
       </button>
@@ -350,14 +358,14 @@ export default function OnboardingPage() {
 
   // ---- Shared style tokens ----
   const inputClass =
-    'w-full px-4 py-2.5 text-sm border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 text-stone-900 placeholder-stone-400 bg-white'
+    'w-full px-4 py-2.5 text-sm border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C3B2B] text-stone-900 placeholder-stone-400 bg-white'
   const labelClass = 'block text-sm font-medium text-stone-700 mb-1.5'
   const textareaClass = `${inputClass} resize-none`
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="w-6 h-6 border-2 border-rose-400 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.cream }}>
+        <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: `${C.forest} transparent transparent transparent` }} />
       </div>
     )
   }
@@ -374,7 +382,7 @@ export default function OnboardingPage() {
         return (
           <div>
             <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-stone-900">
+              <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>
                 Let&apos;s set up your wedding
               </h1>
               <p className="mt-2 text-sm text-stone-500">
@@ -419,7 +427,7 @@ export default function OnboardingPage() {
         return (
           <div>
             <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-stone-900">Wedding details</h1>
+              <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>Wedding details</h1>
               <p className="mt-2 text-sm text-stone-500">
                 Guests will ask about this — let&apos;s get it right.
               </p>
@@ -510,7 +518,7 @@ export default function OnboardingPage() {
         return (
           <div>
             <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-stone-900">Guest essentials</h1>
+              <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>Guest essentials</h1>
               <p className="mt-2 text-sm text-stone-500">
                 The things guests ask most — before they even text.
               </p>
@@ -555,7 +563,7 @@ export default function OnboardingPage() {
                               formData.registryLinks.filter((_, j) => j !== i),
                             )
                           }
-                          className="flex-shrink-0 w-8 h-8 flex items-center justify-center text-stone-400 hover:text-rose-500 transition-colors text-xl leading-none"
+                          className="flex-shrink-0 w-8 h-8 flex items-center justify-center text-stone-400 hover:text-[#1C3B2B] transition-colors text-xl leading-none"
                         >
                           &times;
                         </button>
@@ -566,7 +574,7 @@ export default function OnboardingPage() {
                     onClick={() =>
                       update('registryLinks', [...formData.registryLinks, ''])
                     }
-                    className="text-sm text-rose-500 hover:text-rose-600 font-medium transition-colors"
+                    className="text-sm font-medium transition-colors" style={{ color: C.forest }}
                   >
                     + Add another link
                   </button>
@@ -625,7 +633,7 @@ export default function OnboardingPage() {
         return (
           <div>
             <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-stone-900">Tone &amp; personality</h1>
+              <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>Tone &amp; personality</h1>
               <p className="mt-2 text-sm text-stone-500">
                 Your AI coordinator will match your voice. Choose how it sounds.
               </p>
@@ -641,7 +649,7 @@ export default function OnboardingPage() {
                       onClick={() => update('tone', value)}
                       className={`p-4 rounded-xl border-2 text-left transition-all ${
                         formData.tone === value
-                          ? 'border-rose-400 bg-rose-50'
+                          ? 'border-[#1C3B2B] bg-[#1C3B2B]/10'
                           : 'border-stone-200 hover:border-stone-300 bg-white'
                       }`}
                     >
@@ -696,7 +704,7 @@ export default function OnboardingPage() {
         return (
           <div>
             <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-stone-900">Custom FAQs</h1>
+              <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>Custom FAQs</h1>
               <p className="mt-2 text-sm text-stone-500">
                 Fill in your answers — your AI will use these word for word.
               </p>
@@ -725,7 +733,7 @@ export default function OnboardingPage() {
                             formData.faqs.filter((_, j) => j !== i),
                           )
                         }
-                        className="mt-0.5 flex-shrink-0 w-8 h-8 flex items-center justify-center text-stone-400 hover:text-rose-500 transition-colors text-xl leading-none"
+                        className="mt-0.5 flex-shrink-0 w-8 h-8 flex items-center justify-center text-stone-400 hover:text-[#1C3B2B] transition-colors text-xl leading-none"
                       >
                         &times;
                       </button>
@@ -749,7 +757,7 @@ export default function OnboardingPage() {
                 onClick={() =>
                   update('faqs', [...formData.faqs, { question: '', answer: '' }])
                 }
-                className="w-full py-3 border-2 border-dashed border-stone-200 rounded-xl text-sm text-stone-400 hover:border-rose-300 hover:text-rose-500 transition-colors"
+                className="w-full py-3 border-2 border-dashed border-stone-200 rounded-xl text-sm text-stone-400 hover:border-[#1C3B2B] hover:text-[#1C3B2B] transition-colors"
               >
                 + Add another FAQ
               </button>
@@ -772,7 +780,7 @@ export default function OnboardingPage() {
         return (
           <div>
             <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-stone-900">Readiness check</h1>
+              <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>Readiness check</h1>
               <p className="mt-2 text-sm text-stone-500">
                 You need at least 70 points to go live.
               </p>
@@ -783,7 +791,7 @@ export default function OnboardingPage() {
               <div className="flex-shrink-0 text-center w-20">
                 <div
                   className={`text-5xl font-bold tabular-nums ${
-                    canProceed ? 'text-rose-500' : 'text-stone-400'
+                    canProceed ? 'text-[#1C3B2B]' : 'text-stone-400'
                   }`}
                 >
                   {score}
@@ -794,7 +802,7 @@ export default function OnboardingPage() {
                 <div className="h-3 bg-stone-200 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-700 ${
-                      canProceed ? 'bg-rose-400' : 'bg-stone-300'
+                      canProceed ? 'bg-[#1C3B2B]' : 'bg-stone-300'
                     }`}
                     style={{ width: `${Math.min(score, 100)}%` }}
                   />
@@ -816,7 +824,7 @@ export default function OnboardingPage() {
                 <ul className="space-y-1.5">
                   {complete.map((item) => (
                     <li key={item} className="flex items-center gap-2 text-sm text-stone-700">
-                      <span className="text-rose-400 font-medium">&#10003;</span>
+                      <span className="text-[#1C3B2B] font-medium">&#10003;</span>
                       {item}
                     </li>
                   ))}
@@ -878,7 +886,7 @@ export default function OnboardingPage() {
         return (
           <div>
             <div className="mb-8">
-              <h1 className="text-2xl font-semibold text-stone-900">
+              <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>
                 You&apos;re ready to go live
               </h1>
               <p className="mt-2 text-sm text-stone-500">
@@ -887,25 +895,25 @@ export default function OnboardingPage() {
             </div>
 
             {/* Provisioned number */}
-            <div className="p-6 bg-rose-50 border border-rose-100 rounded-2xl mb-6 text-center">
-              <p className="text-xs text-rose-400 uppercase tracking-widest font-medium mb-3">
+            <div className="p-6 rounded-2xl mb-6 text-center" style={{ backgroundColor: C.forest }}>
+              <p className="text-xs uppercase tracking-widest font-medium mb-3" style={{ color: C.cream, opacity: 0.7 }}>
                 Your wedding number
               </p>
               {provisionLoading ? (
                 <div className="flex flex-col items-center gap-3 py-2">
-                  <div className="w-6 h-6 border-2 border-rose-400 border-t-transparent rounded-full animate-spin" />
-                  <p className="text-sm text-stone-400">Reserving your number&hellip;</p>
+                  <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: `${C.cream} transparent transparent transparent` }} />
+                  <p className="text-sm" style={{ color: C.cream, opacity: 0.7 }}>Reserving your number&hellip;</p>
                 </div>
               ) : provisionError ? (
                 <div>
-                  <p className="text-sm text-red-500 leading-relaxed">{provisionError}</p>
+                  <p className="text-sm text-red-300 leading-relaxed">{provisionError}</p>
                 </div>
               ) : provisionedNumber ? (
                 <div>
-                  <p className="text-3xl font-semibold text-rose-600 font-mono tracking-wide">
+                  <p className="text-3xl font-semibold font-mono tracking-wide" style={{ color: C.cream }}>
                     {provisionedNumber}
                   </p>
-                  <p className="text-xs text-stone-400 mt-4">
+                  <p className="text-xs mt-4" style={{ color: C.cream, opacity: 0.6 }}>
                     Share this number with your guests so they can text your wedding coordinator.
                   </p>
                 </div>
@@ -926,13 +934,14 @@ export default function OnboardingPage() {
                   </p>
                 </div>
                 {partnerSaved ? (
-                  <span className="flex-shrink-0 text-sm text-rose-500 font-medium">
+                  <span className="flex-shrink-0 text-sm font-medium" style={{ color: C.forest }}>
                     &#10003; Saved
                   </span>
                 ) : (
                   <button
                     onClick={() => setShowPartnerModal(true)}
-                    className="flex-shrink-0 px-4 py-2 text-sm text-rose-500 border border-rose-200 rounded-lg hover:bg-rose-50 transition-colors"
+                    className="flex-shrink-0 px-4 py-2 text-sm rounded-lg transition-colors hover:opacity-80"
+                    style={{ color: C.forest, border: `1px solid ${C.forest}40` }}
                   >
                     Invite
                   </button>
@@ -960,17 +969,17 @@ export default function OnboardingPage() {
   // ----------------------------------------------------------------
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen" style={{ backgroundColor: C.cream }}>
       {/* Fixed progress bar */}
-      <div className="fixed top-0 left-0 right-0 z-10 bg-white border-b border-stone-100">
+      <div className="fixed top-0 left-0 right-0 z-10 border-b border-stone-100" style={{ backgroundColor: C.cream }}>
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
           <span className="text-xs text-stone-400 whitespace-nowrap tabular-nums">
             Step {step} of {TOTAL_STEPS}
           </span>
-          <div className="flex-1 h-1.5 bg-stone-100 rounded-full overflow-hidden">
+          <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(28,59,43,0.15)' }}>
             <div
-              className="h-full bg-rose-400 rounded-full transition-all duration-500"
-              style={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${(step / TOTAL_STEPS) * 100}%`, backgroundColor: C.forest }}
             />
           </div>
         </div>
@@ -1025,7 +1034,8 @@ export default function OnboardingPage() {
                   setShowPartnerModal(false)
                 }}
                 disabled={!partnerEmail.trim()}
-                className="flex-1 py-2.5 text-sm text-white bg-rose-500 rounded-lg hover:bg-rose-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 py-2.5 text-sm text-white rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors hover:opacity-90"
+                style={{ backgroundColor: C.forest }}
               >
                 Save
               </button>

@@ -1,6 +1,13 @@
 'use client'
 
 import { useState, useTransition, useEffect } from 'react'
+
+const C = {
+  forest: '#1C3B2B',
+  cream: '#FDFBF7',
+  terracotta: '#C4714A',
+  text: '#1A1A1A',
+}
 import Image from 'next/image'
 import { SignOutButton } from '@clerk/nextjs'
 import {
@@ -171,7 +178,7 @@ function StatCard({
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-5">
       <p className="text-xs font-medium text-stone-500 uppercase tracking-wide mb-1">{label}</p>
-      <p className="text-3xl font-semibold text-stone-900">{value}</p>
+      <p className="text-3xl font-semibold" style={{ color: C.forest }}>{value}</p>
       {sub && <p className="text-xs text-stone-400 mt-1">{sub}</p>}
     </div>
   )
@@ -181,7 +188,7 @@ function MessageCard({ message, onReply }: { message: MessageRow; onReply?: () =
   const badge = classificationBadge(message.classified_as)
   return (
     <div className="bg-white rounded-xl border border-stone-200 p-4 flex items-start gap-4">
-      <div className="flex-shrink-0 w-9 h-9 rounded-full bg-rose-100 flex items-center justify-center text-sm font-medium text-rose-600">
+      <div className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium" style={{ backgroundColor: `${C.forest}1A`, color: C.forest }}>
         {message.guest_phone_hash.slice(-2).toUpperCase()}
       </div>
       <div className="flex-1 min-w-0">
@@ -202,7 +209,8 @@ function MessageCard({ message, onReply }: { message: MessageRow; onReply?: () =
         <div className="flex-shrink-0">
           <button
             onClick={onReply}
-            className="px-3 py-1.5 text-xs font-medium text-white bg-rose-500 hover:bg-rose-600 rounded-lg transition-colors"
+            className="px-3 py-1.5 text-xs font-medium text-white rounded-lg transition-colors hover:opacity-90"
+            style={{ backgroundColor: C.forest }}
           >
             Reply
           </button>
@@ -247,7 +255,7 @@ function ProfileField({
             <select
               value={draftValue}
               onChange={(e) => onDraftChange(e.target.value)}
-              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-400"
+              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1C3B2B]"
             >
               <option value="">— none —</option>
               <option value="warm">Warm</option>
@@ -259,7 +267,7 @@ function ProfileField({
               value={draftValue}
               onChange={(e) => onDraftChange(e.target.value)}
               rows={field === 'registry_links' ? 3 : 2}
-              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none"
+              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1C3B2B] resize-none"
               placeholder={field === 'registry_links' ? 'One URL per line' : ''}
             />
           ) : (
@@ -269,7 +277,7 @@ function ProfileField({
               }
               value={draftValue}
               onChange={(e) => onDraftChange(e.target.value)}
-              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-400"
+              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1C3B2B]"
             />
           )
         ) : (
@@ -284,7 +292,8 @@ function ProfileField({
             <button
               onClick={() => onSave(field)}
               disabled={saving}
-              className="px-3 py-1.5 text-xs font-medium text-white bg-rose-500 hover:bg-rose-600 disabled:opacity-50 rounded-lg transition-colors"
+              className="px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50 rounded-lg transition-colors hover:opacity-90"
+              style={{ backgroundColor: C.forest }}
             >
               {saving ? 'Saving…' : 'Save'}
             </button>
@@ -365,7 +374,7 @@ function ReplyModal({
               onChange={(e) => setText(e.target.value)}
               rows={4}
               disabled={isSending}
-              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none disabled:opacity-50"
+              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#1C3B2B] resize-none disabled:opacity-50"
               placeholder="Type your reply…"
             />
             {isOverLimit ? (
@@ -391,7 +400,8 @@ function ReplyModal({
           <button
             onClick={() => onSend(text)}
             disabled={isSending || !text.trim() || isOverLimit}
-            className="px-4 py-2 text-sm font-medium text-white bg-rose-500 hover:bg-rose-600 disabled:opacity-50 rounded-lg transition-colors"
+            className="px-4 py-2 text-sm font-medium text-white disabled:opacity-50 rounded-lg transition-colors hover:opacity-90"
+            style={{ backgroundColor: C.forest }}
           >
             {isSending ? 'Sending…' : 'Send reply'}
           </button>
@@ -568,11 +578,11 @@ setToast({ type: 'success', text: 'Reply sent!' })
   function renderHome() {
     return (
       <div className="max-w-3xl mx-auto space-y-8">
-        <div className="bg-gradient-to-r from-rose-50 to-pink-50 border border-rose-100 rounded-2xl p-8">
-          <h1 className="text-2xl font-semibold text-stone-900 mb-1">
+        <div className="rounded-2xl p-8" style={{ backgroundColor: C.forest }}>
+          <h1 className="text-2xl font-semibold mb-1" style={{ color: C.cream }}>
             Welcome back, {coupleNames} 💍
           </h1>
-          <p className="text-stone-500 text-sm">
+          <p className="text-sm" style={{ color: 'rgba(253,251,247,0.7)' }}>
             Here&apos;s a snapshot of your Wedflow dashboard.
           </p>
         </div>
@@ -610,7 +620,8 @@ setToast({ type: 'success', text: 'Reply sent!' })
 
         <button
           onClick={() => setView('inbox')}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-medium rounded-xl transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-2.5 text-white text-sm font-medium rounded-xl transition-colors hover:opacity-90"
+          style={{ backgroundColor: C.terracotta }}
         >
           Go to Inbox →
         </button>
@@ -655,7 +666,7 @@ setToast({ type: 'success', text: 'Reply sent!' })
               onClick={() => setInboxTab(tab.id)}
               className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
                 inboxTab === tab.id
-                  ? 'border-rose-500 text-rose-600'
+                  ? 'border-[#1C3B2B] text-[#1C3B2B]'
                   : 'border-transparent text-stone-500 hover:text-stone-700'
               }`}
             >
@@ -725,32 +736,32 @@ setToast({ type: 'success', text: 'Reply sent!' })
         <h2 className="text-xl font-semibold text-stone-900">Profile</h2>
 
         {/* Twilio number + readiness */}
-        <div className="bg-rose-50 border border-rose-100 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={{ backgroundColor: C.forest }}>
           <div>
-            <p className="text-xs font-medium text-rose-500 uppercase tracking-wide mb-1">
+            <p className="text-xs font-medium uppercase tracking-wide mb-1" style={{ color: 'rgba(253,251,247,0.7)' }}>
               Your Wedflow number
             </p>
-            <p className="text-2xl font-mono font-semibold text-stone-900">
+            <p className="text-2xl font-mono font-semibold" style={{ color: C.cream }}>
               {phoneNumber ?? 'Not yet assigned'}
             </p>
-            <p className="text-xs text-stone-500 mt-1">Share this number with your guests</p>
+            <p className="text-xs mt-1" style={{ color: 'rgba(253,251,247,0.6)' }}>Share this number with your guests</p>
           </div>
           <div className="text-center sm:text-right">
-            <p className="text-xs font-medium text-stone-400 uppercase tracking-wide mb-1">
+            <p className="text-xs font-medium uppercase tracking-wide mb-1" style={{ color: 'rgba(253,251,247,0.6)' }}>
               Readiness
             </p>
             <div className="flex items-center gap-2">
-              <div className="w-24 h-2 bg-stone-200 rounded-full overflow-hidden">
+              <div className="w-24 h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(253,251,247,0.2)' }}>
                 <div
-                  className="h-full bg-rose-500 rounded-full transition-all"
-                  style={{ width: `${localProfile.readiness_score}%` }}
+                  className="h-full rounded-full transition-all"
+                  style={{ width: `${localProfile.readiness_score}%`, backgroundColor: C.cream }}
                 />
               </div>
-              <span className="text-sm font-semibold text-stone-700">
+              <span className="text-sm font-semibold" style={{ color: C.cream }}>
                 {localProfile.readiness_score}%
               </span>
             </div>
-            <p className="text-xs text-stone-400 mt-1">
+            <p className="text-xs mt-1" style={{ color: 'rgba(253,251,247,0.6)' }}>
               {localProfile.is_active ? '🟢 Active' : '⚪ Not active'}
             </p>
           </div>
@@ -818,12 +829,13 @@ setToast({ type: 'success', text: 'Reply sent!' })
                   value={emailDraft}
                   onChange={(e) => setEmailDraft(e.target.value)}
                   placeholder="partner@example.com"
-                  className="flex-1 text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-400"
+                  className="flex-1 text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1C3B2B]"
                 />
                 <button
                   onClick={handleSaveEmail}
                   disabled={isSavingEmail}
-                  className="px-3 py-2 text-xs font-medium text-white bg-rose-500 hover:bg-rose-600 disabled:opacity-50 rounded-lg transition-colors"
+                  className="px-3 py-2 text-xs font-medium text-white disabled:opacity-50 rounded-lg transition-colors hover:opacity-90"
+                  style={{ backgroundColor: C.forest }}
                 >
                   {isSavingEmail ? 'Saving…' : 'Save'}
                 </button>
@@ -885,18 +897,17 @@ setToast({ type: 'success', text: 'Reply sent!' })
   // ----------------------------------------------------------------
 
   return (
-    <div className="flex h-screen bg-stone-50 overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ backgroundColor: C.cream }}>
       {/* Sidebar */}
-      <aside className="w-64 flex-shrink-0 bg-white border-r border-stone-200 flex flex-col">
-        {/* Logo */}
-        <div className="p-6 border-b border-stone-100">
-          <Image
-            src="/ClassicLogo.png"
-            alt="Wedflow"
-            width={48}
-            height={48}
-            className="rounded-lg"
-          />
+      <aside className="w-64 flex-shrink-0 flex flex-col" style={{ backgroundColor: C.forest }}>
+        {/* Wordmark */}
+        <div className="px-6 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+          <p
+            className="text-2xl font-semibold"
+            style={{ color: C.cream, fontFamily: 'var(--newsreader)' }}
+          >
+            Wedflow
+          </p>
         </div>
 
         {/* Nav */}
@@ -905,16 +916,21 @@ setToast({ type: 'success', text: 'Reply sent!' })
             <button
               key={item.id}
               onClick={() => setView(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                 view === item.id
-                  ? 'bg-rose-50 text-rose-600'
-                  : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                  ? 'text-white'
+                  : 'hover:text-white'
               }`}
+              style={
+                view === item.id
+                  ? { backgroundColor: 'rgba(255,255,255,0.15)', color: '#fff' }
+                  : { color: 'rgba(253,251,247,0.7)' }
+              }
             >
               <span className="text-base leading-none">{item.icon}</span>
               {item.label}
               {item.id === 'inbox' && needsReplyMessages.length > 0 && (
-                <span className="ml-auto inline-flex items-center justify-center w-5 h-5 text-xs font-semibold bg-rose-500 text-white rounded-full">
+                <span className="ml-auto inline-flex items-center justify-center w-5 h-5 text-xs font-semibold text-white rounded-full" style={{ backgroundColor: C.terracotta }}>
                   {needsReplyMessages.length}
                 </span>
               )}
@@ -923,10 +939,10 @@ setToast({ type: 'success', text: 'Reply sent!' })
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-stone-100">
-          <p className="text-xs font-medium text-stone-700 mb-3 px-1 truncate">{coupleNames}</p>
+        <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }}>
+          <p className="text-xs mb-3 px-1 truncate" style={{ color: 'rgba(253,251,247,0.6)' }}>{coupleNames}</p>
           <SignOutButton>
-            <button className="w-full px-3 py-2 text-xs font-medium text-stone-500 bg-stone-100 hover:bg-stone-200 rounded-lg transition-colors text-left">
+            <button className="w-full px-3 py-2 text-xs font-medium rounded-lg transition-colors text-left hover:opacity-90" style={{ color: 'rgba(253,251,247,0.7)', backgroundColor: 'rgba(255,255,255,0.1)' }}>
               Sign out
             </button>
           </SignOutButton>
@@ -934,7 +950,7 @@ setToast({ type: 'success', text: 'Reply sent!' })
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto" style={{ backgroundColor: C.cream }}>
         <div className="p-8">
           {view === 'home' && renderHome()}
           {view === 'inbox' && renderInbox()}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 // ─── Brand constants ──────────────────────────────────────────────────────────
 
@@ -88,6 +89,8 @@ function EmailCapture({
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 
 function Nav() {
+  const { isSignedIn } = useAuth();
+
   return (
     <nav
       className="sticky top-0 z-50 backdrop-blur-sm"
@@ -114,13 +117,23 @@ function Nav() {
             Wedflow
           </span>
         </Link>
-        <Link
-          href="/sign-up"
-          className="px-6 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
-          style={{ backgroundColor: C.terracotta, color: C.cream }}
-        >
-          Begin Your Journey →
-        </Link>
+        {isSignedIn ? (
+          <Link
+            href="/dashboard"
+            className="px-6 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
+            style={{ backgroundColor: C.forest, color: C.cream }}
+          >
+            Go to Dashboard →
+          </Link>
+        ) : (
+          <Link
+            href="/sign-up"
+            className="px-6 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
+            style={{ backgroundColor: C.terracotta, color: C.cream }}
+          >
+            Begin Your Journey →
+          </Link>
+        )}
       </div>
     </nav>
   );
