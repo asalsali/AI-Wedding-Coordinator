@@ -97,13 +97,6 @@ export default async function DashboardPage() {
       !repliedInboundMsgIds.has(m.id),
   ).length
 
-  const weddingDate = profileRes.data?.wedding_date as string | null | undefined
-  let daysUntilWedding: number | null = null
-  if (weddingDate) {
-    const diff = new Date(weddingDate).getTime() - Date.now()
-    daysUntilWedding = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
-  }
-
   const p = profileRes.data
 
   return (
@@ -138,7 +131,7 @@ export default async function DashboardPage() {
       }
       phoneNumber={(phoneRes.data?.twilio_number as string | null) ?? null}
       initialMessages={messages}
-      stats={{ totalMessages, needsReply, daysUntilWedding }}
+      stats={{ totalMessages, needsReply }}
     />
   )
 }

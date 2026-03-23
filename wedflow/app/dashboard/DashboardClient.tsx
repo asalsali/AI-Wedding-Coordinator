@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+import { useState, useTransition, useEffect, useMemo } from 'react'
 
 const C = {
   forest: '#1C3B2B',
@@ -60,7 +60,6 @@ interface Props {
   stats: {
     totalMessages: number
     needsReply: number
-    daysUntilWedding: number | null
   }
 }
 
@@ -427,6 +426,12 @@ export default function DashboardClient({
   const [messages, setMessages] = useState<MessageRow[]>(initialMessages)
   const [localProfile, setLocalProfile] = useState<Profile | null>(profile)
 
+  const daysUntilWedding = useMemo(() => {
+    if (!localProfile?.wedding_date) return null
+    const diff = new Date(localProfile.wedding_date).getTime() - Date.now()
+    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
+  }, [localProfile?.wedding_date])
+
   // Inline edit state — profile
   const [editField, setEditField] = useState<string | null>(null)
   const [draftValue, setDraftValue] = useState<string>('')
@@ -608,13 +613,13 @@ setToast({ type: 'success', text: 'Reply sent!' })
           <StatCard
             label="Days until wedding"
             value={
-              stats.daysUntilWedding === null
+              daysUntilWedding === null
                 ? '—'
-                : stats.daysUntilWedding === 0
+                : daysUntilWedding === 0
                   ? 'Today! 🎉'
-                  : stats.daysUntilWedding
+                  : daysUntilWedding
             }
-            sub={stats.daysUntilWedding !== null && stats.daysUntilWedding > 0 ? 'to go' : undefined}
+            sub={daysUntilWedding !== null && daysUntilWedding > 0 ? 'to go' : undefined}
           />
         </div>
 
