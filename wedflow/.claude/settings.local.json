@@ -13,7 +13,9 @@
       "Bash(find 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/node_modules/@clerk/react' -name *.d.ts -type f)",
       "Bash(find 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/node_modules/@clerk/react/dist' -name *.d.ts)",
       "Bash(find 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/node_modules/@clerk/shared' -name *.d.ts)",
-      "Bash(grep -r \"useSignIn\\\\|useSignUp\" 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/app' --include=*.tsx --include=*.ts)"
+      "Bash(grep -r \"useSignIn\\\\|useSignUp\" 'C:/Users/Alex Salsali/Desktop/WedFlow/WEDFLOW/wedflow/app' --include=*.tsx --include=*.ts)",
+      "Bash(npm run:*)",
+      "Bash(echo \"EXIT CODE: $?\")"
     ]
   }
 }
