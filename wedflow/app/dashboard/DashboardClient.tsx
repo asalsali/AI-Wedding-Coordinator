@@ -428,8 +428,13 @@ export default function DashboardClient({
 
   const daysUntilWedding = useMemo(() => {
     if (!localProfile?.wedding_date) return 0
-    const diff = new Date(localProfile.wedding_date).getTime() - Date.now()
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const wedding = new Date(localProfile.wedding_date)
+    wedding.setHours(0, 0, 0, 0)
+    const diff = wedding.getTime() - today.getTime()
     return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localProfile?.wedding_date])
 
   // Inline edit state — profile
