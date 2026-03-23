@@ -238,8 +238,10 @@ export default function OnboardingPage() {
   // Trigger number provisioning when the couple reaches Step 7
   useEffect(() => {
     if (step !== 7 || !coupleId || provisionedNumber || provisionLoading) return
-    setProvisionLoading(true)
-    setProvisionError(null)
+    setTimeout(() => {
+      setProvisionLoading(true)
+      setProvisionError(null)
+    }, 0)
     fetch('/onboarding/provision-number', { method: 'POST' })
       .then((res) => res.json())
       .then((data: { phoneNumber?: string; error?: string }) => {
@@ -1018,7 +1020,6 @@ export default function OnboardingPage() {
               onChange={(e) => setPartnerEmail(e.target.value)}
               placeholder="partner@example.com"
               className={inputClass}
-              // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
             />
             <div className="flex gap-3 mt-5">
