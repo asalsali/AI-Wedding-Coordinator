@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+import { useState, useTransition, useEffect, useMemo } from 'react'
 
 const C = {
   forest: '#1C3B2B',
@@ -426,12 +426,10 @@ export default function DashboardClient({
   const [messages, setMessages] = useState<MessageRow[]>(initialMessages)
   const [localProfile, setLocalProfile] = useState<Profile | null>(profile)
 
-  const [daysUntilWedding, setDaysUntilWedding] = useState<number | null>(null)
-
-  useEffect(() => {
-    if (!localProfile?.wedding_date) return
+  const daysUntilWedding = useMemo(() => {
+    if (!localProfile?.wedding_date) return 0
     const diff = new Date(localProfile.wedding_date).getTime() - Date.now()
-    setDaysUntilWedding(Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24))))
+    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
   }, [localProfile?.wedding_date])
 
   // Inline edit state — profile
