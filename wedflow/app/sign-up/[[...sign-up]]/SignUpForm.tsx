@@ -130,7 +130,7 @@ export default function SignUpForm() {
       await signUp.verifications.verifyEmailCode({ code })
       if (signUp.status === 'complete' && signUp.createdSessionId) {
         await setActive({ session: signUp.createdSessionId })
-        router.push('/onboarding')
+        router.push('/pricing')
       }
     } catch (err: unknown) {
       setError(extractClerkError(err, 'Verification failed. Please try again.'))
@@ -154,7 +154,7 @@ export default function SignUpForm() {
     try {
       await signUp.sso({
         strategy: 'oauth_google',
-        redirectUrl: '/onboarding',
+        redirectUrl: '/pricing',
         redirectCallbackUrl: '/sign-up/sso-callback',
       })
     } catch (err: unknown) {

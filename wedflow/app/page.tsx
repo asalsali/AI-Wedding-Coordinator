@@ -117,23 +117,34 @@ function Nav() {
             Wedflow
           </span>
         </Link>
-        {isSignedIn ? (
-          <Link
-            href="/dashboard"
-            className="px-6 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
-            style={{ backgroundColor: C.forest, color: C.cream }}
-          >
-            Go to Dashboard →
-          </Link>
-        ) : (
-          <Link
-            href="/sign-up"
-            className="px-6 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
-            style={{ backgroundColor: C.terracotta, color: C.cream }}
-          >
-            Begin Your Journey →
-          </Link>
-        )}
+        <div className="flex items-center gap-6">
+          {!isSignedIn && (
+            <Link
+              href="/pricing"
+              className="wf-sans text-sm font-medium hover:underline"
+              style={{ color: C.forest }}
+            >
+              Pricing
+            </Link>
+          )}
+          {isSignedIn ? (
+            <Link
+              href="/dashboard"
+              className="px-6 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
+              style={{ backgroundColor: C.forest, color: C.cream }}
+            >
+              Go to Dashboard →
+            </Link>
+          ) : (
+            <Link
+              href="/sign-up"
+              className="px-6 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
+              style={{ backgroundColor: C.terracotta, color: C.cream }}
+            >
+              Begin Your Journey →
+            </Link>
+          )}
+        </div>
       </div>
     </nav>
   );
@@ -537,8 +548,21 @@ function FinalCTA() {
           Let Wedflow handle the questions.
         </p>
 
-        <div className="flex justify-center">
-          <EmailCapture buttonText="Begin Your Journey →" />
+        <div className="flex flex-col items-center gap-4">
+          <Link
+            href="/pricing"
+            className="px-10 py-4 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
+            style={{ backgroundColor: C.terracotta, color: C.cream }}
+          >
+            Begin Your Journey →
+          </Link>
+          <Link
+            href="/pricing"
+            className="wf-sans text-sm hover:underline"
+            style={{ color: C.terracotta }}
+          >
+            See our plans and pricing
+          </Link>
         </div>
       </div>
     </section>
