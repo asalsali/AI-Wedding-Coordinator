@@ -10,7 +10,7 @@ export default function SignUpPage() {
         style={{ backgroundColor: '#1C3B2B', padding: '48px' }}
       >
         <Image
-          src="/ClassicLogo.png"
+          src="/WedFlowlogo.png"
           alt="Wedflow"
           width={56}
           height={56}
@@ -55,7 +55,7 @@ export default function SignUpPage() {
           style={{ marginBottom: '40px' }}
         >
           <Image
-            src="/ClassicLogo.png"
+            src="/WedFlowlogo.png"
             alt="Wedflow"
             width={40}
             height={40}
