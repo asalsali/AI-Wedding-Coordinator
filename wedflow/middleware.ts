@@ -1,32 +1,67 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/pricing(.*)",
-  "/api/webhooks/twilio(.*)",
-  "/api/inngest(.*)",
-  "/api/stripe/webhook(.*)",
-]);
+const isPublicRoute = [
+  '/',
+  '/sign-in',
+  '/sign-up',
+  '/pricing',
+  '/api/webhooks/twilio',
+  '/api/inngest',
+  '/api/stripe/webhook',
+  '/api/stripe/checkout',
+  '/auth/callback',
+]
 
-export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth();
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  
+  // Check if it's a public route
+  const isPublic = isPublicRoute.some(route => 
+    pathname === route || pathname.startsWith(`${route}/`)
+  )
 
-  // Signed-in users visiting the landing page go straight to the dashboard
-  if (userId && req.nextUrl.pathname === "/") {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+  const response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  })
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet: { name: string; value: string; options: any }[]) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
+
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Redirect signed-in users from landing page to dashboard
+  if (user && pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  if (!isPublicRoute(req)) {
-    await auth.protect();
+  // Protect private routes
+  if (!user && !isPublic) {
+    return NextResponse.redirect(new URL('/sign-in', request.url))
   }
-});
+
+  return response
+}
 
 export const config = {
   matcher: [
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    "/(api|trpc)(.*)",
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
   ],
-};
+}

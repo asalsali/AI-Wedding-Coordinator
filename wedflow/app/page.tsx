@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth } from "@clerk/nextjs";
+import { createClient } from "@supabase/supabase-js";
 
 // ─── Brand constants ──────────────────────────────────────────────────────────
 
@@ -17,7 +17,7 @@ const C = {
 // ─── Email Capture ────────────────────────────────────────────────────────────
 
 function EmailCapture({
-  buttonText = "Reserve Your Spot",
+  buttonText = "Request Early Access",
   variant = "light",
 }: {
   buttonText?: string;
@@ -25,10 +25,27 @@ function EmailCapture({
 }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) setSubmitted(true);
+    if (!email.trim() || isSubmitting) return;
+    setIsSubmitting(true);
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setSubmitted(true);
+    } catch {
+      setErrorMsg("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -42,54 +59,74 @@ function EmailCapture({
           className="wf-sans text-sm font-medium"
           style={{ color: variant === "dark" ? C.cream : C.forest }}
         >
-          You&apos;re on the list! We&apos;ll be in touch soon.
+          You&apos;re on the list. We&apos;ll reach out with next steps.
         </p>
       </div>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col sm:flex-row gap-3 w-full max-w-md"
-    >
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="your@email.com"
-        required
-        className="flex-1 px-5 py-3.5 rounded-full border text-sm focus:outline-none focus:ring-2 transition-colors wf-sans"
-        style={{
-          backgroundColor: "#ffffff",
-          borderColor: "rgba(28,59,43,0.2)",
-          color: C.text,
-        }}
-        onFocus={(e) => {
-          e.currentTarget.style.borderColor = "rgba(28,59,43,0.5)";
-          e.currentTarget.style.boxShadow =
-            "0 0 0 3px rgba(28,59,43,0.08)";
-        }}
-        onBlur={(e) => {
-          e.currentTarget.style.borderColor = "rgba(28,59,43,0.2)";
-          e.currentTarget.style.boxShadow = "none";
-        }}
-      />
-      <button
-        type="submit"
-        className="px-7 py-3.5 rounded-full text-sm font-medium whitespace-nowrap transition-opacity hover:opacity-90 wf-sans"
-        style={{ backgroundColor: C.terracotta, color: C.cream }}
+    <div className="w-full max-w-md">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col sm:flex-row gap-3"
       >
-        {buttonText}
-      </button>
-    </form>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          required
+          disabled={isSubmitting}
+          className="flex-1 px-5 py-3.5 rounded-full border text-sm focus:outline-none focus:ring-2 transition-colors wf-sans disabled:opacity-60"
+          style={{
+            backgroundColor: "#ffffff",
+            borderColor: "rgba(28,59,43,0.2)",
+            color: C.text,
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = "rgba(28,59,43,0.5)";
+            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(28,59,43,0.08)";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = "rgba(28,59,43,0.2)";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        />
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="px-7 py-3.5 rounded-full text-sm font-medium whitespace-nowrap transition-opacity hover:opacity-90 disabled:opacity-60 wf-sans"
+          style={{ backgroundColor: C.terracotta, color: C.cream }}
+        >
+          {isSubmitting ? "Submitting…" : buttonText}
+        </button>
+      </form>
+      {errorMsg && (
+        <p className="mt-2 text-xs ml-1 wf-sans" style={{ color: C.terracotta }}>
+          {errorMsg}
+        </p>
+      )}
+    </div>
   );
 }
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 
 function Nav() {
-  const { isSignedIn } = useAuth();
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setIsSignedIn(!!user);
+      setIsLoading(false);
+    });
+  }, []);
 
   return (
     <nav
@@ -118,15 +155,6 @@ function Nav() {
           </span>
         </Link>
         <div className="flex items-center gap-6">
-          {!isSignedIn && (
-            <Link
-              href="/pricing"
-              className="wf-sans text-sm font-medium hover:underline"
-              style={{ color: C.forest }}
-            >
-              Pricing
-            </Link>
-          )}
           {isSignedIn ? (
             <Link
               href="/dashboard"
@@ -252,17 +280,19 @@ function Hero() {
               className="wf-serif font-bold leading-[1.05] text-5xl sm:text-6xl md:text-7xl xl:text-8xl mb-6"
               style={{ color: C.forest, fontFamily: "var(--newsreader), Georgia, serif" }}
             >
-              Every question,
+              Your guests have
               <br />
-              <em className="italic">answered.</em>
+              <em className="italic">something to say.</em>
             </h1>
 
             <p
               className="wf-sans text-lg mb-10 max-w-lg leading-relaxed animate-fade-in-up-delay"
               style={{ color: "rgba(26,26,26,0.65)" }}
             >
-              Your personal wedding concierge handles guest inquiries around the
-              clock — so you can stay present in every moment that matters.
+              WedFlow is the first inbound AI SMS service for weddings. Guests
+              text a dedicated number with questions — and things they can't
+              say to your face. The AI replies in your voice for logistics, and
+              escalates sensitive messages for your eyes only.
             </p>
 
             <div className="animate-fade-in-up-delay-2">
@@ -271,7 +301,7 @@ function Hero() {
                 className="mt-4 wf-sans text-xs ml-1"
                 style={{ color: "rgba(26,26,26,0.4)" }}
               >
-                No credit card required. Free early access.
+                Paid beta — limited spots. We&apos;ll reach out with pricing.
               </p>
             </div>
           </div>
@@ -300,8 +330,8 @@ function SocialProofBar() {
           className="wf-sans text-sm text-center tracking-wide"
           style={{ color: "rgba(26,26,26,0.55)" }}
         >
-          Trusted by couples across Canada &mdash; handling guest questions so
-          you don&apos;t have to
+          The emotional buffer for what guests can't say directly —
+          used by couples across Canada
         </p>
       </div>
     </div>
@@ -314,18 +344,18 @@ function HowItWorks() {
   const steps = [
     {
       number: "01",
-      heading: "Your guest texts a question",
-      body: "They reach out to your dedicated Wedflow number — anytime, from anywhere.",
+      heading: "Guests text your WedFlow number",
+      body: "Questions, RSVPs, dietary restrictions — and the things they can't say to your face. Everything comes to one place.",
     },
     {
       number: "02",
-      heading: "Wedflow coordinates a reply in your voice",
-      body: "Your concierge draws on your wedding profile to craft a warm, on-brand response.",
+      heading: "AI replies in your voice, instantly",
+      body: "Logistics and FAQs get warm, accurate responses that sound like you. No more 2am text interruptions.",
     },
     {
       number: "03",
-      heading: "You approve anything that needs your touch",
-      body: "Sensitive or emotionally nuanced messages are held for your review, with a draft already written.",
+      heading: "Sensitive messages? Escalated to you",
+      body: "When guests share something emotional, the AI classifies it and holds it for your review with a draft reply ready.",
     },
   ];
 
@@ -550,18 +580,11 @@ function FinalCTA() {
 
         <div className="flex flex-col items-center gap-4">
           <Link
-            href="/pricing"
+            href="/sign-up"
             className="px-10 py-4 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
             style={{ backgroundColor: C.terracotta, color: C.cream }}
           >
             Begin Your Journey →
-          </Link>
-          <Link
-            href="/pricing"
-            className="wf-sans text-sm hover:underline"
-            style={{ color: C.terracotta }}
-          >
-            See our plans and pricing
           </Link>
         </div>
       </div>

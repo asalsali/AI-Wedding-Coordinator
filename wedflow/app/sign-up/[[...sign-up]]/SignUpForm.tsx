@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useSignUp, useClerk } from '@clerk/nextjs'
+import { createClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -43,14 +43,6 @@ function GoogleIcon() {
   )
 }
 
-function BackArrowIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M19 12H5M12 5l-7 7 7 7" />
-    </svg>
-  )
-}
-
 // ─── Shared styles ────────────────────────────────────────────────────────────
 
 const inputStyle: React.CSSProperties = {
@@ -73,282 +65,188 @@ const labelStyle: React.CSSProperties = {
   marginBottom: '6px',
 }
 
-function extractClerkError(err: unknown, fallback: string): string {
-  if (err && typeof err === 'object' && 'errors' in err) {
-    const clerkErr = err as { errors: Array<{ message: string }> }
-    return clerkErr.errors[0]?.message ?? fallback
-  }
-  return fallback
-}
-
 // ─── Component ────────────────────────────────────────────────────────────────
 
-type Step = 'register' | 'verify'
-
 export default function SignUpForm() {
-  const { signUp, fetchStatus } = useSignUp()
-  const { setActive } = useClerk()
   const router = useRouter()
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
-  const [step, setStep] = useState<Step>('register')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [code, setCode] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const isReady = fetchStatus === 'idle' && signUp !== undefined
-
-  // ── Step 1: create account + send OTP ──────────────────────────────────────
-
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!signUp) return
     setError('')
-    setLoading(true)
-    try {
-      await signUp.create({ emailAddress: email })
-      await signUp.password({ emailAddress: email, password })
-      await signUp.verifications.sendEmailCode()
-      setStep('verify')
-    } catch (err: unknown) {
-      setError(extractClerkError(err, 'Sign up failed. Please try again.'))
-    } finally {
-      setLoading(false)
+    
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
     }
-  }
-
-  // ── Step 2: verify OTP ─────────────────────────────────────────────────────
-
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!signUp) return
-    setError('')
+    
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters')
+      return
+    }
+    
     setLoading(true)
+    
     try {
-      await signUp.verifications.verifyEmailCode({ code })
-      if (signUp.status === 'complete' && signUp.createdSessionId) {
-        await setActive({ session: signUp.createdSessionId })
-        router.push('/pricing')
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+      
+      if (signUpError) {
+        setError(signUpError.message)
+        return
       }
-    } catch (err: unknown) {
-      setError(extractClerkError(err, 'Verification failed. Please try again.'))
+      
+      if (data.session) {
+        // User is signed in, go to onboarding
+        router.push('/onboarding')
+        router.refresh()
+      } else {
+        // Email confirmation required
+        setError('Please check your email to confirm your account.')
+      }
+    } catch (err) {
+      setError('Sign up failed. Please try again.')
     } finally {
       setLoading(false)
     }
   }
-
-  // ── Back to step 1 ─────────────────────────────────────────────────────────
-
-  const handleBack = () => {
-    setStep('register')
-    setCode('')
-    setError('')
-  }
-
-  // ── Google OAuth ───────────────────────────────────────────────────────────
 
   const handleGoogle = async () => {
-    if (!signUp) return
     try {
-      await signUp.sso({
-        strategy: 'oauth_google',
-        redirectUrl: '/pricing',
-        redirectCallbackUrl: '/sign-up/sso-callback',
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
       })
-    } catch (err: unknown) {
-      setError(extractClerkError(err, 'Google sign up failed.'))
+      
+      if (oauthError) {
+        setError(oauthError.message)
+      }
+    } catch (err) {
+      setError('Google sign up failed.')
     }
   }
-
-  // ── Render: Step 1 ─────────────────────────────────────────────────────────
-
-  if (step === 'register') {
-    return (
-      <div style={{ width: '100%', maxWidth: '400px' }}>
-        <h2
-          className="wf-serif"
-          style={{ color: C.forest, fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}
-        >
-          Create your account
-        </h2>
-        <p style={{ color: 'rgba(26,26,26,0.55)', fontSize: '14px', marginBottom: '28px' }}>
-          Set up Wedflow for your wedding day.
-        </p>
-
-        {/* Google */}
-        <button
-          type="button"
-          onClick={handleGoogle}
-          disabled={!isReady || loading}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '10px',
-            width: '100%',
-            padding: '14px',
-            borderRadius: '24px',
-            border: '1px solid #e5e7eb',
-            backgroundColor: '#ffffff',
-            color: C.text,
-            fontSize: '14px',
-            fontWeight: 500,
-            cursor: isReady && !loading ? 'pointer' : 'not-allowed',
-            marginBottom: '20px',
-          }}
-        >
-          <GoogleIcon />
-          Continue with Google
-        </button>
-
-        {/* Divider */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }} />
-          <span style={{ color: 'rgba(26,26,26,0.4)', fontSize: '13px' }}>or</span>
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }} />
-        </div>
-
-        <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div>
-            <label htmlFor="signup-email" style={labelStyle}>Email address</label>
-            <input
-              id="signup-email"
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              style={inputStyle}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="signup-password" style={labelStyle}>Password</label>
-            <div style={{ position: 'relative' }}>
-              <input
-                id="signup-password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-                style={{ ...inputStyle, paddingRight: '44px' }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(v => !v)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: 'rgba(26,26,26,0.4)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: 0,
-                }}
-              >
-                {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
-              </button>
-            </div>
-          </div>
-
-          {error && (
-            <p style={{ color: '#dc2626', fontSize: '13px', margin: 0 }}>{error}</p>
-          )}
-
-          <button
-            type="submit"
-            disabled={!isReady || loading}
-            style={{
-              width: '100%',
-              padding: '14px',
-              borderRadius: '24px',
-              border: 'none',
-              backgroundColor: C.terracotta,
-              color: '#ffffff',
-              fontSize: '14px',
-              fontWeight: 600,
-              cursor: isReady && !loading ? 'pointer' : 'not-allowed',
-              opacity: loading ? 0.75 : 1,
-              marginTop: '4px',
-            }}
-          >
-            {loading ? 'Creating account…' : 'Create account'}
-          </button>
-        </form>
-
-        <p style={{ color: 'rgba(26,26,26,0.55)', fontSize: '14px', textAlign: 'center', marginTop: '24px' }}>
-          Already have an account?{' '}
-          <Link href="/sign-in" style={{ color: C.forest, fontWeight: 600, textDecoration: 'none' }}>
-            Sign in
-          </Link>
-        </p>
-      </div>
-    )
-  }
-
-  // ── Render: Step 2 (OTP) ───────────────────────────────────────────────────
 
   return (
     <div style={{ width: '100%', maxWidth: '400px' }}>
-      {/* Back button */}
-      <button
-        type="button"
-        onClick={handleBack}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          color: 'rgba(26,26,26,0.5)',
-          fontSize: '13px',
-          padding: 0,
-          marginBottom: '24px',
-        }}
-      >
-        <BackArrowIcon />
-        Back
-      </button>
-
       <h2
         className="wf-serif"
         style={{ color: C.forest, fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}
       >
-        Check your inbox
+        Create your account
       </h2>
       <p style={{ color: 'rgba(26,26,26,0.55)', fontSize: '14px', marginBottom: '28px' }}>
-        We sent a 6-digit code to{' '}
-        <span style={{ color: C.forest, fontWeight: 500 }}>{email}</span>.
+        Start managing your wedding with Wedflow.
       </p>
 
-      <form onSubmit={handleVerify} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {/* Google */}
+      <button
+        type="button"
+        onClick={handleGoogle}
+        disabled={loading}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '10px',
+          width: '100%',
+          padding: '14px',
+          borderRadius: '24px',
+          border: '1px solid #e5e7eb',
+          backgroundColor: '#ffffff',
+          color: C.text,
+          fontSize: '14px',
+          fontWeight: 500,
+          cursor: loading ? 'not-allowed' : 'pointer',
+          marginBottom: '20px',
+        }}
+      >
+        <GoogleIcon />
+        Continue with Google
+      </button>
+
+      {/* Divider */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+        <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }} />
+        <span style={{ color: 'rgba(26,26,26,0.4)', fontSize: '13px' }}>or</span>
+        <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }} />
+      </div>
+
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div>
-          <label htmlFor="otp-code" style={labelStyle}>Verification code</label>
+          <label htmlFor="signup-email" style={labelStyle}>Email address</label>
           <input
-            id="otp-code"
-            type="text"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            maxLength={6}
-            value={code}
-            onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
+            id="signup-email"
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             required
-            placeholder="000000"
-            style={{
-              ...inputStyle,
-              letterSpacing: '0.25em',
-              fontSize: '20px',
-              textAlign: 'center',
-            }}
+            autoComplete="email"
+            style={inputStyle}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="signup-password" style={labelStyle}>Password</label>
+          <div style={{ position: 'relative' }}>
+            <input
+              id="signup-password"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              autoComplete="new-password"
+              style={{ ...inputStyle, paddingRight: '44px' }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(v => !v)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              style={{
+                position: 'absolute',
+                right: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'rgba(26,26,26,0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                padding: 0,
+              }}
+            >
+              {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="signup-confirm" style={labelStyle}>Confirm password</label>
+          <input
+            id="signup-confirm"
+            type="password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+            required
+            autoComplete="new-password"
+            style={inputStyle}
           />
         </div>
 
@@ -358,7 +256,7 @@ export default function SignUpForm() {
 
         <button
           type="submit"
-          disabled={!isReady || loading || code.length < 6}
+          disabled={loading}
           style={{
             width: '100%',
             padding: '14px',
@@ -368,14 +266,21 @@ export default function SignUpForm() {
             color: '#ffffff',
             fontSize: '14px',
             fontWeight: 600,
-            cursor: isReady && !loading && code.length === 6 ? 'pointer' : 'not-allowed',
-            opacity: loading || code.length < 6 ? 0.75 : 1,
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.75 : 1,
             marginTop: '4px',
           }}
         >
-          {loading ? 'Verifying…' : 'Verify email'}
+          {loading ? 'Creating account…' : 'Create account'}
         </button>
       </form>
+
+      <p style={{ color: 'rgba(26,26,26,0.55)', fontSize: '14px', textAlign: 'center', marginTop: '24px' }}>
+        Already have an account?{' '}
+        <Link href="/sign-in" style={{ color: C.forest, fontWeight: 600, textDecoration: 'none' }}>
+          Sign in
+        </Link>
+      </p>
     </div>
   )
 }

@@ -1,35 +1,103 @@
-import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { getClerkToken } from '@/lib/supabase/get-clerk-token'
-import { getSupabaseUserClient } from '@/lib/supabase/client-user'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import DashboardClient from './DashboardClient'
 import type { MessageRow } from './actions'
+import { getDemoCoupleData } from './actions'
 
 type ConvoRow = {
   id: string
   guest_phone_hash: string
+  guest_phone: string | null
+  guest_name: string | null
   messages: {
     id: string
     body: string
     classified_as: string | null
     was_sent: boolean
+    status: string | null
+    ai_confidence: number | null
     created_at: string
     direction: string
     replied_to_message_id: string | null
   }[] | null
 }
 
-export default async function DashboardPage() {
-  const user = await currentUser()
+async function getUser() {
+  const cookieStore = await cookies()
+  
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet: { name: string; value: string; options: any }[]) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options)
+            })
+          } catch {
+            // Ignore errors from Server Components
+          }
+        },
+      },
+    }
+  )
+
+  const { data: { user }, error } = await supabase.auth.getUser()
+  return user
+}
+
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ demo?: string }>
+}) {
+  const params = await searchParams
+  const isDemo = params.demo === 'true'
+  
+  // If demo mode, load demo couple data
+  if (isDemo) {
+    const demoData = await getDemoCoupleData()
+    if (demoData) {
+      const messages = demoData.messages
+      const needsReply = messages.filter(
+        (m) => m.direction === 'inbound' && m.classified_as === 'escalated'
+      )
+      const stats = {
+        totalMessages: messages.filter((m) => m.direction === 'inbound').length,
+        needsReply: needsReply.length,
+      }
+      return (
+        <DashboardClient
+          couple={demoData.couple}
+          profile={demoData.profile}
+          phoneNumber={demoData.phoneNumber}
+          initialMessages={messages}
+          stats={stats}
+          isDemo={true}
+        />
+      )
+    }
+  }
+  
+  const user = await getUser()
   if (!user) redirect('/sign-in')
 
-  const token = await getClerkToken()
-  const supabase = getSupabaseUserClient(token)
+  // Create service role client for database queries
+  const { createClient } = await import('@supabase/supabase-js')
+  const serviceClient = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 
-  const { data: couple } = await supabase
+  const { data: couple } = await serviceClient
     .from('couples')
     .select('id, email, your_name, partner_name, partner_email')
-    .eq('clerk_user_id', user.id)
+    .eq('auth_user_id', user.id)
     .maybeSingle()
 
   if (!couple) redirect('/onboarding')
@@ -37,29 +105,32 @@ export default async function DashboardPage() {
   const coupleId = couple.id as string
 
   const [profileRes, phoneRes, convosRes] = await Promise.all([
-    supabase
+    serviceClient
       .from('wedding_profiles')
       .select(
         'id, venue_name, venue_address, wedding_date, ceremony_time, reception_time, dress_code, registry_links, hotel_block, parking_info, tone, vibe_word, sample_message, readiness_score, is_active',
       )
       .eq('couple_id', coupleId)
       .maybeSingle(),
-    supabase
+    serviceClient
       .from('phone_numbers')
       .select('twilio_number')
       .eq('couple_id', coupleId)
       .eq('status', 'active')
       .maybeSingle(),
-    supabase
+    serviceClient
       .from('conversations')
       .select(`
         id,
         guest_phone_hash,
+        guest_phone,
+        guest_name,
         messages (
           id,
           body,
           classified_as,
           was_sent,
+          ai_confidence,
           created_at,
           direction,
           replied_to_message_id
@@ -73,6 +144,8 @@ export default async function DashboardPage() {
       (convo.messages ?? []).map((msg) => ({
         ...msg,
         guest_phone_hash: convo.guest_phone_hash,
+        guest_phone: convo.guest_phone,
+        guest_name: convo.guest_name,
         conversation_id: convo.id,
       })),
   )
@@ -132,6 +205,7 @@ export default async function DashboardPage() {
       phoneNumber={(phoneRes.data?.twilio_number as string | null) ?? null}
       initialMessages={messages}
       stats={{ totalMessages, needsReply }}
+      isDemo={false}
     />
   )
 }

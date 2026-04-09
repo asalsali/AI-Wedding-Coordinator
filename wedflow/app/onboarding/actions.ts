@@ -1,30 +1,71 @@
 'use server'
 
-import { getClerkToken } from '@/lib/supabase/get-clerk-token'
-import { getSupabaseUserClient } from '@/lib/supabase/client-user'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import type { ToneStyle } from '@/types'
+
+// Helper to get service role client (for database operations)
+async function getServiceClient() {
+  const { createClient } = await import('@supabase/supabase-js')
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
+
+// Helper to get authenticated user from SSR cookies
+async function getCurrentUser() {
+  const cookieStore = await cookies()
+  
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet: { name: string; value: string; options: any }[]) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options)
+            })
+          } catch {
+            // Ignore errors from Server Components
+          }
+        },
+      },
+    }
+  )
+
+  const { data: { user }, error } = await supabase.auth.getUser()
+  if (error) {
+    console.error('Auth error:', error.message)
+  }
+  return user
+}
 
 // ----------------------------------------------------------------
 // Step 1 — Welcome: upsert couple row + create profile if missing
 // ----------------------------------------------------------------
 export async function saveOnboardingStep1(data: {
-  clerkUserId: string
+  authUserId: string
   email: string
   yourName: string
   partnerName: string
 }): Promise<{ coupleId: string; profileId: string }> {
-  const supabase = getSupabaseUserClient(await getClerkToken())
+  const supabase = await getServiceClient()
 
   const { data: couple, error: coupleError } = await supabase
     .from('couples')
     .upsert(
       {
-        clerk_user_id: data.clerkUserId,
+        auth_user_id: data.authUserId,
         email: data.email,
         your_name: data.yourName,
         partner_name: data.partnerName,
       },
-      { onConflict: 'clerk_user_id' },
+      { onConflict: 'auth_user_id' },
     )
     .select('id')
     .single()
@@ -69,7 +110,10 @@ export async function saveOnboardingStep2(data: {
   receptionTime: string // "HH:MM"
   parkingInfo: string
 }): Promise<void> {
-  const supabase = getSupabaseUserClient(await getClerkToken())
+  const user = await getCurrentUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const supabase = await getServiceClient()
 
   const { error } = await supabase
     .from('wedding_profiles')
@@ -95,7 +139,10 @@ export async function saveOnboardingStep3(data: {
   registryLinks: string[]
   hotelBlock: string
 }): Promise<void> {
-  const supabase = getSupabaseUserClient(await getClerkToken())
+  const user = await getCurrentUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const supabase = await getServiceClient()
 
   const { error } = await supabase
     .from('wedding_profiles')
@@ -118,7 +165,10 @@ export async function saveOnboardingStep4(data: {
   vibeWord: string
   sampleMessage: string
 }): Promise<void> {
-  const supabase = getSupabaseUserClient(await getClerkToken())
+  const user = await getCurrentUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const supabase = await getServiceClient()
 
   const { error } = await supabase
     .from('wedding_profiles')
@@ -139,7 +189,10 @@ export async function saveOnboardingStep5(data: {
   coupleId: string
   faqs: Array<{ question: string; answer: string; display_order: number }>
 }): Promise<void> {
-  const supabase = getSupabaseUserClient(await getClerkToken())
+  const user = await getCurrentUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const supabase = await getServiceClient()
 
   const { error: deleteError } = await supabase
     .from('faqs')
@@ -170,7 +223,10 @@ export async function saveOnboardingStep6(data: {
   coupleId: string
   readinessScore: number
 }): Promise<void> {
-  const supabase = getSupabaseUserClient(await getClerkToken())
+  const user = await getCurrentUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const supabase = await getServiceClient()
 
   const { error } = await supabase
     .from('wedding_profiles')
@@ -187,7 +243,10 @@ export async function saveOnboardingStep7(data: {
   coupleId: string
   partnerEmail: string
 }): Promise<void> {
-  const supabase = getSupabaseUserClient(await getClerkToken())
+  const user = await getCurrentUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const supabase = await getServiceClient()
 
   const [coupleRes, profileRes] = await Promise.all([
     supabase
@@ -207,7 +266,7 @@ export async function saveOnboardingStep7(data: {
 // ----------------------------------------------------------------
 // Load existing onboarding data (resume support)
 // ----------------------------------------------------------------
-export async function getOnboardingData(clerkUserId: string): Promise<{
+export async function getOnboardingData(authUserId: string): Promise<{
   coupleId: string
   yourName: string
   partnerName: string
@@ -227,12 +286,12 @@ export async function getOnboardingData(clerkUserId: string): Promise<{
   } | null
   faqs: Array<{ question: string; answer: string }>
 } | null> {
-  const supabase = getSupabaseUserClient(await getClerkToken())
+  const supabase = await getServiceClient()
 
   const { data: couple } = await supabase
     .from('couples')
     .select('id, your_name, partner_name')
-    .eq('clerk_user_id', clerkUserId)
+    .eq('auth_user_id', authUserId)
     .maybeSingle()
 
   if (!couple) return null

@@ -10,13 +10,14 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.79.0",
-    "@clerk/nextjs": "^7.0.5",
     "@stripe/stripe-js": "^8.11.0",
+    "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.99.2",
     "inngest": "^4.0.0",
     "next": "^16.2.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "resend": "^6.10.0",
     "stripe": "^20.4.1",
     "twilio": "^5.13.0",
     "zod": "^4.3.6"

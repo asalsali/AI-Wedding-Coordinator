@@ -1,6 +1,9 @@
 'use client'
 
 import { useState, useEffect, useTransition } from 'react'
+import { createBrowserClient } from '@supabase/ssr'
+import type { User } from '@supabase/supabase-js'
+import { useRouter } from 'next/navigation'
 
 const C = {
   forest: '#1C3B2B',
@@ -8,8 +11,6 @@ const C = {
   terracotta: '#C4714A',
   text: '#1A1A1A',
 }
-import { useUser } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
 import type { ToneStyle } from '@/types'
 import {
   saveOnboardingStep1,
@@ -184,9 +185,16 @@ function NavButtons({
 // ----------------------------------------------------------------
 
 export default function OnboardingPage() {
-  const { user, isLoaded } = useUser()
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Initialize Supabase client
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   const [step, setStep] = useState(1)
   const [coupleId, setCoupleId] = useState<string | null>(null)
@@ -205,35 +213,43 @@ export default function OnboardingPage() {
 
   // Load existing progress on mount (resume support)
   useEffect(() => {
-    if (!isLoaded || !user) return
-    getOnboardingData(user.id).then((existing) => {
-      if (!existing) return
-      setCoupleId(existing.coupleId)
-      setFormData((prev) => ({
-        ...prev,
-        yourName: existing.yourName || prev.yourName,
-        partnerName: existing.partnerName || prev.partnerName,
-        ...(existing.profile && {
-          venueName: existing.profile.venueName,
-          venueAddress: existing.profile.venueAddress,
-          weddingDate: existing.profile.weddingDate,
-          ceremonyTime: existing.profile.ceremonyTime,
-          receptionTime: existing.profile.receptionTime,
-          parkingInfo: existing.profile.parkingInfo,
-          dressCode: existing.profile.dressCode,
-          registryLinks:
-            existing.profile.registryLinks.length > 0
-              ? existing.profile.registryLinks
-              : [''],
-          hotelBlock: existing.profile.hotelBlock,
-          tone: existing.profile.tone,
-          vibeWord: existing.profile.vibeWord,
-          sampleMessage: existing.profile.sampleMessage,
-        }),
-        ...(existing.faqs.length > 0 && { faqs: existing.faqs }),
-      }))
+    // Get current user from Supabase
+    supabase.auth.getUser().then(({ data: { user: currentUser } }) => {
+      setUser(currentUser)
+      setIsLoading(false)
+      if (!currentUser) {
+        router.push('/sign-in')
+        return
+      }
+      getOnboardingData(currentUser.id).then((existing) => {
+        if (!existing) return
+        setCoupleId(existing.coupleId)
+        setFormData((prev) => ({
+          ...prev,
+          yourName: existing.yourName || prev.yourName,
+          partnerName: existing.partnerName || prev.partnerName,
+          ...(existing.profile && {
+            venueName: existing.profile.venueName,
+            venueAddress: existing.profile.venueAddress,
+            weddingDate: existing.profile.weddingDate,
+            ceremonyTime: existing.profile.ceremonyTime,
+            receptionTime: existing.profile.receptionTime,
+            parkingInfo: existing.profile.parkingInfo,
+            dressCode: existing.profile.dressCode,
+            registryLinks:
+              existing.profile.registryLinks.length > 0
+                ? existing.profile.registryLinks
+                : [''],
+            hotelBlock: existing.profile.hotelBlock,
+            tone: existing.profile.tone,
+            vibeWord: existing.profile.vibeWord,
+            sampleMessage: existing.profile.sampleMessage,
+          }),
+          ...(existing.faqs.length > 0 && { faqs: existing.faqs }),
+        }))
+      })
     })
-  }, [isLoaded, user])
+  }, [router])
 
   // Trigger number provisioning when the couple reaches Step 7
   useEffect(() => {
@@ -278,8 +294,8 @@ export default function OnboardingPage() {
     if (!user) return
     withSave(async () => {
       const result = await saveOnboardingStep1({
-        clerkUserId: user.id,
-        email: user.primaryEmailAddress?.emailAddress ?? '',
+        authUserId: user.id,
+        email: user.email ?? '',
         yourName: formData.yourName,
         partnerName: formData.partnerName,
       })
@@ -354,7 +370,7 @@ export default function OnboardingPage() {
     if (!coupleId) return
     withSave(async () => {
       await saveOnboardingStep7({ coupleId, partnerEmail })
-      router.push('/dashboard')
+      router.push('/pricing')
     })
   }
 
@@ -364,10 +380,27 @@ export default function OnboardingPage() {
   const labelClass = 'block text-sm font-medium text-stone-700 mb-1.5'
   const textareaClass = `${inputClass} resize-none`
 
-  if (!isLoaded) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.cream }}>
         <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: `${C.forest} transparent transparent transparent` }} />
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.cream }}>
+        <div className="text-center">
+          <p className="text-stone-600 mb-4">Please sign in to continue</p>
+          <button
+            onClick={() => router.push('/sign-in')}
+            className="px-6 py-2 text-white text-sm font-medium rounded-full transition-colors hover:opacity-90"
+            style={{ backgroundColor: C.forest }}
+          >
+            Sign In
+          </button>
+        </div>
       </div>
     )
   }

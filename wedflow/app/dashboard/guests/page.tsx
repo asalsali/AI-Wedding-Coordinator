@@ -1,8 +1,9 @@
+import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createClient } from '@supabase/supabase-js'
 import { createServerClient } from '@supabase/ssr'
-import { PLANS } from '@/lib/stripe/plans'
-import PricingClient from './PricingClient'
+import GuestListClient from './GuestListClient'
+import type { Guest } from '@/types'
 
 // ----------------------------------------------------------------
 // Supabase server helpers
@@ -37,23 +38,42 @@ async function getAuthedUserId(): Promise<string | null> {
   return user.id
 }
 
-export default async function PricingPage() {
+export default async function GuestListPage() {
   const userId = await getAuthedUserId()
+  if (!userId) redirect('/sign-in')
 
-  let currentPlan: string | null = null
+  const serviceClient = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: { autoRefreshToken: false, persistSession: false },
+    }
+  )
 
-  if (userId) {
-    const serviceClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
-    const { data: couple } = await serviceClient
-      .from('couples')
-      .select('plan')
-      .eq('auth_user_id', userId)
-      .maybeSingle()
-    currentPlan = (couple?.plan as string | null) ?? null
+  const { data: couple } = await serviceClient
+    .from('couples')
+    .select('id, your_name, partner_name')
+    .eq('auth_user_id', userId)
+    .maybeSingle()
+
+  if (!couple) redirect('/onboarding')
+
+  const coupleId = couple.id as string
+
+  const { data: guests, error } = await serviceClient
+    .from('guests')
+    .select('*')
+    .eq('couple_id', coupleId)
+    .order('name')
+
+  if (error) {
+    console.error('Failed to load guests:', error)
   }
 
-  return <PricingClient plans={PLANS} currentPlan={currentPlan} />
+  return (
+    <GuestListClient
+      coupleName={[couple.your_name, couple.partner_name].filter(Boolean).join(' & ') || 'Your Wedding'}
+      initialGuests={(guests ?? []) as Guest[]}
+    />
+  )
 }

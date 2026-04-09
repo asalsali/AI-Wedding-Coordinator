@@ -5,7 +5,7 @@
 // purchase numbers.
 
 import { getTwilioClient } from './client'
-import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 const WEBHOOK_URL = 'https://wedflow-theta.vercel.app/api/webhooks/twilio'
 
@@ -37,7 +37,7 @@ export function formatPhoneNumber(e164: string): string {
  */
 export async function provisionWeddingNumber(coupleId: string): Promise<string> {
   const client = getTwilioClient()
-  const supabase = getSupabaseServerClient()
+  const supabase = await createClient()
 
   // 1. Find an available Canadian local number with SMS capability
   const available = await client.availablePhoneNumbers('CA').local.list({

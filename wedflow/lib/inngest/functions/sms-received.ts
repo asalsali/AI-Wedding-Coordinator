@@ -61,7 +61,7 @@ const FaqRowSchema = z.object({
 async function fetchWeddingProfile(
   coupleId: string
 ): Promise<WeddingProfile | null> {
-  const supabase = getSupabaseServerClient();
+  const supabase = await getSupabaseServerClient();
 
   const { data: profileRow, error: profileError } = await supabase
     .from("wedding_profiles")
@@ -136,7 +136,7 @@ export const smsReceived = inngest.createFunction(
       });
 
       await step.run("persist-escalation", async () => {
-        const supabase = getSupabaseServerClient();
+        const supabase = await getSupabaseServerClient();
         const now = new Date().toISOString();
 
         // Update inbound message with classification and escalation timestamp
@@ -182,7 +182,7 @@ export const smsReceived = inngest.createFunction(
       });
 
       await step.run("persist-safety-escalation", async () => {
-        const supabase = getSupabaseServerClient();
+        const supabase = await getSupabaseServerClient();
         const now = new Date().toISOString();
 
         await supabase
@@ -234,7 +234,7 @@ export const smsReceived = inngest.createFunction(
 
     // Step 6: Persist outbound message and mark inbound as classified
     await step.run("persist-outbound", async () => {
-      const supabase = getSupabaseServerClient();
+      const supabase = await getSupabaseServerClient();
       const now = new Date().toISOString();
 
       await supabase

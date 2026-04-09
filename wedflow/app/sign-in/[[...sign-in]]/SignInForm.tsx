@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useSignIn, useClerk } from '@clerk/nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -65,20 +65,11 @@ const labelStyle: React.CSSProperties = {
   marginBottom: '6px',
 }
 
-function extractClerkError(err: unknown, fallback: string): string {
-  if (err && typeof err === 'object' && 'errors' in err) {
-    const clerkErr = err as { errors: Array<{ message: string }> }
-    return clerkErr.errors[0]?.message ?? fallback
-  }
-  return fallback
-}
-
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function SignInForm() {
-  const { signIn, fetchStatus } = useSignIn()
-  const { setActive } = useClerk()
   const router = useRouter()
+  const supabase = createClient()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -86,36 +77,47 @@ export default function SignInForm() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const isReady = fetchStatus === 'idle' && signIn !== undefined
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!signIn) return
     setError('')
     setLoading(true)
+    
     try {
-      await signIn.password({ identifier: email, password })
-      if (signIn.status === 'complete' && signIn.createdSessionId) {
-        await setActive({ session: signIn.createdSessionId })
-        router.push('/dashboard')
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      
+      if (signInError) {
+        setError(signInError.message)
+        return
       }
-    } catch (err: unknown) {
-      setError(extractClerkError(err, 'Sign in failed. Please try again.'))
+      
+      if (data.session) {
+        router.push('/dashboard')
+        router.refresh()
+      }
+    } catch (err) {
+      setError('Sign in failed. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
   const handleGoogle = async () => {
-    if (!signIn) return
     try {
-      await signIn.sso({
-        strategy: 'oauth_google',
-        redirectUrl: '/dashboard',
-        redirectCallbackUrl: '/sign-in/sso-callback',
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
       })
-    } catch (err: unknown) {
-      setError(extractClerkError(err, 'Google sign in failed.'))
+      
+      if (oauthError) {
+        setError(oauthError.message)
+      }
+    } catch (err) {
+      setError('Google sign in failed.')
     }
   }
 
@@ -135,7 +137,7 @@ export default function SignInForm() {
       <button
         type="button"
         onClick={handleGoogle}
-        disabled={!isReady || loading}
+        disabled={loading}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -149,7 +151,7 @@ export default function SignInForm() {
           color: C.text,
           fontSize: '14px',
           fontWeight: 500,
-          cursor: isReady && !loading ? 'pointer' : 'not-allowed',
+          cursor: loading ? 'not-allowed' : 'pointer',
           marginBottom: '20px',
         }}
       >
@@ -219,7 +221,7 @@ export default function SignInForm() {
 
         <button
           type="submit"
-          disabled={!isReady || loading}
+          disabled={loading}
           style={{
             width: '100%',
             padding: '14px',
@@ -229,7 +231,7 @@ export default function SignInForm() {
             color: '#ffffff',
             fontSize: '14px',
             fontWeight: 600,
-            cursor: isReady && !loading ? 'pointer' : 'not-allowed',
+            cursor: loading ? 'not-allowed' : 'pointer',
             opacity: loading ? 0.75 : 1,
             marginTop: '4px',
           }}

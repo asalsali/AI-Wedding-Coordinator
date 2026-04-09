@@ -1,11 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { currentUser } from '@clerk/nextjs/server'
+import { cookies } from 'next/headers'
+import { createClient } from '@supabase/supabase-js'
+import { createServerClient } from '@supabase/ssr'
 import { getStripe } from '@/lib/stripe/client'
-import { getSupabaseServerClient } from '@/lib/supabase/server'
+
+// ----------------------------------------------------------------
+// Supabase server helpers
+// ----------------------------------------------------------------
+
+async function getAuthedUserId(): Promise<string | null> {
+  const cookieStore = await cookies()
+  
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet: { name: string; value: string; options: any }[]) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options)
+            })
+          } catch {
+            // Ignore errors from Server Components
+          }
+        },
+      },
+    }
+  )
+  
+  const { data: { user }, error } = await supabase.auth.getUser()
+  if (error || !user) return null
+  return user.id
+}
 
 export async function POST(req: NextRequest) {
-  const user = await currentUser()
-  if (!user) {
+  const userId = await getAuthedUserId()
+  if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -20,32 +54,45 @@ export async function POST(req: NextRequest) {
   }
   const { priceId } = body as { priceId: string }
 
-  const supabase = getSupabaseServerClient()
-  const { data: couple } = await supabase
+  const serviceClient = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+  
+  const { data: user } = await serviceClient
+    .from('users')
+    .select('email')
+    .eq('id', userId)
+    .maybeSingle()
+
+  const { data: couple } = await serviceClient
     .from('couples')
     .select('id')
-    .eq('clerk_user_id', user.id)
+    .eq('auth_user_id', userId)
     .maybeSingle()
 
   if (!couple) {
     return NextResponse.json({ error: 'Couple not found' }, { status: 404 })
   }
 
-  const primaryEmail = user.emailAddresses.find(
-    (e) => e.id === user.primaryEmailAddressId,
-  )?.emailAddress
+  const primaryEmail = user?.email
 
-  const session = await getStripe().checkout.sessions.create({
-    mode: 'subscription',
-    line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${req.nextUrl.origin}/onboarding?checkout=success`,
-    cancel_url: `${req.nextUrl.origin}/pricing`,
-    ...(primaryEmail ? { customer_email: primaryEmail } : {}),
-    metadata: {
-      coupleId: couple.id as string,
-      clerkUserId: user.id,
-    },
-  })
+  try {
+    const session = await getStripe().checkout.sessions.create({
+      mode: 'subscription',
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${req.nextUrl.origin}/dashboard`,
+      cancel_url: `${req.nextUrl.origin}/pricing`,
+      ...(primaryEmail ? { customer_email: primaryEmail } : {}),
+      metadata: {
+        coupleId: couple.id as string,
+        authUserId: userId,
+      },
+    })
 
-  return NextResponse.json({ url: session.url })
+    return NextResponse.json({ url: session.url })
+  } catch (error) {
+    console.error('[stripe-checkout]', error)
+    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 })
+  }
 }
