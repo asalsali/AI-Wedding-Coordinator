@@ -141,10 +141,10 @@ function Nav() {
           <Image
             src="/WedFlowlogo.png"
             alt="Wedflow"
-            width={40}
-            height={40}
+            width={80}
+            height={80}
             className="w-auto"
-            style={{ height: "40px" }}
+            style={{ height: "80px" }}
             priority
           />
           <span
@@ -608,10 +608,10 @@ function Footer() {
           <Image
             src="/WedFlowlogo.png"
             alt="Wedflow"
-            width={32}
-            height={32}
+            width={64}
+            height={64}
             className="w-auto"
-            style={{ height: "32px", filter: "brightness(0) invert(1)" }}
+            style={{ height: "64px" }}
           />
           <span
             className="wf-serif font-semibold text-lg"

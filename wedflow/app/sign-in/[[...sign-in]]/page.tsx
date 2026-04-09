@@ -12,10 +12,10 @@ export default function SignInPage() {
         <Image
           src="/WedFlowlogo.png"
           alt="Wedflow"
-          width={56}
-          height={56}
+          width={120}
+          height={120}
           priority
-          style={{ filter: 'brightness(0) invert(1)', marginBottom: '20px' }}
+          style={{ marginBottom: '8px' }}
         />
         <h1
           className="wf-serif"
@@ -57,9 +57,9 @@ export default function SignInPage() {
           <Image
             src="/WedFlowlogo.png"
             alt="Wedflow"
-            width={40}
-            height={40}
-            style={{ marginBottom: '10px' }}
+            width={80}
+            height={80}
+            style={{ marginBottom: '4px' }}
           />
           <span
             className="wf-serif"
