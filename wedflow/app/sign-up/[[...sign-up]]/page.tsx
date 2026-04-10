@@ -12,8 +12,8 @@ export default function SignUpPage() {
         <Image
           src="/WedFlowlogo.png"
           alt="Wedflow"
-          width={120}
-          height={120}
+          width={56}
+          height={56}
           priority
           style={{ marginBottom: '8px' }}
         />
@@ -57,8 +57,8 @@ export default function SignUpPage() {
           <Image
             src="/WedFlowlogo.png"
             alt="Wedflow"
-            width={80}
-            height={80}
+            width={44}
+            height={44}
             style={{ marginBottom: '4px' }}
           />
           <span

@@ -55,9 +55,9 @@ export default function PricingClient({ plans, currentPlan }: Props) {
           <Image
             src="/WedFlowlogo.png"
             alt="Wedflow"
-            width={80}
-            height={80}
-            style={{ height: '80px', width: 'auto' }}
+            width={40}
+            height={40}
+            style={{ height: '40px', width: 'auto' }}
             priority
           />
           <span
