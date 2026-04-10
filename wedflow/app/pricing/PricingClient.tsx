@@ -53,7 +53,7 @@ export default function PricingClient({ plans, currentPlan }: Props) {
       <div className="max-w-5xl mx-auto mb-16">
         <Link href="/" className="flex items-center gap-2.5 w-fit">
           <Image
-            src="/WedFlowlogo.png"
+            src="/LogoLight.png"
             alt="Wedflow"
             width={40}
             height={40}

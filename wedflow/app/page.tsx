@@ -139,7 +139,7 @@ function Nav() {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <Image
-            src="/WedFlowlogo.png"
+            src="/LogoLight.png"
             alt="Wedflow"
             width={40}
             height={40}
@@ -606,7 +606,7 @@ function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex flex-col sm:flex-row items-center gap-6">
           <Image
-            src="/WedFlowlogo.png"
+            src="/LogoDark.png"
             alt="Wedflow"
             width={36}
             height={36}
