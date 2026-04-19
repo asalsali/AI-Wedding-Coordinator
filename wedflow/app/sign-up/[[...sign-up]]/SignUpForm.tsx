@@ -1,22 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-const C = {
-  forest: '#1C3B2B',
-  cream: '#FDFBF7',
-  terracotta: '#C4714A',
-  text: '#1A1A1A',
-} as const
+const supabase = createClient()
 
-// ─── Icons ────────────────────────────────────────────────────────────────────
+function friendlyError(msg: string): string {
+  if (msg.includes('User already registered')) return 'An account with this email already exists. Try signing in.'
+  if (msg.includes('Password should be')) return 'Password must be at least 6 characters.'
+  if (msg.includes('Unable to validate email')) return 'Please enter a valid email address.'
+  if (msg.includes('Too many requests')) return 'Too many attempts. Please wait a moment and try again.'
+  return msg
+}
 
 function EyeOpenIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
@@ -25,7 +26,7 @@ function EyeOpenIcon() {
 
 function EyeClosedIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
       <line x1="1" y1="1" x2="23" y2="23" />
     </svg>
@@ -43,36 +44,16 @@ function GoogleIcon() {
   )
 }
 
-// ─── Shared styles ────────────────────────────────────────────────────────────
-
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  padding: '12px',
-  borderRadius: '8px',
-  border: '1px solid #e5e7eb',
-  backgroundColor: '#ffffff',
-  color: '#1A1A1A',
-  fontSize: '14px',
-  outline: 'none',
-  boxSizing: 'border-box',
+function CheckIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  )
 }
-
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  color: '#1A1A1A',
-  fontSize: '14px',
-  fontWeight: 500,
-  marginBottom: '6px',
-}
-
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function SignUpForm() {
   const router = useRouter()
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -80,46 +61,44 @@ export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+  const [checkEmail, setCheckEmail] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    
+
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError('Passwords do not match.')
       return
     }
-    
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+      setError('Password must be at least 6 characters.')
       return
     }
-    
+
     setLoading(true)
-    
     try {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
+        options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin}/auth/callback` },
       })
-      
+
       if (signUpError) {
-        setError(signUpError.message)
+        setError(friendlyError(signUpError.message))
         return
       }
-      
+
       if (data.session) {
-        // User is signed in, go to onboarding
-        router.push('/onboarding')
+        // Email confirmation disabled — signed in immediately
         router.refresh()
+        router.push('/onboarding')
       } else {
         // Email confirmation required
-        setError('Please check your email to confirm your account.')
+        setCheckEmail(true)
       }
-    } catch (err) {
+    } catch {
       setError('Sign up failed. Please try again.')
     } finally {
       setLoading(false)
@@ -127,160 +106,133 @@ export default function SignUpForm() {
   }
 
   const handleGoogle = async () => {
+    if (googleLoading) return
+    setError('')
+    setGoogleLoading(true)
     try {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${appUrl}/auth/callback`,
+          queryParams: { access_type: 'offline', prompt: 'consent' },
         },
       })
-      
-      if (oauthError) {
-        setError(oauthError.message)
-      }
-    } catch (err) {
-      setError('Google sign up failed.')
+      if (oauthError) setError(friendlyError(oauthError.message))
+    } catch {
+      setError('Google sign up failed. Please try again.')
+    } finally {
+      setGoogleLoading(false)
     }
   }
 
+  if (checkEmail) {
+    return (
+      <div style={{ width: '100%', maxWidth: 420, textAlign: 'center' }}>
+        <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--wf-forest)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: 'var(--wf-cream)' }}>
+          <CheckIcon />
+        </div>
+        <h1 className="wf-serif" style={{ fontSize: 32, color: 'var(--wf-forest)', margin: '0 0 12px', fontWeight: 600, letterSpacing: '-0.02em' }}>
+          Check your inbox.
+        </h1>
+        <p className="wf-sans" style={{ fontSize: 15, color: 'var(--wf-ink-60)', lineHeight: 1.6, marginBottom: 32 }}>
+          We sent a confirmation link to <strong style={{ color: 'var(--wf-ink)' }}>{email}</strong>. Click it to activate your account and get started.
+        </p>
+        <p className="wf-sans" style={{ fontSize: 13, color: 'var(--wf-ink-45)' }}>
+          Wrong email?{' '}
+          <button onClick={() => setCheckEmail(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-forest)', fontWeight: 600, fontSize: 13, padding: 0, fontFamily: 'var(--wf-sans)' }}>
+            Go back
+          </button>
+        </p>
+      </div>
+    )
+  }
+
   return (
-    <div style={{ width: '100%', maxWidth: '400px' }}>
-      <h2
-        className="wf-serif"
-        style={{ color: C.forest, fontSize: '28px', fontWeight: 700, marginBottom: '8px' }}
-      >
-        Create your account
-      </h2>
-      <p style={{ color: 'rgba(26,26,26,0.55)', fontSize: '14px', marginBottom: '28px' }}>
-        Start managing your wedding with Wedflow.
+    <div style={{ width: '100%', maxWidth: 420 }}>
+      <h1 className="wf-serif" style={{ fontSize: 40, color: 'var(--wf-forest)', margin: '0 0 10px', fontWeight: 600, letterSpacing: '-0.02em' }}>
+        Begin <em style={{ fontWeight: 500 }}>your journey.</em>
+      </h1>
+      <p className="wf-sans" style={{ fontSize: 15, color: 'var(--wf-ink-60)', marginBottom: 32 }}>
+        Create your concierge account.
       </p>
 
-      {/* Google */}
-      <button
-        type="button"
-        onClick={handleGoogle}
-        disabled={loading}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '10px',
-          width: '100%',
-          padding: '14px',
-          borderRadius: '24px',
-          border: '1px solid #e5e7eb',
-          backgroundColor: '#ffffff',
-          color: C.text,
-          fontSize: '14px',
-          fontWeight: 500,
-          cursor: loading ? 'not-allowed' : 'pointer',
-          marginBottom: '20px',
-        }}
-      >
-        <GoogleIcon />
-        Continue with Google
+      <button type="button" onClick={handleGoogle} disabled={loading || googleLoading} className="wf-btn wf-btn-light wf-btn-lg" style={{ width: '100%', justifyContent: 'center', marginBottom: 20 }}>
+        <GoogleIcon /> Continue with Google
       </button>
 
-      {/* Divider */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-        <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }} />
-        <span style={{ color: 'rgba(26,26,26,0.4)', fontSize: '13px' }}>or</span>
-        <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, margin: '22px 0' }}>
+        <span style={{ flex: 1, height: 1, background: 'var(--wf-line)' }} />
+        <span className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-ink-45)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>or with email</span>
+        <span style={{ flex: 1, height: 1, background: 'var(--wf-line)' }} />
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        <div>
-          <label htmlFor="signup-email" style={labelStyle}>Email address</label>
-          <input
-            id="signup-email"
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-            style={inputStyle}
-          />
-        </div>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <AuthField label="Email address" id="signup-email">
+          <input id="signup-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" className="wf-sans" style={fieldInputStyle} onFocus={focusStyle} onBlur={blurStyle} />
+        </AuthField>
 
-        <div>
-          <label htmlFor="signup-password" style={labelStyle}>Password</label>
+        <AuthField label="Password" id="signup-password">
           <div style={{ position: 'relative' }}>
-            <input
-              id="signup-password"
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              autoComplete="new-password"
-              style={{ ...inputStyle, paddingRight: '44px' }}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(v => !v)}
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
-              style={{
-                position: 'absolute',
-                right: '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: 'rgba(26,26,26,0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                padding: 0,
-              }}
-            >
+            <input id="signup-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="new-password" className="wf-sans" style={{ ...fieldInputStyle, paddingRight: 44 }} onFocus={focusStyle} onBlur={blurStyle} />
+            <button type="button" onClick={() => setShowPassword((v) => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', display: 'flex', alignItems: 'center', padding: 4 }}>
               {showPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
             </button>
           </div>
-        </div>
+        </AuthField>
 
-        <div>
-          <label htmlFor="signup-confirm" style={labelStyle}>Confirm password</label>
-          <input
-            id="signup-confirm"
-            type="password"
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
-            required
-            autoComplete="new-password"
-            style={inputStyle}
-          />
-        </div>
+        <AuthField label="Confirm password" id="signup-confirm">
+          <input id="signup-confirm" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required autoComplete="new-password" className="wf-sans" style={fieldInputStyle} onFocus={focusStyle} onBlur={blurStyle} />
+        </AuthField>
 
         {error && (
-          <p style={{ color: '#dc2626', fontSize: '13px', margin: 0 }}>{error}</p>
+          <p className="wf-sans" style={{ color: 'var(--wf-rose)', fontSize: 13, margin: 0 }}>{error}</p>
         )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            padding: '14px',
-            borderRadius: '24px',
-            border: 'none',
-            backgroundColor: C.terracotta,
-            color: '#ffffff',
-            fontSize: '14px',
-            fontWeight: 600,
-            cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.75 : 1,
-            marginTop: '4px',
-          }}
-        >
-          {loading ? 'Creating account…' : 'Create account'}
+        <button type="submit" disabled={loading} className="wf-btn wf-btn-primary wf-btn-lg" style={{ width: '100%', justifyContent: 'center', marginTop: 10 }}>
+          {loading ? 'Creating account…' : 'Create account →'}
         </button>
       </form>
 
-      <p style={{ color: 'rgba(26,26,26,0.55)', fontSize: '14px', textAlign: 'center', marginTop: '24px' }}>
+      <p className="wf-sans" style={{ textAlign: 'center', marginTop: 28, fontSize: 13, color: 'var(--wf-ink-60)' }}>
         Already have an account?{' '}
-        <Link href="/sign-in" style={{ color: C.forest, fontWeight: 600, textDecoration: 'none' }}>
-          Sign in
-        </Link>
+        <Link href="/sign-in" style={{ color: 'var(--wf-forest)', fontWeight: 600, textDecoration: 'none' }}>Sign in</Link>
       </p>
     </div>
   )
+}
+
+function AuthField({ label, id, children }: { label: string; id: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label htmlFor={id} className="wf-sans" style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--wf-forest)', marginBottom: 6, letterSpacing: '0.02em' }}>
+        {label}
+      </label>
+      {children}
+    </div>
+  )
+}
+
+const fieldInputStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '12px 16px',
+  border: '1px solid var(--wf-line-strong)',
+  borderRadius: 10,
+  background: 'var(--wf-paper)',
+  fontFamily: 'var(--wf-sans)',
+  fontSize: 14,
+  color: 'var(--wf-ink)',
+  outline: 'none',
+  transition: 'border-color 0.15s, box-shadow 0.15s',
+  boxSizing: 'border-box',
+}
+
+function focusStyle(e: React.FocusEvent<HTMLInputElement>) {
+  e.currentTarget.style.borderColor = 'var(--wf-forest)'
+  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(28,59,43,0.1)'
+}
+
+function blurStyle(e: React.FocusEvent<HTMLInputElement>) {
+  e.currentTarget.style.borderColor = 'var(--wf-line-strong)'
+  e.currentTarget.style.boxShadow = 'none'
 }
