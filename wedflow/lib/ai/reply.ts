@@ -14,7 +14,7 @@ export async function generateReply(
   try {
     const response = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 100,
+      max_tokens: 300,
       temperature: 0.7,
       system: REPLY_SYSTEM_PROMPT(profile),
       messages: [{ role: "user", content: message }],
