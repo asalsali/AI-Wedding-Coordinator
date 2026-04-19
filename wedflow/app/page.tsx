@@ -5,24 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 
-// ─── Brand constants ──────────────────────────────────────────────────────────
+// ─── Email Capture ─────────────────────────────────────────────────────────────
 
-const C = {
-  forest: "#1C3B2B",
-  cream: "#FDFBF7",
-  terracotta: "#C4714A",
-  text: "#1A1A1A",
-} as const;
-
-// ─── Email Capture ────────────────────────────────────────────────────────────
-
-function EmailCapture({
-  buttonText = "Request Early Access",
-  variant = "light",
-}: {
-  buttonText?: string;
-  variant?: "light" | "dark";
-}) {
+function EmailCapture({ variant = "light" }: { variant?: "light" | "dark" }) {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,15 +35,9 @@ function EmailCapture({
 
   if (submitted) {
     return (
-      <div className="flex items-center gap-3 py-4">
-        <div
-          className="w-2 h-2 rounded-full shrink-0"
-          style={{ backgroundColor: C.terracotta }}
-        />
-        <p
-          className="wf-sans text-sm font-medium"
-          style={{ color: variant === "dark" ? C.cream : C.forest }}
-        >
+      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "16px 0" }}>
+        <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--wf-terracotta)", flexShrink: 0 }} />
+        <p className="wf-sans" style={{ fontSize: 14, fontWeight: 500, color: variant === "dark" ? "var(--wf-cream)" : "var(--wf-forest)" }}>
           You&apos;re on the list. We&apos;ll reach out with next steps.
         </p>
       </div>
@@ -66,11 +45,8 @@ function EmailCapture({
   }
 
   return (
-    <div className="w-full max-w-md">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row gap-3"
-      >
+    <div style={{ maxWidth: 460 }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", gap: 10 }}>
         <input
           type="email"
           value={email}
@@ -78,32 +54,32 @@ function EmailCapture({
           placeholder="your@email.com"
           required
           disabled={isSubmitting}
-          className="flex-1 px-5 py-3.5 rounded-full border text-sm focus:outline-none focus:ring-2 transition-colors wf-sans disabled:opacity-60"
+          className="wf-sans"
           style={{
-            backgroundColor: "#ffffff",
-            borderColor: "rgba(28,59,43,0.2)",
-            color: C.text,
+            flex: 1,
+            padding: "14px 20px",
+            borderRadius: 999,
+            border: "1px solid var(--wf-line-strong)",
+            background: "var(--wf-paper)",
+            fontSize: 14,
+            color: "var(--wf-ink)",
+            outline: "none",
           }}
           onFocus={(e) => {
-            e.currentTarget.style.borderColor = "rgba(28,59,43,0.5)";
-            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(28,59,43,0.08)";
+            e.currentTarget.style.borderColor = "var(--wf-forest)";
+            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(28,59,43,0.1)";
           }}
           onBlur={(e) => {
-            e.currentTarget.style.borderColor = "rgba(28,59,43,0.2)";
+            e.currentTarget.style.borderColor = "var(--wf-line-strong)";
             e.currentTarget.style.boxShadow = "none";
           }}
         />
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-7 py-3.5 rounded-full text-sm font-medium whitespace-nowrap transition-opacity hover:opacity-90 disabled:opacity-60 wf-sans"
-          style={{ backgroundColor: C.terracotta, color: C.cream }}
-        >
-          {isSubmitting ? "Submitting…" : buttonText}
+        <button type="submit" disabled={isSubmitting} className="wf-btn wf-btn-primary wf-btn-lg">
+          {isSubmitting ? "Submitting…" : "Request Early Access"}
         </button>
       </form>
       {errorMsg && (
-        <p className="mt-2 text-xs ml-1 wf-sans" style={{ color: C.terracotta }}>
+        <p className="wf-sans" style={{ fontSize: 12, color: "var(--wf-terracotta)", marginTop: 8, marginLeft: 4 }}>
           {errorMsg}
         </p>
       )}
@@ -111,11 +87,10 @@ function EmailCapture({
   );
 }
 
-// ─── Nav ──────────────────────────────────────────────────────────────────────
+// ─── Nav ───────────────────────────────────────────────────────────────────────
 
 function Nav() {
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const supabase = createClient(
@@ -124,53 +99,38 @@ function Nav() {
     );
     supabase.auth.getUser().then(({ data: { user } }) => {
       setIsSignedIn(!!user);
-      setIsLoading(false);
     });
   }, []);
 
   return (
-    <nav
-      className="sticky top-0 z-50 backdrop-blur-sm"
-      style={{
-        backgroundColor: "rgba(253,251,247,0.96)",
-        borderBottom: "1px solid rgba(28,59,43,0.1)",
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5">
-          <Image
-            src="/LogoLight.png"
-            alt="Wedflow"
-            width={40}
-            height={40}
-            className="w-auto"
-            style={{ height: "40px" }}
-            priority
-          />
-          <span
-            className="wf-serif font-semibold text-xl"
-            style={{ color: C.forest, fontFamily: "var(--newsreader), Georgia, serif" }}
-          >
+    <nav style={{
+      position: "sticky",
+      top: 0,
+      zIndex: 50,
+      background: "rgba(253,251,247,0.88)",
+      backdropFilter: "blur(14px) saturate(1.2)",
+      WebkitBackdropFilter: "blur(14px) saturate(1.2)",
+      borderBottom: "1px solid var(--wf-line)",
+    }}>
+      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "18px 40px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
+          <div style={{ width: 112, height: 112, borderRadius: '22%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Image src="/LogoLight.png" alt="Wedflow" width={180} height={180} style={{ width: 180, height: 180, objectFit: 'contain', flexShrink: 0 }} priority />
+          </div>
+          <span className="wf-serif" style={{ fontSize: 20, fontWeight: 600, color: "var(--wf-forest)", letterSpacing: "-0.01em" }}>
             Wedflow
           </span>
         </Link>
-        <div className="flex items-center gap-6">
+        <div style={{ display: "flex", alignItems: "center", gap: 28, fontSize: 13 }}>
+          <a href="#how-it-works" className="wf-sans" style={{ color: "var(--wf-ink-60)", textDecoration: "none" }}>How it works</a>
+          <a href="#features" className="wf-sans" style={{ color: "var(--wf-ink-60)", textDecoration: "none" }}>Features</a>
           {isSignedIn ? (
-            <Link
-              href="/dashboard"
-              className="px-6 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
-              style={{ backgroundColor: C.forest, color: C.cream }}
-            >
-              Go to Dashboard →
-            </Link>
+            <Link href="/dashboard" className="wf-btn wf-btn-forest">Go to Dashboard →</Link>
           ) : (
-            <Link
-              href="/sign-up"
-              className="px-6 py-2.5 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
-              style={{ backgroundColor: C.terracotta, color: C.cream }}
-            >
-              Begin Your Journey →
-            </Link>
+            <>
+              <Link href="/sign-in" className="wf-sans" style={{ color: "var(--wf-ink-60)", textDecoration: "none" }}>Sign in</Link>
+              <Link href="/sign-up" className="wf-btn wf-btn-primary">Begin Your Journey →</Link>
+            </>
           )}
         </div>
       </div>
@@ -178,317 +138,226 @@ function Nav() {
   );
 }
 
-// ─── Hero ─────────────────────────────────────────────────────────────────────
+// ─── Hero phone mockup ─────────────────────────────────────────────────────────
 
-function HeroIllustration() {
+function HeroPhone() {
   return (
-    <div className="hidden lg:block lg:col-span-5">
-      <div className="relative h-[380px] w-full">
-        {/* Guest bubble 1 — top left */}
-        <div
-          className="absolute top-0 left-0 rounded-2xl rounded-tl-sm px-5 py-3.5 shadow-md max-w-[220px]"
-          style={{
-            backgroundColor: "#ffffff",
-            border: "1px solid rgba(28,59,43,0.09)",
-          }}
-        >
-          <p className="wf-sans text-xs mb-1" style={{ color: "rgba(28,59,43,0.45)", fontSize: "10px", letterSpacing: "0.05em" }}>
-            Sarah M. · 9:14 AM
-          </p>
-          <p className="wf-sans text-sm" style={{ color: C.text }}>
-            What&apos;s the dress code? 👗
-          </p>
+    <div style={{ position: "relative", height: 560 }}>
+      {/* Background tilt card */}
+      <div style={{
+        position: "absolute",
+        inset: "20px 40px",
+        background: "var(--wf-cream-warm)",
+        borderRadius: 32,
+        border: "1px solid var(--wf-line)",
+        transform: "rotate(-1.5deg)",
+      }} />
+      {/* Phone frame */}
+      <div style={{
+        position: "absolute",
+        inset: "0 60px",
+        background: "var(--wf-forest-deep)",
+        borderRadius: 48,
+        padding: 10,
+        boxShadow: "var(--wf-shadow-xl), 0 0 0 1px rgba(28,59,43,0.1)",
+      }}>
+        <div style={{
+          background: "var(--wf-cream)",
+          borderRadius: 40,
+          height: "100%",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}>
+          {/* Status bar */}
+          <div style={{ padding: "14px 24px 10px", fontSize: 11, color: "var(--wf-forest)", display: "flex", justifyContent: "space-between", fontWeight: 600 }}>
+            <span>9:41</span>
+            <span>●●●</span>
+          </div>
+          {/* Contact header */}
+          <div style={{ padding: "10px 24px 14px", borderBottom: "1px solid var(--wf-line)", display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 104, height: 104, borderRadius: 10, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Image src="/LogoLight.png" alt="Wedflow" width={168} height={168} style={{ width: 168, height: 168, objectFit: 'contain', flexShrink: 0 }} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "var(--wf-forest)" }}>Wedflow · Alex &amp; Kirsten</div>
+              <div style={{ fontSize: 10.5, color: "var(--wf-ink-45)" }}>+1 (825) 465-4504</div>
+            </div>
+            <span style={{ display: "flex", gap: 4, alignItems: "center", fontSize: 10, color: "var(--wf-sage)", fontWeight: 500 }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--wf-sage)" }} />
+              Live
+            </span>
+          </div>
+          {/* Messages */}
+          <div style={{ flex: 1, padding: "18px 18px 8px", display: "flex", flexDirection: "column", gap: 12, overflow: "hidden" }}>
+            <div style={{ alignSelf: "flex-start", maxWidth: "78%" }}>
+              <div style={{ fontSize: 10, color: "var(--wf-ink-45)", marginBottom: 4, marginLeft: 10 }}>Sarah · 9:14</div>
+              <div style={{ background: "var(--wf-paper)", border: "1px solid var(--wf-line)", padding: "10px 14px", borderRadius: 16, borderTopLeftRadius: 4, fontSize: 13, color: "var(--wf-ink)", boxShadow: "var(--wf-shadow-sm)" }}>
+                What&apos;s the dress code? 👗
+              </div>
+            </div>
+            <div style={{ alignSelf: "flex-end", maxWidth: "82%" }}>
+              <div style={{ fontSize: 10, color: "var(--wf-ink-45)", marginBottom: 4, textAlign: "right", marginRight: 10 }}>Wedflow · auto-replied</div>
+              <div style={{ background: "var(--wf-forest)", color: "var(--wf-cream)", padding: "10px 14px", borderRadius: 16, borderTopRightRadius: 4, fontSize: 13, boxShadow: "0 4px 12px rgba(28,59,43,0.16)", lineHeight: 1.45 }}>
+                Garden formal — florals and linens very welcome! 🌿
+              </div>
+            </div>
+            <div style={{ alignSelf: "flex-start", maxWidth: "78%" }}>
+              <div style={{ fontSize: 10, color: "var(--wf-ink-45)", marginBottom: 4, marginLeft: 10 }}>James · 9:31</div>
+              <div style={{ background: "var(--wf-paper)", border: "1px solid var(--wf-line)", padding: "10px 14px", borderRadius: 16, borderTopLeftRadius: 4, fontSize: 13, color: "var(--wf-ink)", boxShadow: "var(--wf-shadow-sm)" }}>
+                Is there parking nearby? 🚗
+              </div>
+            </div>
+            <div style={{ alignSelf: "flex-end", maxWidth: "82%" }}>
+              <div style={{ fontSize: 10, color: "var(--wf-ink-45)", marginBottom: 4, textAlign: "right", marginRight: 10 }}>Wedflow · auto-replied</div>
+              <div style={{ background: "var(--wf-forest)", color: "var(--wf-cream)", padding: "10px 14px", borderRadius: 16, borderTopRightRadius: 4, fontSize: 13, boxShadow: "0 4px 12px rgba(28,59,43,0.16)", lineHeight: 1.45 }}>
+                Free parking in Lot C — just east of the main entrance.
+              </div>
+            </div>
+            {/* Sensitive — held */}
+            <div style={{ alignSelf: "flex-start", maxWidth: "82%", marginTop: 4 }}>
+              <div style={{ fontSize: 10, color: "var(--wf-terracotta-deep)", marginBottom: 4, marginLeft: 10, display: "flex", gap: 6, alignItems: "center" }}>
+                🛡 Held for your review
+              </div>
+              <div style={{ background: "var(--wf-cream-warm)", border: "1.5px dashed var(--wf-terracotta-soft)", padding: "10px 14px", borderRadius: 16, borderTopLeftRadius: 4, fontSize: 12.5, color: "var(--wf-ink-60)", fontStyle: "italic", lineHeight: 1.45 }}>
+                &ldquo;Actually, I don&apos;t know how to say this but…&rdquo;
+              </div>
+            </div>
+          </div>
+          {/* Compose bar */}
+          <div style={{ padding: "10px 14px 14px", borderTop: "1px solid var(--wf-line)" }}>
+            <div style={{ background: "var(--wf-cream-warm)", borderRadius: 999, padding: "9px 16px", fontSize: 12, color: "var(--wf-ink-45)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              iMessage
+              <span>↗</span>
+            </div>
+          </div>
         </div>
-
-        {/* Wedflow reply — middle right */}
-        <div
-          className="absolute top-16 right-0 rounded-2xl rounded-tr-sm px-5 py-3.5 shadow-md max-w-[230px]"
-          style={{ backgroundColor: C.forest }}
-        >
-          <p
-            className="wf-sans text-xs mb-1"
-            style={{ color: "rgba(253,251,247,0.5)", fontSize: "10px", letterSpacing: "0.05em" }}
-          >
-            Wedflow · just now
-          </p>
-          <p className="wf-sans text-sm leading-relaxed" style={{ color: C.cream }}>
-            Garden formal — florals and linens are very welcome! 🌸
-          </p>
-        </div>
-
-        {/* Guest bubble 2 — bottom left */}
-        <div
-          className="absolute bottom-12 left-6 rounded-2xl rounded-bl-sm px-5 py-3.5 shadow-md max-w-[210px]"
-          style={{
-            backgroundColor: "#ffffff",
-            border: "1px solid rgba(28,59,43,0.09)",
-          }}
-        >
-          <p className="wf-sans text-xs mb-1" style={{ color: "rgba(28,59,43,0.45)", fontSize: "10px", letterSpacing: "0.05em" }}>
-            James K. · 9:31 AM
-          </p>
-          <p className="wf-sans text-sm" style={{ color: C.text }}>
-            Is there parking nearby? 🚗
-          </p>
-        </div>
-
-        {/* Wedflow reply 2 — bottom right */}
-        <div
-          className="absolute bottom-0 right-4 rounded-2xl rounded-br-sm px-5 py-3.5 shadow-md max-w-[220px]"
-          style={{ backgroundColor: C.forest }}
-        >
-          <p
-            className="wf-sans text-xs mb-1"
-            style={{ color: "rgba(253,251,247,0.5)", fontSize: "10px", letterSpacing: "0.05em" }}
-          >
-            Wedflow · just now
-          </p>
-          <p className="wf-sans text-sm leading-relaxed" style={{ color: C.cream }}>
-            Free parking in Lot C — just east of the main entrance. ✓
-          </p>
-        </div>
+      </div>
+      {/* Floating stat card */}
+      <div style={{
+        position: "absolute", top: 30, right: -10,
+        background: "var(--wf-paper)", border: "1px solid var(--wf-line)",
+        borderRadius: 12, padding: "10px 14px", boxShadow: "var(--wf-shadow-md)",
+        fontSize: 11, display: "flex", alignItems: "center", gap: 8,
+        transform: "rotate(3deg)",
+      }}>
+        <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--wf-sage)" }} />
+        <span style={{ color: "var(--wf-ink-60)" }}>14 auto-replied today</span>
+      </div>
+      {/* Floating tag */}
+      <div style={{
+        position: "absolute", bottom: 50, left: -20,
+        background: "var(--wf-forest)", color: "var(--wf-cream)",
+        borderRadius: 12, padding: "10px 14px", boxShadow: "var(--wf-shadow-lg)",
+        fontSize: 11, display: "flex", alignItems: "center", gap: 8,
+        transform: "rotate(-4deg)",
+      }}>
+        ✦ <span>In your voice, always</span>
       </div>
     </div>
   );
 }
 
+// ─── Hero ──────────────────────────────────────────────────────────────────────
+
 function Hero() {
   return (
-    <section
-      className="min-h-[88vh] flex items-center overflow-hidden"
-      style={{ backgroundColor: C.cream }}
-    >
-      <div className="max-w-7xl mx-auto px-6 py-24 w-full">
-        <div className="grid lg:grid-cols-12 gap-16 items-center">
-          {/* Left column */}
-          <div className="lg:col-span-7 animate-fade-in-up">
-            {/* Eyebrow rule */}
-            <div className="flex items-center gap-4 mb-10">
-              <div
-                className="h-px w-12"
-                style={{ backgroundColor: C.terracotta }}
-              />
-              <span
-                className="wf-sans text-xs tracking-[0.2em] uppercase"
-                style={{ color: "rgba(26,26,26,0.5)" }}
-              >
-                Wedding Concierge
-              </span>
-            </div>
-
-            <h1
-              className="wf-serif font-bold leading-[1.05] text-5xl sm:text-6xl md:text-7xl xl:text-8xl mb-6"
-              style={{ color: C.forest, fontFamily: "var(--newsreader), Georgia, serif" }}
-            >
-              Your guests have
-              <br />
-              <em className="italic">something to say.</em>
+    <section style={{ background: "var(--wf-cream)", paddingTop: 96, paddingBottom: 120 }}>
+      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "0 40px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.15fr 1fr", gap: 80, alignItems: "center" }}>
+          <div className="animate-fade-in-up">
+            <span className="wf-eyebrow">The Wedding Concierge</span>
+            <h1 className="wf-serif" style={{
+              fontSize: "clamp(56px, 7vw, 96px)",
+              lineHeight: 1.02,
+              color: "var(--wf-forest)",
+              margin: "32px 0 28px",
+              letterSpacing: "-0.02em",
+              fontWeight: 600,
+            }}>
+              Your guests<br />
+              have <em style={{ fontWeight: 500 }}>something</em><br />
+              <em style={{ fontWeight: 500 }}>to say.</em>
             </h1>
-
-            <p
-              className="wf-sans text-lg mb-10 max-w-lg leading-relaxed animate-fade-in-up-delay"
-              style={{ color: "rgba(26,26,26,0.65)" }}
-            >
-              WedFlow is the first inbound AI SMS service for weddings. Guests
-              text a dedicated number with questions — and things they can't
-              say to your face. The AI replies in your voice for logistics, and
-              escalates sensitive messages for your eyes only.
+            <p className="wf-sans animate-fade-in-up-delay" style={{ fontSize: 17, lineHeight: 1.65, color: "var(--wf-ink-60)", maxWidth: 480, marginBottom: 40 }}>
+              Wedflow is the first inbound AI SMS concierge built for weddings. Your guests text a dedicated number with questions — and the things they can&apos;t say to your face. The AI replies in your voice, and holds the sensitive ones for your eyes only.
             </p>
-
             <div className="animate-fade-in-up-delay-2">
               <EmailCapture />
-              <p
-                className="mt-4 wf-sans text-xs ml-1"
-                style={{ color: "rgba(26,26,26,0.4)" }}
-              >
-                Paid beta — limited spots. We&apos;ll reach out with pricing.
+              <p className="wf-sans" style={{ fontSize: 12, color: "var(--wf-ink-45)", marginTop: 12 }}>
+                Paid beta · limited spots · we&apos;ll reach out with pricing.
               </p>
             </div>
           </div>
-
-          {/* Right column — refined SMS illustration */}
-          <HeroIllustration />
+          <div className="animate-fade-in-up-delay">
+            <HeroPhone />
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-// ─── Social Proof Bar ─────────────────────────────────────────────────────────
+// ─── Social Proof Bar ──────────────────────────────────────────────────────────
 
 function SocialProofBar() {
   return (
-    <div
-      style={{
-        backgroundColor: C.cream,
-        borderTop: "1px solid rgba(28,59,43,0.1)",
-        borderBottom: "1px solid rgba(28,59,43,0.1)",
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-6 py-5">
-        <p
-          className="wf-sans text-sm text-center tracking-wide"
-          style={{ color: "rgba(26,26,26,0.55)" }}
-        >
-          The emotional buffer for what guests can't say directly —
-          used by couples across Canada
-        </p>
-      </div>
+    <div style={{ background: "var(--wf-cream)", borderTop: "1px solid var(--wf-line)", borderBottom: "1px solid var(--wf-line)", padding: "22px 0", textAlign: "center" }}>
+      <p className="wf-serif" style={{ fontSize: 15, color: "var(--wf-ink-45)", fontStyle: "italic", letterSpacing: "0.01em" }}>
+        The emotional buffer for what guests can&apos;t say directly — trusted by couples across Canada.
+      </p>
     </div>
   );
 }
 
-// ─── How It Works ─────────────────────────────────────────────────────────────
+// ─── How It Works ──────────────────────────────────────────────────────────────
 
 function HowItWorks() {
   const steps = [
     {
-      number: "01",
-      heading: "Guests text your WedFlow number",
+      num: "01",
+      title: "Guests text your WedFlow number",
       body: "Questions, RSVPs, dietary restrictions — and the things they can't say to your face. Everything comes to one place.",
     },
     {
-      number: "02",
-      heading: "AI replies in your voice, instantly",
-      body: "Logistics and FAQs get warm, accurate responses that sound like you. No more 2am text interruptions.",
+      num: "02",
+      title: "AI replies in your voice, instantly",
+      body: "Logistics and FAQs get warm, accurate responses that sound like you. No more 2 a.m. interruptions.",
     },
     {
-      number: "03",
-      heading: "Sensitive messages? Escalated to you",
-      body: "When guests share something emotional, the AI classifies it and holds it for your review with a draft reply ready.",
+      num: "03",
+      title: "Sensitive messages? Escalated to you",
+      body: "When a guest shares something emotional, it's quietly held for your review — with a thoughtful draft ready.",
     },
   ];
 
   return (
-    <section className="py-24 px-6" style={{ backgroundColor: C.forest }}>
-      <div className="max-w-7xl mx-auto">
-        {/* Section header */}
-        <div className="mb-16">
-          <div className="flex items-center gap-4 mb-5">
-            <div
-              className="h-px w-8"
-              style={{ backgroundColor: C.terracotta }}
-            />
-            <span
-              className="wf-sans text-xs tracking-[0.2em] uppercase"
-              style={{ color: "rgba(253,251,247,0.5)" }}
-            >
-              How it works
-            </span>
+    <section id="how-it-works" style={{ background: "var(--wf-forest)", padding: "120px 40px" }}>
+      <div style={{ maxWidth: 1160, margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 80, alignItems: "end", marginBottom: 80 }}>
+          <div>
+            <span className="wf-eyebrow wf-eyebrow-forest">How it works</span>
+            <h2 className="wf-serif" style={{ fontSize: "clamp(40px, 5vw, 60px)", lineHeight: 1.05, color: "var(--wf-cream)", margin: "24px 0 0", fontWeight: 500, letterSpacing: "-0.02em" }}>
+              Effortless,<br />
+              <em style={{ fontWeight: 400 }}>from the first message.</em>
+            </h2>
           </div>
-          <h2
-            className="wf-serif font-bold text-4xl sm:text-5xl leading-tight max-w-xl"
-            style={{ color: C.cream, fontFamily: "var(--newsreader), Georgia, serif" }}
-          >
-            Effortless, from the first message.
-          </h2>
+          <p className="wf-sans" style={{ fontSize: 16, color: "var(--wf-cream-ink)", lineHeight: 1.7, maxWidth: 460, justifySelf: "end" }}>
+            Three steps. Ten minutes to set up. And the calm of knowing every guest question has a thoughtful reply — even the ones that matter most.
+          </p>
         </div>
 
-        {/* Steps grid */}
-        <div
-          className="grid md:grid-cols-3"
-          style={{ gap: "1px", backgroundColor: "rgba(253,251,247,0.1)" }}
-        >
-          {steps.map((step, i) => (
-            <div
-              key={i}
-              className="p-10 md:p-12 flex flex-col gap-6"
-              style={{ backgroundColor: C.forest }}
-            >
-              <span
-                className="wf-serif font-bold text-6xl leading-none"
-                style={{ color: C.terracotta }}
-              >
-                {step.number}
-              </span>
-              <div>
-                <h3
-                  className="wf-serif font-semibold text-xl mb-3 leading-snug"
-                  style={{ color: C.cream }}
-                >
-                  {step.heading}
-                </h3>
-                <p
-                  className="wf-sans text-sm leading-relaxed"
-                  style={{ color: "rgba(253,251,247,0.6)" }}
-                >
-                  {step.body}
-                </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "rgba(253,251,247,0.08)" }}>
+          {steps.map((s, i) => (
+            <div key={i} style={{ background: "var(--wf-forest)", padding: "48px 40px", minHeight: 280 }}>
+              <div className="wf-serif" style={{ fontSize: 72, color: "var(--wf-terracotta)", lineHeight: 1, fontStyle: "italic", fontWeight: 500, marginBottom: 32, letterSpacing: "-0.02em" }}>
+                {s.num}
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── Features ─────────────────────────────────────────────────────────────────
-
-function Features() {
-  const features = [
-    {
-      heading: "A calm centre for guest inquiries",
-      body: "Dress code, venue directions, parking, registry — your concierge handles the questions guests ask dozens of times, so you never have to.",
-    },
-    {
-      heading: "Drafted replies, in your voice",
-      body: "When a message calls for your personal touch, Wedflow prepares a thoughtful reply for your review. You approve, edit, or send as-is.",
-    },
-    {
-      heading: "Set up in ten minutes",
-      body: "Share your wedding details once during a guided onboarding. From that moment, your concierge is ready — no maintenance required.",
-    },
-  ];
-
-  return (
-    <section className="py-24 px-6" style={{ backgroundColor: C.cream }}>
-      <div className="max-w-7xl mx-auto">
-        {/* Section header */}
-        <div className="mb-16">
-          <div className="flex items-center gap-4 mb-5">
-            <div
-              className="h-px w-8"
-              style={{ backgroundColor: C.terracotta }}
-            />
-            <span
-              className="wf-sans text-xs tracking-[0.2em] uppercase"
-              style={{ color: "rgba(26,26,26,0.4)" }}
-            >
-              What&apos;s included
-            </span>
-          </div>
-          <h2
-            className="wf-serif font-bold text-4xl sm:text-5xl leading-tight max-w-xl"
-            style={{ color: C.forest, fontFamily: "var(--newsreader), Georgia, serif" }}
-          >
-            Everything your day deserves.
-          </h2>
-        </div>
-
-        {/* Cards */}
-        <div className="grid md:grid-cols-3 gap-6">
-          {features.map((feature, i) => (
-            <div
-              key={i}
-              className="rounded-2xl p-8 flex flex-col gap-4 hover:shadow-md transition-shadow"
-              style={{
-                backgroundColor: "#ffffff",
-                boxShadow: "0 1px 6px rgba(28,59,43,0.07)",
-                borderTop: `3px solid ${C.terracotta}`,
-              }}
-            >
-              <h3
-                className="wf-serif font-semibold text-xl leading-snug"
-                style={{ color: C.forest }}
-              >
-                {feature.heading}
+              <h3 className="wf-serif" style={{ fontSize: 22, color: "var(--wf-cream)", fontWeight: 600, marginBottom: 12, lineHeight: 1.3 }}>
+                {s.title}
               </h3>
-              <p
-                className="wf-sans text-sm leading-relaxed"
-                style={{ color: "rgba(26,26,26,0.6)" }}
-              >
-                {feature.body}
+              <p className="wf-sans" style={{ fontSize: 14, color: "var(--wf-cream-ink)", lineHeight: 1.65 }}>
+                {s.body}
               </p>
             </div>
           ))}
@@ -498,160 +367,150 @@ function Features() {
   );
 }
 
-// ─── Testimonial ──────────────────────────────────────────────────────────────
+// ─── Features ──────────────────────────────────────────────────────────────────
+
+function Features() {
+  const features = [
+    {
+      title: "A calm centre for guest inquiries",
+      body: "Dress code, venue directions, parking, registry — your concierge handles the questions guests ask dozens of times, so you never have to.",
+      accent: "Handles repeats.",
+    },
+    {
+      title: "Drafted replies, in your voice",
+      body: "When a message calls for your personal touch, Wedflow prepares a thoughtful reply for your review. Approve, edit, or send as-is.",
+      accent: "Always on-brand.",
+    },
+    {
+      title: "Sensitive messages, kept private",
+      body: "If a guest opens up about something emotional, the AI recognizes it, pauses, and escalates it quietly — with a draft ready for you.",
+      accent: "Discretion built-in.",
+    },
+    {
+      title: "Set up in ten minutes",
+      body: "Share your wedding details once during a guided onboarding. From that moment, your concierge is ready — no maintenance required.",
+      accent: "Ten minutes, once.",
+    },
+  ];
+
+  return (
+    <section id="features" style={{ background: "var(--wf-cream)", padding: "120px 40px" }}>
+      <div style={{ maxWidth: 1160, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 72 }}>
+          <span className="wf-eyebrow wf-eyebrow-centered">What&apos;s included</span>
+          <h2 className="wf-serif" style={{ fontSize: "clamp(40px, 5vw, 62px)", lineHeight: 1.05, color: "var(--wf-forest)", margin: "24px 0 0", fontWeight: 500, letterSpacing: "-0.02em" }}>
+            Everything your day<br />
+            <em style={{ fontWeight: 500 }}>deserves.</em>
+          </h2>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }}>
+          {features.map((f, i) => (
+            <div
+              key={i}
+              style={{ background: "var(--wf-paper)", borderRadius: 20, padding: "36px 36px 32px", border: "1px solid var(--wf-line)", position: "relative", overflow: "hidden", transition: "all 0.25s" }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "var(--wf-shadow-lg)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
+            >
+              <h3 className="wf-serif" style={{ fontSize: 22, fontWeight: 600, color: "var(--wf-forest)", marginBottom: 10, lineHeight: 1.3 }}>
+                {f.title}
+              </h3>
+              <p className="wf-sans" style={{ fontSize: 14.5, color: "var(--wf-ink-60)", lineHeight: 1.65, marginBottom: 14 }}>
+                {f.body}
+              </p>
+              <em className="wf-serif" style={{ fontSize: 13, color: "var(--wf-terracotta-deep)" }}>
+                — {f.accent}
+              </em>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Testimonial ───────────────────────────────────────────────────────────────
 
 function Testimonial() {
   return (
-    <section className="py-24 px-6" style={{ backgroundColor: C.forest }}>
-      <div className="max-w-4xl mx-auto text-center">
-        <div className="mb-6">
-          <span
-            className="wf-serif select-none"
-            style={{ color: C.terracotta, fontSize: "5rem", lineHeight: 1 }}
-          >
-            &ldquo;
-          </span>
-        </div>
-        <blockquote
-          className="wf-serif italic font-medium text-2xl sm:text-3xl md:text-4xl leading-relaxed mb-10"
-          style={{ color: C.cream }}
-        >
-          We stopped answering the same question 40 times. Wedflow handled it —
-          and our guests loved how thoughtful the replies felt.
+    <section style={{ background: "var(--wf-forest)", padding: "140px 40px", position: "relative", overflow: "hidden" }}>
+      <div className="wf-serif" style={{ position: "absolute", top: 40, left: "50%", transform: "translateX(-50%)", fontSize: 120, color: "var(--wf-terracotta)", lineHeight: 1, fontStyle: "italic", fontWeight: 500, opacity: 0.9 }}>
+        &ldquo;
+      </div>
+      <div style={{ maxWidth: 920, margin: "0 auto", textAlign: "center", paddingTop: 50 }}>
+        <blockquote className="wf-serif" style={{ fontSize: "clamp(24px, 3vw, 38px)", lineHeight: 1.35, color: "var(--wf-cream)", margin: "0 0 48px", fontWeight: 400, fontStyle: "italic", letterSpacing: "-0.01em" }}>
+          We stopped answering the same question 40 times. Wedflow handled it — and our guests loved how thoughtful the replies felt.
         </blockquote>
-        <div className="flex items-center justify-center gap-4">
-          <div
-            className="h-px w-8"
-            style={{ backgroundColor: C.terracotta }}
-          />
-          <cite
-            className="wf-sans text-sm not-italic tracking-wide"
-            style={{ color: "rgba(253,251,247,0.55)" }}
-          >
-            Alex &amp; Kirsten, getting married July 2026
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
+          <span style={{ width: 32, height: 1, background: "var(--wf-terracotta)" }} />
+          <cite className="wf-sans" style={{ fontSize: 13, color: "var(--wf-cream-ink)", fontStyle: "normal", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 500 }}>
+            Alex &amp; Kirsten · July 2026
           </cite>
-          <div
-            className="h-px w-8"
-            style={{ backgroundColor: C.terracotta }}
-          />
+          <span style={{ width: 32, height: 1, background: "var(--wf-terracotta)" }} />
         </div>
       </div>
     </section>
   );
 }
 
-// ─── Final CTA ────────────────────────────────────────────────────────────────
+// ─── Final CTA ─────────────────────────────────────────────────────────────────
 
 function FinalCTA() {
   return (
-    <section className="py-28 px-6" style={{ backgroundColor: C.cream }}>
-      <div className="max-w-3xl mx-auto text-center">
-        {/* Decorative divider */}
-        <div className="flex items-center justify-center gap-4 mb-10">
-          <div
-            className="h-px w-10"
-            style={{ backgroundColor: "rgba(28,59,43,0.15)" }}
-          />
-          <div
-            className="w-1.5 h-1.5 rounded-full"
-            style={{ backgroundColor: C.terracotta }}
-          />
-          <div
-            className="h-px w-10"
-            style={{ backgroundColor: "rgba(28,59,43,0.15)" }}
-          />
+    <section style={{ background: "var(--wf-cream)", padding: "140px 40px 160px" }}>
+      <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
+        {/* Ornamental divider */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 40 }}>
+          <span style={{ width: 40, height: 1, background: "var(--wf-line-strong)" }} />
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--wf-terracotta)" }} />
+          <span style={{ width: 40, height: 1, background: "var(--wf-line-strong)" }} />
         </div>
-
-        <h2
-          className="wf-serif font-bold text-4xl sm:text-5xl md:text-6xl leading-tight mb-5"
-          style={{ color: C.forest, fontFamily: "var(--newsreader), Georgia, serif" }}
-        >
-          Your celebration deserves
-          <br />
-          <em className="italic">your full attention.</em>
+        <h2 className="wf-serif" style={{ fontSize: "clamp(40px, 6vw, 72px)", lineHeight: 1.05, color: "var(--wf-forest)", margin: "0 0 24px", fontWeight: 500, letterSpacing: "-0.02em" }}>
+          Your celebration deserves<br />
+          <em style={{ fontWeight: 500 }}>your full attention.</em>
         </h2>
-
-        <p
-          className="wf-sans text-lg mb-10 leading-relaxed"
-          style={{ color: "rgba(26,26,26,0.6)" }}
-        >
-          Let Wedflow handle the questions.
+        <p className="wf-sans" style={{ fontSize: 17, color: "var(--wf-ink-60)", marginBottom: 40, lineHeight: 1.65 }}>
+          Let Wedflow hold the questions. You hold each other.
         </p>
-
-        <div className="flex flex-col items-center gap-4">
-          <Link
-            href="/sign-up"
-            className="px-10 py-4 rounded-full text-sm font-medium transition-opacity hover:opacity-90 wf-sans"
-            style={{ backgroundColor: C.terracotta, color: C.cream }}
-          >
-            Begin Your Journey →
-          </Link>
-        </div>
+        <Link href="/sign-up" className="wf-btn wf-btn-primary wf-btn-lg" style={{ padding: "16px 36px", fontSize: 14 }}>
+          Begin Your Journey →
+        </Link>
       </div>
     </section>
   );
 }
 
-// ─── Footer ───────────────────────────────────────────────────────────────────
+// ─── Footer ────────────────────────────────────────────────────────────────────
 
 function Footer() {
   return (
-    <footer
-      className="py-10 px-6"
-      style={{
-        backgroundColor: C.forest,
-        borderTop: "1px solid rgba(253,251,247,0.1)",
-      }}
-    >
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div className="flex flex-col sm:flex-row items-center gap-6">
-          <Image
-            src="/LogoDark.png"
-            alt="Wedflow"
-            width={36}
-            height={36}
-            className="w-auto"
-            style={{ height: "36px" }}
-          />
-          <span
-            className="wf-serif font-semibold text-lg"
-            style={{ color: C.cream, fontFamily: "var(--newsreader), Georgia, serif" }}
-          >
-            Wedflow
-          </span>
-          <span
-            className="wf-sans text-xs"
-            style={{ color: "rgba(253,251,247,0.4)" }}
-          >
-            Made with love for couples everywhere
+    <footer style={{ background: "var(--wf-forest-deep)", padding: "48px 40px" }}>
+      <div style={{ maxWidth: 1160, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div style={{ width: 112, height: 112, borderRadius: '22%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Image src="/LogoDark.png" alt="Wedflow" width={180} height={180} style={{ width: 180, height: 180, objectFit: 'contain', flexShrink: 0 }} />
+          </div>
+          <span className="wf-serif" style={{ fontSize: 18, color: "var(--wf-cream)", fontWeight: 600 }}>Wedflow</span>
+          <span className="wf-sans" style={{ fontSize: 12, color: "var(--wf-cream-ink-50)", marginLeft: 8 }}>
+            Made with care for couples everywhere.
           </span>
         </div>
-        <div className="flex items-center gap-6">
-          <Link
-            href="/sign-in"
-            className="wf-sans text-xs transition-opacity hover:opacity-80"
-            style={{ color: "rgba(253,251,247,0.5)" }}
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/sign-up"
-            className="wf-sans text-xs transition-opacity hover:opacity-80"
-            style={{ color: "rgba(253,251,247,0.5)" }}
-          >
-            Sign Up
-          </Link>
+        <div style={{ display: "flex", gap: 28, fontSize: 12 }}>
+          <Link href="/sign-in" className="wf-sans" style={{ color: "var(--wf-cream-ink-50)", textDecoration: "none" }}>Sign in</Link>
+          <a href="#" className="wf-sans" style={{ color: "var(--wf-cream-ink-50)", textDecoration: "none" }}>Pricing</a>
+          <a href="#" className="wf-sans" style={{ color: "var(--wf-cream-ink-50)", textDecoration: "none" }}>Privacy</a>
+          <a href="#" className="wf-sans" style={{ color: "var(--wf-cream-ink-50)", textDecoration: "none" }}>Contact</a>
         </div>
       </div>
     </footer>
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: C.cream }}>
+    <div style={{ minHeight: "100vh", background: "var(--wf-cream)" }}>
       <Nav />
       <Hero />
       <SocialProofBar />
