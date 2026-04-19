@@ -1,16 +1,8 @@
 'use client'
 
 import { useState, useTransition, useEffect, useMemo } from 'react'
-
-const C = {
-  forest: '#1C3B2B',
-  cream: '#FDFBF7',
-  terracotta: '#C4714A',
-  text: '#1A1A1A',
-}
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
 import {
   updateWeddingProfileField,
   updatePartnerEmailAction,
@@ -20,15 +12,12 @@ import {
 } from './actions'
 import type { MessageRow, ProfileUpdateFields } from './actions'
 
-// ----------------------------------------------------------------
-// Types
-// ----------------------------------------------------------------
+// ─── Types ──────────────────────────────────────────────────────────────────────
 
 type View = 'home' | 'inbox' | 'guests' | 'profile' | 'settings'
 type InboxTab = 'needs-reply' | 'all'
 type ToneStyle = 'warm' | 'elegant' | 'playful'
 
-// Conversation thread type
 interface Conversation {
   id: string
   guest_phone_hash: string
@@ -72,16 +61,11 @@ interface Props {
   profile: Profile | null
   phoneNumber: string | null
   initialMessages: MessageRow[]
-  stats: {
-    totalMessages: number
-    needsReply: number
-  }
+  stats: { totalMessages: number; needsReply: number }
   isDemo?: boolean
 }
 
-// ----------------------------------------------------------------
-// Helpers
-// ----------------------------------------------------------------
+// ─── Helpers ────────────────────────────────────────────────────────────────────
 
 function timeAgo(dateStr: string): string {
   const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
@@ -93,81 +77,34 @@ function timeAgo(dateStr: string): string {
   return `${Math.floor(hours / 24)}d ago`
 }
 
-function classificationBadge(c: string | null): { label: string; className: string } {
-  switch (c) {
-    case 'routine':
-      return { label: 'Routine', className: 'bg-green-100 text-green-700' }
-    case 'sensitive':
-      return { label: 'Sensitive', className: 'bg-red-100 text-red-700' }
-    case 'unclear':
-      return { label: 'Unclear', className: 'bg-yellow-100 text-yellow-700' }
-    case 'escalated':
-      return { label: 'Escalated', className: 'bg-orange-100 text-orange-700' }
-    default:
-      return { label: 'Unknown', className: 'bg-stone-100 text-stone-500' }
-  }
-}
-
 function buildProfileUpdate(field: string, value: string): ProfileUpdateFields {
   switch (field) {
-    case 'venue_name':
-      return { venue_name: value || null }
-    case 'venue_address':
-      return { venue_address: value || null }
-    case 'wedding_date':
-      return { wedding_date: value || null }
-    case 'ceremony_time':
-      return { ceremony_time: value || null }
-    case 'reception_time':
-      return { reception_time: value || null }
-    case 'dress_code':
-      return { dress_code: value || null }
-    case 'registry_links':
-      return {
-        registry_links: value
-          ? value
-              .split('\n')
-              .map((s) => s.trim())
-              .filter(Boolean)
-          : null,
-      }
-    case 'hotel_block':
-      return { hotel_block: value || null }
-    case 'parking_info':
-      return { parking_info: value || null }
-    case 'tone':
-      return { tone: (value as ToneStyle) || null }
-    case 'vibe_word':
-      return { vibe_word: value || null }
-    case 'sample_message':
-      return { sample_message: value || null }
-    default:
-      return {}
+    case 'venue_name': return { venue_name: value || null }
+    case 'venue_address': return { venue_address: value || null }
+    case 'wedding_date': return { wedding_date: value || null }
+    case 'ceremony_time': return { ceremony_time: value || null }
+    case 'reception_time': return { reception_time: value || null }
+    case 'dress_code': return { dress_code: value || null }
+    case 'registry_links': return { registry_links: value ? value.split('\n').map((s) => s.trim()).filter(Boolean) : null }
+    case 'hotel_block': return { hotel_block: value || null }
+    case 'parking_info': return { parking_info: value || null }
+    case 'tone': return { tone: (value as ToneStyle) || null }
+    case 'vibe_word': return { vibe_word: value || null }
+    case 'sample_message': return { sample_message: value || null }
+    default: return {}
   }
 }
 
 function applyProfileUpdate(prev: Profile, field: string, value: string): Profile {
   if (field === 'registry_links') {
-    return {
-      ...prev,
-      registry_links: value
-        ? value
-            .split('\n')
-            .map((s) => s.trim())
-            .filter(Boolean)
-        : null,
-    }
+    return { ...prev, registry_links: value ? value.split('\n').map((s) => s.trim()).filter(Boolean) : null }
   }
-  if (field === 'tone') {
-    return { ...prev, tone: (value as ToneStyle) || null }
-  }
+  if (field === 'tone') return { ...prev, tone: (value as ToneStyle) || null }
   return { ...prev, [field]: value || null }
 }
 
 function getFieldDraftValue(profile: Profile, field: string): string {
-  if (field === 'registry_links') {
-    return (profile.registry_links ?? []).join('\n')
-  }
+  if (field === 'registry_links') return (profile.registry_links ?? []).join('\n')
   const val = profile[field as keyof Profile]
   return val != null ? String(val) : ''
 }
@@ -177,405 +114,140 @@ const DATE_FIELDS = new Set(['wedding_date'])
 const TIME_FIELDS = new Set(['ceremony_time', 'reception_time'])
 const SELECT_FIELDS = new Set(['tone'])
 
-// ----------------------------------------------------------------
-// Conversation Helpers
-// ----------------------------------------------------------------
-
 function groupMessagesByConversation(messages: MessageRow[]): Conversation[] {
   const convoMap = new Map<string, MessageRow[]>()
-
-  // Group messages by conversation_id
   messages.forEach((msg) => {
     const existing = convoMap.get(msg.conversation_id) || []
     existing.push(msg)
     convoMap.set(msg.conversation_id, existing)
   })
-
-  // Convert to Conversation objects
   const conversations: Conversation[] = []
   convoMap.forEach((msgs, convoId) => {
-    // Sort messages chronologically
     msgs.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-
     const lastMsg = msgs[msgs.length - 1]
-    const hasNeedsReply = msgs.some(
-      (m) => m.direction === 'inbound' && m.classified_as === 'escalated'
-    )
-
-    // Generate a simple AI-like summary based on message content
-    const summary = generateConversationSummary(msgs)
-
-    conversations.push({
-      id: convoId,
-      guest_phone_hash: lastMsg.guest_phone_hash,
-      guest_phone: lastMsg.guest_phone,
-      guest_name: lastMsg.guest_name,
-      messages: msgs,
-      lastMessageAt: lastMsg.created_at,
-      hasNeedsReply,
-      messageCount: msgs.length,
-      aiSummary: summary,
-    })
+    const hasNeedsReply = msgs.some((m) => m.direction === 'inbound' && m.classified_as === 'escalated')
+    const summary = generateSummary(msgs)
+    conversations.push({ id: convoId, guest_phone_hash: lastMsg.guest_phone_hash, guest_phone: lastMsg.guest_phone, guest_name: lastMsg.guest_name, messages: msgs, lastMessageAt: lastMsg.created_at, hasNeedsReply, messageCount: msgs.length, aiSummary: summary })
   })
-
-  // Sort by most recent message
-  return conversations.sort((a, b) =>
-    new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime()
-  )
+  return conversations.sort((a, b) => new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime())
 }
 
-function generateConversationSummary(messages: MessageRow[]): string {
+function generateSummary(messages: MessageRow[]): string {
   const inbound = messages.filter((m) => m.direction === 'inbound')
-  const outbound = messages.filter((m) => m.direction === 'outbound')
-
   if (inbound.length === 0) return 'No messages yet'
-
-  const lastInbound = inbound[inbound.length - 1]
-  const lastClassification = lastInbound.classified_as
-
-  const topics: string[] = []
   const content = inbound.map((m) => m.body.toLowerCase()).join(' ')
-
-  if (content.includes('rsvp') || content.includes('coming') || content.includes('attend')) {
-    topics.push('RSVP')
-  }
-  if (content.includes('plus') || content.includes('guest') || content.includes('date')) {
-    topics.push('plus-one')
-  }
-  if (content.includes('food') || content.includes('diet') || content.includes('allerg') || content.includes('vegan') || content.includes('vegetarian')) {
-    topics.push('dietary')
-  }
-  if (content.includes('gift') || content.includes('registry')) {
-    topics.push('gifts')
-  }
-  if (content.includes('hotel') || content.includes('stay') || content.includes('accommodat')) {
-    topics.push('accommodation')
-  }
-  if (content.includes('sorry') || content.includes('can\'t make') || content.includes('decline')) {
-    topics.push('regret')
-  }
-
-  let status = ''
-  if (lastClassification === 'escalated') {
-    status = 'Needs your attention'
-  } else if (lastClassification === 'sensitive') {
-    status = 'Sensitive topic'
-  } else if (lastClassification === 'routine') {
-    status = 'Routine question'
-  } else {
-    status = 'Question'
-  }
-
-  if (topics.length > 0) {
-    return `${status} · ${topics.slice(0, 3).join(', ')}`
-  }
-
-  return status
+  const topics: string[] = []
+  if (content.includes('rsvp') || content.includes('attend')) topics.push('RSVP')
+  if (content.includes('food') || content.includes('allerg') || content.includes('diet')) topics.push('dietary')
+  if (content.includes('gift') || content.includes('registry')) topics.push('gifts')
+  if (content.includes('hotel') || content.includes('stay')) topics.push('accommodation')
+  const lastClass = inbound[inbound.length - 1].classified_as
+  const status = lastClass === 'escalated' ? 'Needs your attention' : lastClass === 'sensitive' ? 'Sensitive topic' : 'Routine question'
+  return topics.length > 0 ? `${status} · ${topics.slice(0, 3).join(', ')}` : status
 }
 
 function getConversationTitle(convo: Conversation): string {
-  // Use guest name if available
-  if (convo.guest_name) {
-    return convo.guest_name
-  }
-  if (convo.guest_phone) {
-    return convo.guest_phone.replace(/(\+\d{1,3})(\d{3})(\d{3})(\d{4})/, 'Guest $2-$3-$4')
-  }
+  if (convo.guest_name) return convo.guest_name
+  if (convo.guest_phone) return convo.guest_phone.replace(/(\+\d{1,3})(\d{3})(\d{3})(\d{4})/, 'Guest $2-$3-$4')
   return `Guest ····${convo.guest_phone_hash.slice(-4)}`
 }
 
 function getInitials(convo: Conversation): string {
-  // Use guest name initials if available
   if (convo.guest_name) {
     const parts = convo.guest_name.split(' ').filter(Boolean)
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-    }
+    if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
     return convo.guest_name.slice(0, 2).toUpperCase()
   }
-  // Fallback to phone hash
   return convo.guest_phone_hash.slice(-2).toUpperCase()
 }
 
-// ----------------------------------------------------------------
-// Sub-components
-// ----------------------------------------------------------------
+// ─── Icon (inline SVG) ─────────────────────────────────────────────────────────
 
-function StatCard({
-  label,
-  value,
-  sub,
-}: {
-  label: string
-  value: string | number
-  sub?: string
-}) {
+function Icon({ name, size = 18 }: { name: string; size?: number }) {
+  const paths: Record<string, React.ReactNode> = {
+    home: <><path d="M3 9l9-7 9 7"/><path d="M5 9v11h14V9"/></>,
+    inbox: <><path d="M3 5h18v14H3z"/><path d="M3 10h5l2 3h4l2-3h5"/></>,
+    users: <><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M15 17c.4-2.2 2-3.5 4-3.5 1 0 1.7.3 2 .6"/></>,
+    ring: <><circle cx="12" cy="14" r="6"/><path d="M9 5l1.5 3m3 0L15 5"/><path d="M9 5h6"/></>,
+    settings: <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 01-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 01-4 0v-.1a1.7 1.7 0 00-1.1-1.6 1.7 1.7 0 00-1.8.4l-.1.1a2 2 0 01-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 010-4h.1a1.7 1.7 0 001.6-1.1 1.7 1.7 0 00-.4-1.8l-.1-.1a2 2 0 012.8-2.8l.1.1a1.7 1.7 0 001.8.3h0a1.7 1.7 0 001-1.5V3a2 2 0 014 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 012.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8v0a1.7 1.7 0 001.5 1H21a2 2 0 010 4h-.1a1.7 1.7 0 00-1.5 1z"/></>,
+    arrowRight: <><path d="M4 12h16"/><path d="M14 6l6 6-6 6"/></>,
+    check: <><path d="M4 12l5 5 11-11"/></>,
+    search: <><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></>,
+    send: <><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></>,
+    edit: <><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></>,
+    refresh: <><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></>,
+    copy: <><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></>,
+    shield: <><path d="M12 2l8 3v7c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V5z"/><path d="M9 12l2 2 4-4"/></>,
+    messageCircle: <><path d="M21 11.5a8.4 8.4 0 01-1 4 8.5 8.5 0 01-7.6 4.5 8.4 8.4 0 01-4-1L3 21l2-5.5a8.4 8.4 0 01-1-4 8.5 8.5 0 014.5-7.6 8.4 8.4 0 014-1h.5a8.5 8.5 0 018 8z"/></>,
+    sparkle: <><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></>,
+    mapPin: <><path d="M20 10c0 7-8 13-8 13s-8-6-8-13a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/></>,
+    flag: <><path d="M4 21V4"/><path d="M4 4h13l-2 4 2 4H4"/></>,
+    signOut: <><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></>,
+    more: <><circle cx="12" cy="12" r="1.5"/><circle cx="5" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></>,
+    bell: <><path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 004 0"/></>,
+    heart: <><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.7 1-1a5.5 5.5 0 000-7.7z"/></>,
+    external: <><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></>,
+    x: <><path d="M6 6l12 12"/><path d="M18 6L6 18"/></>,
+  }
   return (
-    <div className="bg-white rounded-xl border border-stone-200 p-5">
-      <p className="text-xs font-medium text-stone-500 uppercase tracking-wide mb-1">{label}</p>
-      <p className="text-3xl font-semibold" style={{ color: C.forest }}>{value}</p>
-      {sub && <p className="text-xs text-stone-400 mt-1">{sub}</p>}
-    </div>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+      {paths[name]}
+    </svg>
   )
 }
 
-function MessageCard({ message, onReply }: { message: MessageRow; onReply?: () => void }) {
-  const badge = classificationBadge(message.classified_as)
-
-  // Format phone number for display
-  const phoneDisplay = message.guest_phone
-    ? message.guest_phone.replace(/(\+\d{1,3})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4')
-    : `···${message.guest_phone_hash.slice(-4)}`
-
-  // Get initials from guest name or phone hash as avatar
-  const initials = message.guest_name
-    ? message.guest_name.split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase()
-    : message.guest_phone_hash.slice(-2).toUpperCase()
-
-  return (
-    <div className="bg-white rounded-xl border border-stone-200 p-4 flex items-start gap-4">
-      <div className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium" style={{ backgroundColor: `${C.forest}1A`, color: C.forest }}>
-        {initials}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs font-mono text-stone-600 font-medium">
-            {phoneDisplay}
-          </span>
-          <span
-            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${badge.className}`}
-          >
-            {badge.label}
-          </span>
-          <span className="text-xs text-stone-400 ml-auto">{timeAgo(message.created_at)}</span>
-        </div>
-        <p className="text-sm text-stone-700 line-clamp-2">{message.body}</p>
-      </div>
-      {onReply && (
-        <div className="flex-shrink-0">
-          <button
-            onClick={onReply}
-            className="px-3 py-1.5 text-xs font-medium text-white rounded-lg transition-colors hover:opacity-90"
-            style={{ backgroundColor: C.forest }}
-          >
-            Reply
-          </button>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function ThreadCard({
-  conversation,
-  onReply,
-}: {
-  conversation: Conversation
-  onReply?: (msg: MessageRow) => void
-}) {
-  const title = getConversationTitle(conversation)
-  const initials = getInitials(conversation)
-  const lastMessage = conversation.messages[conversation.messages.length - 1]
-  const needsReply = conversation.hasNeedsReply
-
-  // Find the most recent question that needs a reply
-  const pendingQuestion = needsReply
-    ? [...conversation.messages]
-        .reverse()
-        .find((m) => m.direction === 'inbound' && m.classified_as === 'escalated')
-    : null
-
-  // Find AI responses to previous questions (routine questions that got auto-replied)
-  const routinePairs: { question: MessageRow; response: MessageRow | null }[] = []
-  conversation.messages.forEach((msg, i) => {
-    if (msg.direction === 'inbound' && msg.classified_as === 'routine') {
-      // Look for the next outbound message that was sent
-      const response = conversation.messages
-        .slice(i + 1)
-        .find((m) => m.direction === 'outbound' && m.was_sent)
-      routinePairs.push({ question: msg, response: response || null })
-    }
-  })
-
-  return (
-    <div className={`bg-white rounded-xl border p-5 ${needsReply ? 'border-orange-200 bg-orange-50/20' : 'border-stone-200'}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div
-            className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium"
-            style={{ backgroundColor: `${C.forest}1A`, color: C.forest }}
-          >
-            {initials}
-          </div>
-          <div>
-            <h3 className="font-medium text-stone-900">{title}</h3>
-            {conversation.guest_phone && (
-              <p className="text-xs text-stone-500 font-mono">{conversation.guest_phone}</p>
-            )}
-            {!conversation.guest_phone && conversation.aiSummary && (
-              <p className="text-xs text-stone-500">{conversation.aiSummary}</p>
-            )}
-          </div>
-        </div>
-        <span className="text-xs text-stone-400">{timeAgo(lastMessage.created_at)}</span>
-      </div>
-
-      {/* Thread Content */}
-      <div className="space-y-4">
-        {/* Pending Question (Needs Reply) */}
-        {pendingQuestion && (
-          <div className="bg-orange-50 border border-orange-100 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">👋</span>
-              <div className="flex-1">
-                <p className="text-sm text-stone-800 mb-2">{pendingQuestion.body}</p>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-orange-600 font-medium">Waiting for your reply</span>
-                  <span className="text-xs text-stone-400">· {timeAgo(pendingQuestion.created_at)}</span>
-                </div>
-              </div>
-            </div>
-            {onReply && (
-              <button
-                onClick={() => onReply(pendingQuestion)}
-                className="mt-3 w-full py-2 text-sm font-medium text-white rounded-lg transition-colors hover:opacity-90"
-                style={{ backgroundColor: C.terracotta }}
-              >
-                Reply
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* Routine Q&A Pairs */}
-        {routinePairs.slice(-2).reverse().map((pair, idx) => (
-          <div key={pair.question.id} className="border-l-2 border-stone-200 pl-4 space-y-3">
-            {/* Question */}
-            <div>
-              <p className="text-sm text-stone-700">{pair.question.body}</p>
-              <span className="text-xs text-stone-400">{timeAgo(pair.question.created_at)}</span>
-            </div>
-
-            {/* Response */}
-            {pair.response && (
-              <div className="bg-stone-50 rounded-lg p-3">
-                <p className="text-sm text-stone-600">{pair.response.body}</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs text-green-600 font-medium">✓ Auto-replied</span>
-                  <span className="text-xs text-stone-400">· {timeAgo(pair.response.created_at)}</span>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-
-        {/* Show message count if there are more */}
-        {conversation.messages.length > (routinePairs.length + (pendingQuestion ? 1 : 0)) && (
-          <p className="text-xs text-stone-400 text-center">
-            {conversation.messages.length} total messages
-          </p>
-        )}
-      </div>
-    </div>
-  )
-}
+// ─── Profile Field ─────────────────────────────────────────────────────────────
 
 function ProfileField({
-  label,
-  field,
-  profile,
-  editField,
-  draftValue,
-  saving,
-  onEdit,
-  onSave,
-  onCancel,
-  onDraftChange,
+  label, field, profile, editField, draftValue, saving, onEdit, onSave, onCancel, onDraftChange,
 }: {
-  label: string
-  field: string
-  profile: Profile
-  editField: string | null
-  draftValue: string
-  saving: boolean
-  onEdit: (field: string, value: string) => void
-  onSave: (field: string) => void
-  onCancel: () => void
-  onDraftChange: (value: string) => void
+  label: string; field: string; profile: Profile; editField: string | null; draftValue: string; saving: boolean
+  onEdit: (field: string, value: string) => void; onSave: (field: string) => void; onCancel: () => void; onDraftChange: (value: string) => void
 }) {
   const isEditing = editField === field
   const currentDisplay = getFieldDraftValue(profile, field)
 
   return (
     <div
-      className="bg-white rounded-xl p-4 relative group h-full"
-      style={{ border: '1px solid rgba(28,59,43,0.08)', boxShadow: '0 1px 4px rgba(28,59,43,0.05)' }}
+      style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 14, padding: '14px 18px', position: 'relative', transition: 'all 0.15s', cursor: 'pointer' }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--wf-line-strong)' }}
+      onMouseLeave={(e) => { if (!isEditing) e.currentTarget.style.borderColor = 'var(--wf-line)' }}
     >
-      <p className="text-xs font-medium uppercase tracking-wide mb-2" style={{ color: 'rgba(28,59,43,0.5)' }}>
+      <div style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--wf-ink-45)', fontWeight: 600, marginBottom: 6 }}>
         {label}
-      </p>
+      </div>
       {isEditing ? (
-        <div className="space-y-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {SELECT_FIELDS.has(field) ? (
-            <select
-              value={draftValue}
-              onChange={(e) => onDraftChange(e.target.value)}
-              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1C3B2B]"
-            >
-              <option value="">- none -</option>
+            <select value={draftValue} onChange={(e) => onDraftChange(e.target.value)} className="wf-sans" style={{ width: '100%', fontSize: 13, border: '1px solid var(--wf-line-strong)', borderRadius: 8, padding: '8px 10px', outline: 'none', fontFamily: 'var(--wf-sans)' }}>
+              <option value="">— none —</option>
               <option value="warm">Warm</option>
               <option value="elegant">Elegant</option>
               <option value="playful">Playful</option>
             </select>
           ) : TEXTAREA_FIELDS.has(field) ? (
-            <textarea
-              value={draftValue}
-              onChange={(e) => onDraftChange(e.target.value)}
-              rows={field === 'registry_links' ? 3 : 2}
-              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1C3B2B] resize-none"
-              placeholder={field === 'registry_links' ? 'One URL per line' : ''}
-            />
+            <textarea value={draftValue} onChange={(e) => onDraftChange(e.target.value)} rows={field === 'registry_links' ? 3 : 2} className="wf-sans" style={{ width: '100%', fontSize: 13, border: '1px solid var(--wf-line-strong)', borderRadius: 8, padding: '8px 10px', outline: 'none', resize: 'none', fontFamily: 'var(--wf-sans)' }} placeholder={field === 'registry_links' ? 'One URL per line' : ''} />
           ) : (
-            <input
-              type={DATE_FIELDS.has(field) ? 'date' : TIME_FIELDS.has(field) ? 'time' : 'text'}
-              value={draftValue}
-              onChange={(e) => onDraftChange(e.target.value)}
-              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1C3B2B]"
-            />
+            <input type={DATE_FIELDS.has(field) ? 'date' : TIME_FIELDS.has(field) ? 'time' : 'text'} value={draftValue} onChange={(e) => onDraftChange(e.target.value)} className="wf-sans" style={{ width: '100%', fontSize: 13, border: '1px solid var(--wf-line-strong)', borderRadius: 8, padding: '8px 10px', outline: 'none', fontFamily: 'var(--wf-sans)' }} />
           )}
-          <div className="flex gap-2 justify-end pt-1">
-            <button
-              onClick={() => onSave(field)}
-              disabled={saving}
-              className="px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50 rounded-lg transition-colors hover:opacity-90"
-              style={{ backgroundColor: C.forest }}
-            >
-              {saving ? 'Saving...' : 'Save'}
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            <button onClick={() => onSave(field)} disabled={saving} className="wf-btn wf-btn-forest wf-btn-sm">
+              {saving ? 'Saving…' : 'Save'}
             </button>
-            <button
-              onClick={onCancel}
-              disabled={saving}
-              className="px-3 py-1.5 text-xs font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 rounded-lg transition-colors"
-            >
+            <button onClick={onCancel} disabled={saving} className="wf-btn wf-btn-ghost wf-btn-sm">
               Cancel
             </button>
           </div>
         </div>
       ) : (
         <>
-          <p
-            className="text-sm break-words whitespace-pre-wrap pr-12"
-            style={{ color: currentDisplay ? C.text : 'rgba(26,26,26,0.35)', fontStyle: currentDisplay ? 'normal' : 'italic' }}
-          >
+          <p className="wf-sans" style={{ fontSize: 13, color: currentDisplay ? 'var(--wf-ink)' : 'var(--wf-ink-25)', fontStyle: currentDisplay ? 'normal' : 'italic', lineHeight: 1.55, whiteSpace: 'pre-wrap', wordBreak: 'break-word', paddingRight: 28 }}>
             {currentDisplay || 'Not set'}
           </p>
-          <button
-            onClick={() => onEdit(field, currentDisplay)}
-            className="absolute top-3 right-3 px-2.5 py-1 text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
-            style={{ color: C.forest, backgroundColor: 'rgba(28,59,43,0.08)' }}
-          >
-            Edit
+          <button onClick={() => onEdit(field, currentDisplay)} style={{ position: 'absolute', top: 10, right: 10, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', padding: 4, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--wf-cream-warm)'; e.currentTarget.style.color = 'var(--wf-forest)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--wf-ink-45)' }}>
+            <Icon name="edit" size={13} />
           </button>
         </>
       )}
@@ -583,92 +255,45 @@ function ProfileField({
   )
 }
 
-function ReplyModal({
-  inboundBody,
-  initialDraft,
-  onClose,
-  onSend,
-  isSending,
-}: {
-  inboundBody: string
-  initialDraft: string
-  onClose: () => void
-  onSend: (text: string) => void
-  isSending: boolean
+// ─── Reply Modal ───────────────────────────────────────────────────────────────
+
+function ReplyModal({ inboundBody, initialDraft, onClose, onSend, isSending }: {
+  inboundBody: string; initialDraft: string; onClose: () => void; onSend: (text: string) => void; isSending: boolean
 }) {
   const TRIAL_CHAR_LIMIT = 120
-  const truncated =
-    initialDraft.length > TRIAL_CHAR_LIMIT
-      ? initialDraft.slice(0, TRIAL_CHAR_LIMIT - 3) + '...'
-      : initialDraft
+  const truncated = initialDraft.length > TRIAL_CHAR_LIMIT ? initialDraft.slice(0, TRIAL_CHAR_LIMIT - 3) + '...' : initialDraft
   const [text, setText] = useState(truncated)
   const charCount = text.length
   const isOverLimit = charCount > TRIAL_CHAR_LIMIT
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg">
-        <div className="p-6 border-b border-stone-100 flex items-center justify-between">
-          <h3 className="text-base font-semibold text-stone-900">Reply to guest</h3>
-          <button
-            onClick={onClose}
-            disabled={isSending}
-            className="text-stone-400 hover:text-stone-600 disabled:opacity-50 transition-colors text-xl leading-none"
-            aria-label="Close"
-          >
-            ×
-          </button>
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 16 }}>
+      <div style={{ background: 'var(--wf-paper)', borderRadius: 20, boxShadow: 'var(--wf-shadow-xl)', width: '100%', maxWidth: 520 }}>
+        <div style={{ padding: '24px 28px 20px', borderBottom: '1px solid var(--wf-line)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h3 className="wf-serif" style={{ margin: 0, fontSize: 20, fontWeight: 600, color: 'var(--wf-forest)' }}>Reply to guest</h3>
+          <button onClick={onClose} disabled={isSending} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', padding: 4, fontSize: 20, lineHeight: 1 }}>×</button>
         </div>
-
-        <div className="p-6 space-y-4">
+        <div style={{ padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: 18 }}>
           <div>
-            <p className="text-xs font-medium text-stone-400 uppercase tracking-wide mb-2">
-              Guest&apos;s message
-            </p>
-            <p className="text-sm text-stone-700 bg-stone-50 rounded-lg px-4 py-3">
+            <div style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--wf-ink-45)', fontWeight: 600, marginBottom: 8 }}>Guest&apos;s message</div>
+            <p className="wf-sans" style={{ fontSize: 13, color: 'var(--wf-ink)', background: 'var(--wf-cream-warm)', borderRadius: 10, padding: '12px 14px', margin: 0, lineHeight: 1.55 }}>
               {inboundBody}
             </p>
           </div>
-
           <div>
-            <p className="text-xs font-medium text-stone-400 uppercase tracking-wide mb-2">
-              Your reply
-            </p>
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              rows={4}
-              disabled={isSending}
-              className="w-full text-sm border border-stone-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#1C3B2B] resize-none disabled:opacity-50"
-              placeholder="Type your reply..."
-            />
-            {isOverLimit ? (
-              <p className="text-xs mt-1 text-red-600 font-medium">
-                {charCount} / {TRIAL_CHAR_LIMIT} chars - Message too long for trial account - keep under {TRIAL_CHAR_LIMIT} characters
-              </p>
-            ) : (
-              <p className="text-xs mt-1 text-right text-stone-400">
-                {charCount} / {TRIAL_CHAR_LIMIT} chars
-              </p>
-            )}
+            <div style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--wf-ink-45)', fontWeight: 600, marginBottom: 8 }}>Your reply</div>
+            <div style={{ border: '1px solid var(--wf-line-strong)', borderRadius: 12, padding: '12px 14px 8px' }}>
+              <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} disabled={isSending} className="wf-sans" style={{ width: '100%', border: 'none', outline: 'none', resize: 'none', fontSize: 13, color: 'var(--wf-ink)', fontFamily: 'var(--wf-sans)', lineHeight: 1.55, background: 'transparent' }} placeholder="Type your reply…" />
+              <div style={{ textAlign: 'right', fontSize: 11, color: isOverLimit ? 'var(--wf-rose)' : 'var(--wf-ink-45)', marginTop: 4 }}>
+                {isOverLimit ? `${charCount} / ${TRIAL_CHAR_LIMIT} — too long for trial` : `${charCount} / ${TRIAL_CHAR_LIMIT}`}
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="p-6 pt-0 flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            disabled={isSending}
-            className="px-4 py-2 text-sm font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 disabled:opacity-50 rounded-lg transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => onSend(text)}
-            disabled={isSending || !text.trim() || isOverLimit}
-            className="px-4 py-2 text-sm font-medium text-white disabled:opacity-50 rounded-lg transition-colors hover:opacity-90"
-            style={{ backgroundColor: C.forest }}
-          >
-            {isSending ? 'Sending...' : 'Send reply'}
+        <div style={{ padding: '0 28px 24px', display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+          <button onClick={onClose} disabled={isSending} className="wf-btn wf-btn-ghost">Cancel</button>
+          <button onClick={() => onSend(text)} disabled={isSending || !text.trim() || isOverLimit} className="wf-btn wf-btn-primary">
+            <Icon name="send" size={13} /> {isSending ? 'Sending…' : 'Send reply'}
           </button>
         </div>
       </div>
@@ -676,18 +301,9 @@ function ReplyModal({
   )
 }
 
-// ----------------------------------------------------------------
-// Main component
-// ----------------------------------------------------------------
+// ─── Main Component ────────────────────────────────────────────────────────────
 
-export default function DashboardClient({
-  couple,
-  profile,
-  phoneNumber,
-  initialMessages,
-  stats,
-  isDemo = false,
-}: Props) {
+export default function DashboardClient({ couple, profile, phoneNumber, initialMessages, stats, isDemo = false }: Props) {
   const router = useRouter()
   const [view, setView] = useState<View>('home')
   const [inboxTab, setInboxTab] = useState<InboxTab>('needs-reply')
@@ -696,680 +312,628 @@ export default function DashboardClient({
 
   const daysUntilWedding = useMemo(() => {
     if (!localProfile?.wedding_date) return 0
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const wedding = new Date(localProfile.wedding_date)
-    wedding.setHours(0, 0, 0, 0)
-    const diff = wedding.getTime() - today.getTime()
-    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const today = new Date(); today.setHours(0, 0, 0, 0)
+    const wedding = new Date(localProfile.wedding_date); wedding.setHours(0, 0, 0, 0)
+    return Math.max(0, Math.ceil((wedding.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)))
   }, [localProfile?.wedding_date])
 
-  // Inline edit state - profile
   const [editField, setEditField] = useState<string | null>(null)
   const [draftValue, setDraftValue] = useState<string>('')
   const [isSaving, startSave] = useTransition()
-
-  // Inline edit state - partner email
   const [editingEmail, setEditingEmail] = useState(false)
   const [emailDraft, setEmailDraft] = useState(couple.partner_email ?? '')
   const [localPartnerEmail, setLocalPartnerEmail] = useState(couple.partner_email ?? '')
   const [isSavingEmail, startSaveEmail] = useTransition()
-
-  // Inbox refresh
   const [isRefreshing, startRefresh] = useTransition()
-
-  // Reply modal
-  const [replyModal, setReplyModal] = useState<{
-    inboundMsg: MessageRow
-    draftBody: string
-    draftMsgId: string | null
-  } | null>(null)
+  const [replyModal, setReplyModal] = useState<{ inboundMsg: MessageRow; draftBody: string; draftMsgId: string | null } | null>(null)
   const [isSendingReply, startSendReply] = useTransition()
-
-  // Toast
   const [toast, setToast] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [priorityFilter, setPriorityFilter] = useState<'all' | 'escalated' | 'routine'>('all')
+
   useEffect(() => {
     if (!toast) return
     const t = setTimeout(() => setToast(null), 3500)
     return () => clearTimeout(t)
   }, [toast])
 
-  // Conversations state
-  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [priorityFilter, setPriorityFilter] = useState<'all' | 'escalated' | 'routine'>('all')
   const conversations = useMemo(() => groupMessagesByConversation(messages), [messages])
-
   const filteredConversations = useMemo(() => {
     let filtered = conversations
-
-    // Filter by tab (needs reply vs all)
-    if (inboxTab === 'needs-reply') {
-      filtered = filtered.filter((c) => c.hasNeedsReply)
-    }
-
-    // Filter by search query
+    if (inboxTab === 'needs-reply') filtered = filtered.filter((c) => c.hasNeedsReply)
     if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase()
-      filtered = filtered.filter((c) => {
-        const nameMatch = c.guest_name?.toLowerCase().includes(query)
-        const phoneMatch = c.guest_phone?.toLowerCase().includes(query)
-        const contentMatch = c.messages.some(m => m.body.toLowerCase().includes(query))
-        return nameMatch || phoneMatch || contentMatch
-      })
+      const q = searchQuery.toLowerCase()
+      filtered = filtered.filter((c) => c.guest_name?.toLowerCase().includes(q) || c.guest_phone?.toLowerCase().includes(q) || c.messages.some((m) => m.body.toLowerCase().includes(q)))
     }
-
-    // Filter by priority
     if (priorityFilter !== 'all') {
-      filtered = filtered.filter((c) => {
-        if (priorityFilter === 'escalated') {
-          return c.messages.some(m => m.classified_as === 'escalated')
-        }
-        if (priorityFilter === 'routine') {
-          return c.messages.every(m => m.classified_as === 'routine')
-        }
-        return true
-      })
+      filtered = filtered.filter((c) => priorityFilter === 'escalated' ? c.messages.some((m) => m.classified_as === 'escalated') : c.messages.every((m) => m.classified_as === 'routine'))
     }
-
     return filtered
   }, [conversations, inboxTab, searchQuery, priorityFilter])
 
-  const selectedConversation = useMemo(() =>
-    conversations.find((c) => c.id === selectedConversationId) || null,
-  [conversations, selectedConversationId])
+  const selectedConversation = useMemo(() => conversations.find((c) => c.id === selectedConversationId) || null, [conversations, selectedConversationId])
 
-  const coupleNames =
-    [couple.your_name, couple.partner_name].filter(Boolean).join(' & ') || 'Your Wedding'
+  const coupleNames = [couple.your_name, couple.partner_name].filter(Boolean).join(' & ') || 'Your Wedding'
 
-  // "Needs reply" = inbound escalated messages that have no outbound sent reply
-  // linked to them specifically via replied_to_message_id.
-  const repliedInboundMsgIds = new Set(
-    messages
-      .filter(
-        (m) =>
-          m.direction === 'outbound' &&
-          m.was_sent &&
-          m.classified_as === 'escalated' &&
-          m.replied_to_message_id !== null,
-      )
-      .map((m) => m.replied_to_message_id as string),
-  )
-  const needsReplyMessages = messages.filter(
-    (m) =>
-      m.direction === 'inbound' &&
-      m.classified_as === 'escalated' &&
-      !repliedInboundMsgIds.has(m.id),
-  )
+  const repliedInboundMsgIds = new Set(messages.filter((m) => m.direction === 'outbound' && m.was_sent && m.classified_as === 'escalated' && m.replied_to_message_id !== null).map((m) => m.replied_to_message_id as string))
+  const needsReplyMessages = messages.filter((m) => m.direction === 'inbound' && m.classified_as === 'escalated' && !repliedInboundMsgIds.has(m.id))
 
-  // ----------------------------------------------------------------
-  // Handlers
-  // ----------------------------------------------------------------
+  // ─── Handlers ─────────────────────────────────────────────────────────────────
 
   function handleRefresh() {
     startRefresh(async () => {
-      try {
-        const fresh = await refreshInboxMessages()
-        setMessages(fresh)
-      } catch {
-        // user can retry
-      }
+      try { const fresh = await refreshInboxMessages(); setMessages(fresh) } catch { /* user can retry */ }
     })
   }
 
-  function handleEditField(field: string, value: string) {
-    setEditField(field)
-    setDraftValue(value)
-  }
+  function handleEditField(field: string, value: string) { setEditField(field); setDraftValue(value) }
 
   function handleSaveField(field: string) {
     if (!localProfile) return
     const updates = buildProfileUpdate(field, draftValue)
     startSave(async () => {
-      try {
-        await updateWeddingProfileField(updates)
-        setLocalProfile((prev) => (prev ? applyProfileUpdate(prev, field, draftValue) : prev))
-        setEditField(null)
-      } catch {
-        // keep edit state so user can retry
-      }
+      try { await updateWeddingProfileField(updates); setLocalProfile((prev) => (prev ? applyProfileUpdate(prev, field, draftValue) : prev)); setEditField(null) } catch { /* keep edit state */ }
     })
   }
 
   function handleSaveEmail() {
     startSaveEmail(async () => {
-      try {
-        await updatePartnerEmailAction(emailDraft)
-        setLocalPartnerEmail(emailDraft)
-        setEditingEmail(false)
-      } catch {
-        // keep edit state
-      }
+      try { await updatePartnerEmailAction(emailDraft); setLocalPartnerEmail(emailDraft); setEditingEmail(false) } catch { /* keep edit state */ }
     })
   }
 
   function handleReplyClick(inboundMsg: MessageRow) {
-    const draftMsg = messages.find(
-      (m) =>
-        m.conversation_id === inboundMsg.conversation_id &&
-        m.direction === 'outbound' &&
-        m.classified_as === 'escalated' &&
-        !m.was_sent,
-    )
-    setReplyModal({
-      inboundMsg,
-      draftBody: draftMsg?.body ?? '',
-      draftMsgId: draftMsg?.id ?? null,
-    })
+    const draftMsg = messages.find((m) => m.conversation_id === inboundMsg.conversation_id && m.direction === 'outbound' && m.classified_as === 'escalated' && !m.was_sent)
+    setReplyModal({ inboundMsg, draftBody: draftMsg?.body ?? '', draftMsgId: draftMsg?.id ?? null })
   }
 
   function handleSendReply(replyText: string) {
     if (!replyModal) return
-    const { inboundMsg } = replyModal
     startSendReply(async () => {
       try {
-        await sendReplyAction(inboundMsg.conversation_id, replyText, inboundMsg.id)
+        await sendReplyAction(replyModal.inboundMsg.conversation_id, replyText, replyModal.inboundMsg.id)
         setReplyModal(null)
         const fresh = await refreshInboxMessages()
         setMessages(fresh)
-setToast({ type: 'success', text: 'Reply sent!' })
+        setToast({ type: 'success', text: 'Reply sent!' })
       } catch (err) {
-        setToast({
-          type: 'error',
-          text: err instanceof Error ? err.message : 'Failed to send reply. Please try again.',
-        })
+        setToast({ type: 'error', text: err instanceof Error ? err.message : 'Failed to send reply. Please try again.' })
       }
     })
   }
 
-  // ----------------------------------------------------------------
-  // Nav
-  // ----------------------------------------------------------------
+  // ─── Nav items ────────────────────────────────────────────────────────────────
 
   const navItems: { id: View; label: string; icon: string }[] = [
-    { id: 'home', label: 'Home', icon: '⌂' },
-    { id: 'inbox', label: 'Inbox', icon: '✉' },
-    { id: 'guests', label: 'Guests', icon: '👥' },
-    { id: 'profile', label: 'Profile', icon: '💍' },
-    { id: 'settings', label: 'Settings', icon: '⚙' },
+    { id: 'home', label: 'Home', icon: 'home' },
+    { id: 'inbox', label: 'Inbox', icon: 'inbox' },
+    { id: 'guests', label: 'Guests', icon: 'users' },
+    { id: 'profile', label: 'Wedding Profile', icon: 'ring' },
+    { id: 'settings', label: 'Settings', icon: 'settings' },
   ]
 
-  // ----------------------------------------------------------------
-  // Views
-  // ----------------------------------------------------------------
+  // ─── Home ─────────────────────────────────────────────────────────────────────
 
   function renderHome() {
+    const autoReplied = messages.filter((m) => m.direction === 'outbound' && m.was_sent).length
+    const totalIn = messages.filter((m) => m.direction === 'inbound').length
+    const pct = totalIn > 0 ? Math.round((autoReplied / totalIn) * 100) : 0
+
     return (
-      <div className="max-w-3xl mx-auto space-y-8">
-        <div className="rounded-2xl p-8" style={{ backgroundColor: C.forest }}>
-          <h1 className="text-2xl font-semibold mb-1" style={{ color: C.cream }}>
-            Welcome back, {coupleNames} 💍
-          </h1>
-          <p className="text-sm" style={{ color: 'rgba(253,251,247,0.7)' }}>
-            Here&apos;s a snapshot of your Wedflow dashboard.
-          </p>
+      <div style={{ padding: '40px 48px 80px', maxWidth: 1080, margin: '0 auto' }}>
+        {/* Header row */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 24, marginBottom: 32, flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 480px', minWidth: 0 }}>
+            <span className="wf-eyebrow">Your dashboard</span>
+            <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 6px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+              Welcome back, <em style={{ fontWeight: 500 }}>{coupleNames}.</em>
+            </h1>
+            {localProfile?.wedding_date && (
+              <p className="wf-sans" style={{ color: 'var(--wf-ink-60)', fontSize: 15 }}>
+                {localProfile.venue_name && `${localProfile.venue_name} · `}{daysUntilWedding > 0 ? `${daysUntilWedding} days to go` : 'Today! 🎉'}
+              </p>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+            <button onClick={handleRefresh} disabled={isRefreshing} className="wf-btn wf-btn-ghost">
+              <Icon name="refresh" size={14} /> {isRefreshing ? 'Refreshing…' : 'Refresh'}
+            </button>
+            <button onClick={() => setView('inbox')} className="wf-btn wf-btn-forest">
+              Open Inbox <Icon name="arrowRight" size={14} />
+            </button>
+          </div>
         </div>
 
-        <div className="flex justify-center">
-          <Image
-            src="/Couple1.png"
-            alt="Couple illustration"
-            width={400}
-            height={320}
-            className="rounded-2xl object-cover max-w-full"
-            priority
-          />
+        {/* Hero card — phone number */}
+        <div style={{ background: 'var(--wf-forest)', borderRadius: 28, overflow: 'hidden', marginBottom: 28, display: 'grid', gridTemplateColumns: '1.25fr 1fr', minHeight: 300, boxShadow: 'var(--wf-shadow-lg)' }}>
+          <div style={{ padding: '44px 48px', color: 'var(--wf-cream)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <span className="wf-eyebrow wf-eyebrow-forest">Your Wedflow number</span>
+            <div className="wf-serif" style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 500, color: 'var(--wf-cream)', marginTop: 14, marginBottom: 8, letterSpacing: '-0.01em', lineHeight: 1.1, fontVariantNumeric: 'tabular-nums' }}>
+              {phoneNumber ? phoneNumber.replace(/(\+\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') : 'Not yet assigned'}
+            </div>
+            <p className="wf-sans" style={{ fontSize: 14, color: 'var(--wf-cream-ink)', marginBottom: 24, maxWidth: 360 }}>
+              Share this with your guests. Every message they send lands in your inbox — quietly, in your voice.
+            </p>
+            {phoneNumber && (
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button onClick={() => navigator.clipboard.writeText(phoneNumber)} className="wf-btn" style={{ background: 'var(--wf-terracotta)', color: 'var(--wf-cream)', fontSize: 13 }}>
+                  <Icon name="copy" size={13} /> Copy number
+                </button>
+              </div>
+            )}
+          </div>
+          <div style={{ background: 'var(--wf-cream-warm)', position: 'relative', overflow: 'hidden' }}>
+            <Image src="/Couple1.png" alt="Couple illustration" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <StatCard label="Total messages" value={stats.totalMessages} sub="from your guests" />
-          <StatCard
-            label="Needs reply"
-            value={needsReplyMessages.length}
-            sub={needsReplyMessages.length === 0 ? 'All caught up!' : 'waiting for you'}
-          />
-          <StatCard
-            label="Days until wedding"
-            value={
-              daysUntilWedding === null
-                ? '-'
-                : daysUntilWedding === 0
-                  ? 'Today! 🎉'
-                  : daysUntilWedding
-            }
-            sub={daysUntilWedding !== null && daysUntilWedding > 0 ? 'to go' : undefined}
-          />
+        {/* Stats row */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 28 }}>
+          <StatTile eyebrow="Needs your reply" value={needsReplyMessages.length} hint={needsReplyMessages.length === 0 ? 'All caught up!' : 'waiting for you'} />
+          <StatTile eyebrow="Total messages" value={stats.totalMessages} hint="+from your guests" />
+          <StatTile eyebrow="Auto-replied" value={autoReplied} hint={`${pct}% handled for you`} />
+          <StatTile eyebrow="Days until" value={daysUntilWedding > 0 ? daysUntilWedding : '🎉'} hint={localProfile?.wedding_date ? new Date(localProfile.wedding_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : undefined} />
         </div>
 
-        <button
-          onClick={() => setView('inbox')}
-          className="inline-flex items-center gap-2 px-5 py-2.5 text-white text-sm font-medium rounded-xl transition-colors hover:opacity-90"
-          style={{ backgroundColor: C.terracotta }}
-        >
-          Go to Inbox →
-        </button>
+        {/* Recent messages */}
+        {needsReplyMessages.length > 0 && (
+          <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 20, padding: '24px 26px' }}>
+            <div style={{ marginBottom: 20 }}>
+              <h3 className="wf-serif" style={{ fontSize: 20, fontWeight: 600, color: 'var(--wf-forest)', margin: 0 }}>Waiting for you</h3>
+              <p className="wf-sans" style={{ fontSize: 12.5, color: 'var(--wf-ink-45)', margin: '4px 0 0' }}>Messages the AI held for your review</p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {needsReplyMessages.slice(0, 4).map((msg) => {
+                const initials = msg.guest_name ? msg.guest_name.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() : msg.guest_phone_hash.slice(-2).toUpperCase()
+                const name = msg.guest_name || (msg.guest_phone ? msg.guest_phone.replace(/(\+\d{1,3})(\d{3})(\d{3})(\d{4})/, 'Guest $2-$3-$4') : `Guest ···${msg.guest_phone_hash.slice(-4)}`)
+                const isSensitive = msg.classified_as === 'sensitive' || msg.classified_as === 'escalated'
+                return (
+                  <div key={msg.id} style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '12px 14px', borderRadius: 12, background: 'var(--wf-cream)', border: '1px solid var(--wf-cream-border)', cursor: 'pointer', transition: 'all 0.15s' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--wf-line-strong)'; e.currentTarget.style.background = 'var(--wf-cream-warm)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--wf-cream-border)'; e.currentTarget.style.background = 'var(--wf-cream)' }}
+                    onClick={() => { setView('inbox'); setInboxTab('needs-reply') }}>
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'rgba(28,59,43,0.08)', color: 'var(--wf-forest)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, flexShrink: 0 }}>{initials}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 3 }}>
+                        <span className="wf-sans" style={{ fontSize: 13, fontWeight: 600, color: 'var(--wf-forest)' }}>{name}</span>
+                        <span className="wf-sans" style={{ fontSize: 10.5, color: 'var(--wf-ink-45)' }}>{timeAgo(msg.created_at)}</span>
+                      </div>
+                      <p className="wf-sans" style={{ fontSize: 12.5, color: 'var(--wf-ink-60)', margin: 0, lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{msg.body}</p>
+                    </div>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0, fontSize: 10.5, color: isSensitive ? 'var(--wf-rose)' : 'var(--wf-sage)', fontWeight: 500 }}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: isSensitive ? 'var(--wf-rose)' : 'var(--wf-sage)' }} />
+                      {isSensitive ? 'Sensitive' : 'Routine'}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+            <button onClick={() => setView('inbox')} style={{ marginTop: 16, background: 'none', border: 'none', color: 'var(--wf-forest)', fontSize: 13, fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--wf-sans)' }}>
+              View all in Inbox <Icon name="arrowRight" size={12} />
+            </button>
+          </div>
+        )}
+
+        {needsReplyMessages.length === 0 && (
+          <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 20, padding: '48px 26px', textAlign: 'center' }}>
+            <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(123,145,116,0.15)', color: 'var(--wf-sage)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <Icon name="check" size={22} />
+            </div>
+            <h3 className="wf-serif" style={{ fontSize: 18, fontWeight: 600, color: 'var(--wf-forest)', margin: '0 0 6px' }}>All caught up</h3>
+            <p className="wf-sans" style={{ fontSize: 13, color: 'var(--wf-ink-60)', margin: 0 }}>No messages waiting for your reply right now.</p>
+          </div>
+        )}
       </div>
     )
   }
+
+  // ─── Inbox ────────────────────────────────────────────────────────────────────
 
   function renderInbox() {
-    const isEmpty = filteredConversations.length === 0
     const needsReplyCount = conversations.filter((c) => c.hasNeedsReply).length
     const totalCount = conversations.length
+    const isEmpty = filteredConversations.length === 0
 
     return (
-      <div className="max-w-2xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-stone-900">Inbox</h2>
-          <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 disabled:opacity-50 rounded-lg transition-colors"
-          >
-            {isRefreshing ? (
-              <>
-                <span className="inline-block w-3 h-3 border-2 border-stone-400 border-t-transparent rounded-full animate-spin" />
-                Refreshing...
-              </>
-            ) : (
-              <>↻ Refresh</>
-            )}
-          </button>
-        </div>
-
-        {/* Tabs & Search */}
-        <div className="flex flex-col gap-4">
-          {/* Tabs row */}
-          <div className="flex border-b border-stone-200">
-            {(
-              [
-                { id: 'needs-reply', label: `Needs reply${needsReplyCount > 0 ? ` (${needsReplyCount})` : ''}` },
-                { id: 'all', label: `All threads${totalCount > 0 ? ` (${totalCount})` : ''}` },
-              ] as { id: InboxTab; label: string }[]
-            ).map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setInboxTab(tab.id)}
-                className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-                  inboxTab === tab.id
-                    ? 'border-[#1C3B2B] text-[#1C3B2B]'
-                    : 'border-transparent text-stone-500 hover:text-stone-700'
-                }`}
-              >
-                {tab.label}
+      <div style={{ display: 'grid', gridTemplateColumns: selectedConversation ? '340px 1fr' : '1fr', height: 'calc(100vh - 0px)', background: 'var(--wf-cream)' }}>
+        {/* Thread list */}
+        <div style={{ borderRight: '1px solid var(--wf-line)', display: 'flex', flexDirection: 'column', background: 'var(--wf-cream)' }}>
+          <div style={{ padding: '24px 22px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 }}>
+              <h2 className="wf-serif" style={{ fontSize: 24, color: 'var(--wf-forest)', fontWeight: 600, margin: 0 }}>Inbox</h2>
+              <button onClick={handleRefresh} disabled={isRefreshing} style={{ background: 'none', border: 'none', color: 'var(--wf-ink-60)', cursor: 'pointer', fontSize: 12, display: 'flex', alignItems: 'center', gap: 4, fontFamily: 'var(--wf-sans)' }}>
+                <Icon name="refresh" size={13} /> {isRefreshing ? 'Refreshing…' : 'Refresh'}
               </button>
-            ))}
+            </div>
+            {/* Search */}
+            <div style={{ position: 'relative', marginBottom: 14 }}>
+              <div style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--wf-ink-45)' }}>
+                <Icon name="search" size={14} />
+              </div>
+              <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search threads" className="wf-sans" style={{ width: '100%', padding: '9px 12px 9px 36px', background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 999, fontSize: 13, fontFamily: 'var(--wf-sans)', color: 'var(--wf-ink)', outline: 'none' }} />
+              {searchQuery && <button onClick={() => setSearchQuery('')} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', padding: 2 }}>✕</button>}
+            </div>
+            {/* Tabs */}
+            <div style={{ display: 'flex', background: 'var(--wf-cream-warm)', borderRadius: 10, padding: 3 }}>
+              {([['needs-reply', 'Needs reply', needsReplyCount], ['all', 'All', totalCount]] as [InboxTab, string, number][]).map(([k, label, count]) => (
+                <button key={k} onClick={() => setInboxTab(k)} className="wf-sans" style={{ flex: 1, padding: '7px 10px', background: inboxTab === k ? 'var(--wf-paper)' : 'transparent', border: 'none', borderRadius: 8, boxShadow: inboxTab === k ? 'var(--wf-shadow-sm)' : 'none', fontSize: 12, fontWeight: 500, color: inboxTab === k ? 'var(--wf-forest)' : 'var(--wf-ink-60)', cursor: 'pointer', fontFamily: 'var(--wf-sans)' }}>
+                  {label} · {count}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Search & Filter row */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search input */}
-            <div className="flex-1 relative">
-              <svg
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by name, phone, or message content..."
-                className="w-full pl-10 pr-4 py-2 text-sm border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C3B2B] focus:border-transparent"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
-                >
-                  ✕
+          {/* Thread list */}
+          <div className="wf-scroll" style={{ flex: 1, overflow: 'auto', padding: '4px 10px 20px' }}>
+            {isEmpty ? (
+              <div style={{ padding: '48px 24px', textAlign: 'center' }}>
+                <Image src="/Couple2.png" alt="No messages" width={160} height={128} style={{ margin: '0 auto 16px', opacity: 0.7 }} />
+                <p className="wf-sans" style={{ color: 'var(--wf-ink-60)', fontWeight: 500, fontSize: 13 }}>
+                  {inboxTab === 'needs-reply' ? 'Nothing needs a reply right now.' : 'No conversations yet.'}
+                </p>
+                <p className="wf-sans" style={{ color: 'var(--wf-ink-45)', fontSize: 12, marginTop: 4 }}>
+                  {inboxTab === 'needs-reply' ? 'Check back after guests reach out.' : 'Share your number with guests to get started.'}
+                </p>
+              </div>
+            ) : (
+              filteredConversations.map((convo) => {
+                const title = getConversationTitle(convo)
+                const initials = getInitials(convo)
+                const isSel = convo.id === selectedConversationId
+                const lastMsg = convo.messages[convo.messages.length - 1]
+                const toneDot = convo.hasNeedsReply ? 'var(--wf-rose)' : 'var(--wf-sage)'
+
+                return (
+                  <button key={convo.id} onClick={() => setSelectedConversationId(isSel ? null : convo.id)} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '14px', background: isSel ? 'var(--wf-paper)' : 'transparent', border: isSel ? '1px solid var(--wf-line)' : '1px solid transparent', borderRadius: 12, cursor: 'pointer', marginBottom: 2, boxShadow: isSel ? 'var(--wf-shadow-sm)' : 'none', transition: 'all 0.15s', fontFamily: 'var(--wf-sans)' }}
+                    onMouseEnter={(e) => { if (!isSel) e.currentTarget.style.background = 'var(--wf-paper)' }}
+                    onMouseLeave={(e) => { if (!isSel) e.currentTarget.style.background = 'transparent' }}>
+                    <div style={{ display: 'flex', gap: 12 }}>
+                      <div style={{ width: 36, height: 36, borderRadius: '50%', flexShrink: 0, background: 'rgba(28,59,43,0.1)', color: 'var(--wf-forest)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600 }}>{initials}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--wf-forest)', display: 'flex', alignItems: 'center', gap: 6 }} className="wf-sans">
+                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: toneDot, flexShrink: 0 }} />
+                            {title}
+                          </span>
+                          <span className="wf-sans" style={{ fontSize: 10.5, color: 'var(--wf-ink-45)', flexShrink: 0 }}>{timeAgo(lastMsg.created_at)}</span>
+                        </div>
+                        <p className="wf-sans" style={{ fontSize: 12, color: 'var(--wf-ink-60)', margin: 0, lineHeight: 1.45, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>
+                          {lastMsg.body}
+                        </p>
+                        {convo.hasNeedsReply && (
+                          <div style={{ marginTop: 6 }}>
+                            <span className="wf-sans" style={{ fontSize: 10, color: 'var(--wf-terracotta-deep)', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                              ● Waiting for you
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                )
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Conversation detail */}
+        {selectedConversation && (
+          <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--wf-cream-warm)' }}>
+            {/* Thread header */}
+            <div style={{ padding: '20px 32px', borderBottom: '1px solid var(--wf-line)', background: 'var(--wf-cream)', display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--wf-forest)', color: 'var(--wf-cream)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--wf-serif)', fontWeight: 600, fontSize: 16 }}>
+                {getInitials(selectedConversation)}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                  <h3 className="wf-serif" style={{ margin: 0, fontSize: 18, fontWeight: 600, color: 'var(--wf-forest)' }}>{getConversationTitle(selectedConversation)}</h3>
+                  {selectedConversation.hasNeedsReply && (
+                    <span className="wf-badge wf-badge-sensitive"><Icon name="shield" size={10} /> Sensitive</span>
+                  )}
+                </div>
+                {selectedConversation.guest_phone && (
+                  <div className="wf-sans" style={{ fontSize: 12, color: 'var(--wf-ink-60)', marginTop: 2, fontFamily: 'monospace' }}>
+                    {selectedConversation.guest_phone} · {selectedConversation.messageCount} messages
+                  </div>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: 6 }}>
+                {selectedConversation.hasNeedsReply && (
+                  <button onClick={() => handleReplyClick(selectedConversation.messages.filter((m) => m.direction === 'inbound' && m.classified_as === 'escalated').slice(-1)[0])} className="wf-btn wf-btn-primary wf-btn-sm">
+                    <Icon name="send" size={12} /> Reply
+                  </button>
+                )}
+                <button onClick={() => setSelectedConversationId(null)} className="wf-btn wf-btn-ghost wf-btn-sm">
+                  <Icon name="x" size={13} />
                 </button>
-              )}
+              </div>
             </div>
 
-            {/* Priority filter - only show in All threads tab */}
-            {inboxTab === 'all' && (
-              <select
-                value={priorityFilter}
-                onChange={(e) => setPriorityFilter(e.target.value as 'all' | 'escalated' | 'routine')}
-                className="px-3 py-2 text-sm border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1C3B2B] focus:border-transparent bg-white"
-              >
-                <option value="all">All priorities</option>
-                <option value="escalated">🔥 Escalated</option>
-                <option value="routine">✓ Routine</option>
-              </select>
-            )}
-          </div>
-        </div>
-
-        {/* Results count */}
-        {(searchQuery || priorityFilter !== 'all') && (
-          <p className="text-sm text-stone-500">
-            Showing {filteredConversations.length} of {conversations.length} conversations
-            {searchQuery && ` matching "${searchQuery}"`}
-          </p>
-        )}
-
-        {/* Thread Cards */}
-        {isEmpty ? (
-          <div className="flex flex-col items-center py-16 text-center">
-            <Image
-              src="/Couple2.png"
-              alt="No messages"
-              width={200}
-              height={160}
-              className="mb-6 opacity-70"
-            />
-            <p className="text-stone-500 font-medium">
-              {inboxTab === 'needs-reply' ? 'No conversations need a reply right now.' : 'No conversations yet.'}
-            </p>
-            <p className="text-stone-400 text-sm mt-1">
-              {inboxTab === 'needs-reply'
-                ? 'Check back after your guests start reaching out.'
-                : 'Share your Wedflow number with guests to get started.'}
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredConversations.map((convo) => (
-              <ThreadCard
-                key={convo.id}
-                conversation={convo}
-                onReply={inboxTab === 'needs-reply' ? handleReplyClick : undefined}
-              />
-            ))}
+            {/* Messages */}
+            <div className="wf-scroll" style={{ flex: 1, overflow: 'auto', padding: '36px 60px 20px', display: 'flex', flexDirection: 'column', gap: 22 }}>
+              {selectedConversation.messages.map((msg, i) => {
+                const isIn = msg.direction === 'inbound'
+                return (
+                  <div key={i} style={{ alignSelf: isIn ? 'flex-start' : 'flex-end', maxWidth: '75%' }}>
+                    {msg.classified_as === 'escalated' && isIn && (
+                      <div className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-terracotta-deep)', fontWeight: 600, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6, marginLeft: 12 }}>
+                        <Icon name="shield" size={11} /> Held for your review — not auto-replied
+                      </div>
+                    )}
+                    <div style={{ background: isIn ? 'var(--wf-paper)' : 'var(--wf-forest)', color: isIn ? 'var(--wf-ink)' : 'var(--wf-cream)', border: isIn ? '1px solid var(--wf-line)' : 'none', padding: '12px 16px', borderRadius: 16, borderTopLeftRadius: isIn ? 4 : 16, borderTopRightRadius: isIn ? 16 : 4, fontSize: 14, lineHeight: 1.55, boxShadow: isIn ? 'var(--wf-shadow-sm)' : '0 4px 14px rgba(28,59,43,0.14)' }}>
+                      {msg.body}
+                    </div>
+                    <div className="wf-sans" style={{ fontSize: 10.5, color: 'var(--wf-ink-45)', marginTop: 5, paddingLeft: isIn ? 12 : 0, paddingRight: isIn ? 0 : 12, textAlign: isIn ? 'left' : 'right', display: 'flex', gap: 6, justifyContent: isIn ? 'flex-start' : 'flex-end' }}>
+                      {msg.was_sent && !isIn && <span style={{ color: 'var(--wf-sage)', fontWeight: 600 }}>✓ Auto-replied</span>}
+                      <span>{timeAgo(msg.created_at)}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         )}
       </div>
     )
   }
+
+  // ─── Guests ───────────────────────────────────────────────────────────────────
 
   function renderGuests() {
     return (
-      <div className="max-w-2xl mx-auto space-y-6">
-        <h2 className="text-xl font-semibold text-stone-900">Guests</h2>
-        <div className="flex flex-col items-center py-16 text-center">
-          <Image
-            src="/Couple2.png"
-            alt="No guests"
-            width={200}
-            height={160}
-            className="mb-6 opacity-70"
-          />
-          <p className="text-stone-500 font-medium">Guest list coming soon.</p>
-          <p className="text-stone-400 text-sm mt-1">
-            We&apos;re working on a better way to manage your guest list.
-          </p>
+      <div style={{ padding: '40px 48px 80px', maxWidth: 800, margin: '0 auto' }}>
+        <span className="wf-eyebrow">Guest list</span>
+        <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 32px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+          Everyone you&apos;ll <em style={{ fontWeight: 500 }}>celebrate with.</em>
+        </h1>
+        <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 20, padding: '48px 32px', textAlign: 'center' }}>
+          <Image src="/Couple2.png" alt="Guests" width={200} height={160} style={{ margin: '0 auto 24px', opacity: 0.7 }} />
+          <h3 className="wf-serif" style={{ fontSize: 20, fontWeight: 600, color: 'var(--wf-forest)', margin: '0 0 8px' }}>Guest list coming soon</h3>
+          <p className="wf-sans" style={{ fontSize: 14, color: 'var(--wf-ink-60)', margin: 0 }}>We&apos;re building a better way to manage your guest list.</p>
         </div>
       </div>
     )
   }
+
+  // ─── Profile ──────────────────────────────────────────────────────────────────
 
   function renderProfile() {
     if (!localProfile) {
       return (
-        <div className="max-w-2xl mx-auto">
-          <p className="text-stone-500">No wedding profile found. Please complete onboarding.</p>
+        <div style={{ padding: '40px 48px', maxWidth: 800, margin: '0 auto' }}>
+          <p className="wf-sans" style={{ color: 'var(--wf-ink-60)' }}>No wedding profile found. Please complete onboarding.</p>
         </div>
       )
     }
 
     const fieldProps = {
-      profile: localProfile,
-      editField,
-      draftValue,
-      saving: isSaving,
-      onEdit: handleEditField,
-      onSave: handleSaveField,
-      onCancel: () => setEditField(null),
-      onDraftChange: setDraftValue,
+      profile: localProfile, editField, draftValue, saving: isSaving,
+      onEdit: handleEditField, onSave: handleSaveField, onCancel: () => setEditField(null), onDraftChange: setDraftValue,
     }
 
-    return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-semibold" style={{ color: C.forest, fontFamily: 'var(--newsreader)' }}>Wedding Profile</h2>
+    const phoneFormatted = phoneNumber ? phoneNumber.replace(/(\+\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') : null
 
-        {/* Hero: phone + readiness - two equal cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="rounded-2xl p-8 flex flex-col justify-between" style={{ backgroundColor: C.forest }}>
-            <div>
-              <p className="text-sm font-medium uppercase tracking-wide mb-4" style={{ color: 'rgba(253,251,247,0.7)' }}>Your Wedflow Number</p>
-              <p className="text-4xl font-mono font-bold" style={{ color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.25)', letterSpacing: '0.08em' }}>{phoneNumber ? phoneNumber.replace(/(\+\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') : 'Not yet assigned'}</p>
+    return (
+      <div style={{ padding: '40px 48px 80px', maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ marginBottom: 32 }}>
+          <span className="wf-eyebrow">Wedding profile</span>
+          <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 6px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+            The details your <em style={{ fontWeight: 500 }}>AI knows by heart.</em>
+          </h1>
+          <p className="wf-sans" style={{ color: 'var(--wf-ink-60)', fontSize: 15 }}>Edit anything — we&apos;ll retrain your concierge in seconds.</p>
+        </div>
+
+        {/* Phone + readiness */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 20, marginBottom: 28 }}>
+          <div style={{ background: 'var(--wf-forest)', borderRadius: 20, padding: '28px 32px', color: 'var(--wf-cream)' }}>
+            <span className="wf-eyebrow wf-eyebrow-forest">Your Wedflow number</span>
+            <div className="wf-serif" style={{ fontSize: 42, fontWeight: 500, marginTop: 14, marginBottom: 8, letterSpacing: '-0.01em', fontVariantNumeric: 'tabular-nums' }}>
+              {phoneFormatted || 'Not yet assigned'}
             </div>
-            <p className="text-base mt-6 font-medium" style={{ color: 'rgba(253,251,247,0.8)' }}>Share this with your guests</p>
+            {phoneFormatted && (
+              <button onClick={() => navigator.clipboard.writeText(phoneNumber!)} className="wf-btn wf-btn-sm" style={{ background: 'rgba(253,251,247,0.12)', color: 'var(--wf-cream)', border: '1px solid rgba(253,251,247,0.2)' }}>
+                <Icon name="copy" size={12} /> Copy
+              </button>
+            )}
           </div>
-          <div className="rounded-2xl p-8 flex flex-col justify-between" style={{ backgroundColor: C.forest }}>
-            <div>
-              <p className="text-sm font-medium uppercase tracking-wide mb-4" style={{ color: 'rgba(253,251,247,0.7)' }}>Readiness Score</p>
-              <div className="flex items-center gap-4">
-                <div className="flex-1 h-4 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(253,251,247,0.2)' }}>
-                  <div
-                    className="h-full rounded-full transition-all"
-                    style={{
-                      width: `${localProfile.readiness_score}%`,
-                      backgroundColor: localProfile.readiness_score >= 80 ? '#4ADE80' : localProfile.readiness_score >= 50 ? '#FBBF24' : C.terracotta,
-                    }}
-                  />
-                </div>
-                <span className="text-3xl font-bold" style={{ color: '#FFFFFF' }}>{localProfile.readiness_score}%</span>
-              </div>
+          <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 20, padding: '28px 32px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
+              <span className="wf-eyebrow">Readiness</span>
+              <span className="wf-serif" style={{ fontSize: 32, fontWeight: 600, color: 'var(--wf-forest)' }}>{localProfile.readiness_score}%</span>
             </div>
-            <p className="text-base mt-6 font-medium" style={{ color: localProfile.is_active ? '#4ADE80' : 'rgba(253,251,247,0.7)' }}>
-              {localProfile.is_active ? '✓ Active and responding' : '○ Not yet active'}
+            <div style={{ height: 6, background: 'var(--wf-cream-warm)', borderRadius: 3, overflow: 'hidden' }}>
+              <div style={{ width: `${localProfile.readiness_score}%`, height: '100%', background: `linear-gradient(90deg, var(--wf-terracotta), #d18860)`, transition: 'width 0.5s' }} />
+            </div>
+            <p className="wf-sans" style={{ fontSize: 12, color: 'var(--wf-ink-60)', marginTop: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: localProfile.is_active ? '#6ea260' : 'var(--wf-ink-25)' }} />
+              {localProfile.is_active ? 'Active and responding — no missing details.' : 'Not yet active.'}
             </p>
           </div>
         </div>
 
-        {/* Venue & Date - 3-column card grid */}
-        <section>
-          <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'rgba(28,59,43,0.45)' }}>📍 Venue &amp; Date</p>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-            <ProfileField label="Venue name" field="venue_name" {...fieldProps} />
-            <ProfileField label="Venue address" field="venue_address" {...fieldProps} />
-            <ProfileField label="Wedding date" field="wedding_date" {...fieldProps} />
-            <ProfileField label="Ceremony time" field="ceremony_time" {...fieldProps} />
-            <ProfileField label="Reception time" field="reception_time" {...fieldProps} />
-            <ProfileField label="Parking info" field="parking_info" {...fieldProps} />
-          </div>
-        </section>
+        {/* Venue & Date */}
+        <ProfileSectionHeader icon="mapPin" title="Venue & date" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 28 }}>
+          <ProfileField label="Venue name" field="venue_name" {...fieldProps} />
+          <ProfileField label="Venue address" field="venue_address" {...fieldProps} />
+          <ProfileField label="Wedding date" field="wedding_date" {...fieldProps} />
+          <ProfileField label="Ceremony time" field="ceremony_time" {...fieldProps} />
+          <ProfileField label="Reception time" field="reception_time" {...fieldProps} />
+          <ProfileField label="Parking info" field="parking_info" {...fieldProps} />
+        </div>
 
-        {/* Guest Info + Tone - two columns side by side */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <section>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'rgba(28,59,43,0.45)' }}>👗 Guest Information</p>
-            <div className="grid grid-cols-2 gap-4">
-              <ProfileField label="Dress code" field="dress_code" {...fieldProps} />
-              <ProfileField label="Hotel block" field="hotel_block" {...fieldProps} />
-              <div className="col-span-2">
-                <ProfileField label="Registry links (one per line)" field="registry_links" {...fieldProps} />
-              </div>
-            </div>
-          </section>
-          <section>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'rgba(28,59,43,0.45)' }}>✨ Tone &amp; Voice</p>
-            <div className="grid grid-cols-2 gap-4">
-              <ProfileField label="Tone style" field="tone" {...fieldProps} />
-              <ProfileField label="Vibe word" field="vibe_word" {...fieldProps} />
-              <div className="col-span-2">
-                <ProfileField label="Sample message (for AI calibration)" field="sample_message" {...fieldProps} />
-              </div>
-            </div>
-          </section>
+        {/* Guest info */}
+        <ProfileSectionHeader icon="users" title="Guest information" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 28 }}>
+          <ProfileField label="Dress code" field="dress_code" {...fieldProps} />
+          <ProfileField label="Hotel block" field="hotel_block" {...fieldProps} />
+          <ProfileField label="Registry links (one per line)" field="registry_links" {...fieldProps} />
+        </div>
+
+        {/* Tone & Voice */}
+        <ProfileSectionHeader icon="sparkle" title="Tone & voice" />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+          <ProfileField label="Tone style" field="tone" {...fieldProps} />
+          <ProfileField label="Vibe word" field="vibe_word" {...fieldProps} />
+          <div style={{ gridColumn: 'span 3' }}>
+            <ProfileField label="Sample message (for AI calibration)" field="sample_message" {...fieldProps} />
+          </div>
         </div>
       </div>
     )
   }
+
+  // ─── Settings ─────────────────────────────────────────────────────────────────
 
   function renderSettings() {
     return (
-      <div className="max-w-xl mx-auto space-y-8">
-        <h2 className="text-xl font-semibold text-stone-900">Settings</h2>
+      <div style={{ padding: '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
+        <div style={{ marginBottom: 32 }}>
+          <span className="wf-eyebrow">Settings</span>
+          <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 6px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+            Shape how <em style={{ fontWeight: 500 }}>your concierge behaves.</em>
+          </h1>
+          <p className="wf-sans" style={{ color: 'var(--wf-ink-60)', fontSize: 15 }}>Account, notifications, and billing.</p>
+        </div>
 
         {/* Account */}
-        <section className="bg-white border border-stone-200 rounded-xl divide-y divide-stone-100">
-          <div className="p-5">
-            <p className="text-xs font-medium text-stone-400 uppercase tracking-wide mb-1">
-              Account email
-            </p>
-            <p className="text-sm text-stone-700">{couple.email}</p>
-            <p className="text-xs text-stone-400 mt-1">Managed by Clerk - edit in your account settings</p>
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(196,113,74,0.12)', color: 'var(--wf-terracotta-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="users" size={14} />
+            </div>
+            <h2 className="wf-serif" style={{ fontSize: 20, color: 'var(--wf-forest)', fontWeight: 600, margin: 0 }}>Your account</h2>
           </div>
+          <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 20, padding: '16px 22px', borderBottom: '1px solid var(--wf-line)', alignItems: 'center' }}>
+              <div>
+                <div className="wf-sans" style={{ fontSize: 13, fontWeight: 500, color: 'var(--wf-forest)' }}>Account email</div>
+                <div className="wf-sans" style={{ fontSize: 11.5, color: 'var(--wf-ink-45)', marginTop: 3 }}>Managed by Clerk — edit in your account settings</div>
+              </div>
+              <span className="wf-sans" style={{ fontSize: 13, color: 'var(--wf-ink-60)' }}>{couple.email}</span>
+            </div>
 
-          <div className="p-5">
-            <p className="text-xs font-medium text-stone-400 uppercase tracking-wide mb-2">
-              Partner email
-            </p>
-            {editingEmail ? (
-              <div className="flex gap-2 items-center">
-                <input
-                  type="email"
-                  value={emailDraft}
-                  onChange={(e) => setEmailDraft(e.target.value)}
-                  placeholder="partner@example.com"
-                  className="flex-1 text-sm border border-stone-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1C3B2B]"
-                />
-                <button
-                  onClick={handleSaveEmail}
-                  disabled={isSavingEmail}
-                  className="px-3 py-2 text-xs font-medium text-white disabled:opacity-50 rounded-lg transition-colors hover:opacity-90"
-                  style={{ backgroundColor: C.forest }}
-                >
-                  {isSavingEmail ? 'Saving...' : 'Save'}
-                </button>
-                <button
-                  onClick={() => {
-                    setEmailDraft(localPartnerEmail)
-                    setEditingEmail(false)
-                  }}
-                  disabled={isSavingEmail}
-                  className="px-3 py-2 text-xs font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 rounded-lg transition-colors"
-                >
-                  Cancel
-                </button>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 20, padding: '16px 22px', alignItems: 'center' }}>
+              <div>
+                <div className="wf-sans" style={{ fontSize: 13, fontWeight: 500, color: 'var(--wf-forest)' }}>Partner email</div>
+                <div className="wf-sans" style={{ fontSize: 11.5, color: 'var(--wf-ink-45)', marginTop: 3 }}>For notifications and shared access</div>
               </div>
-            ) : (
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-stone-700">
-                  {localPartnerEmail || <span className="italic text-stone-400">Not set</span>}
-                </p>
-                <button
-                  onClick={() => {
-                    setEmailDraft(localPartnerEmail)
-                    setEditingEmail(true)
-                  }}
-                  className="px-3 py-1.5 text-xs font-medium text-stone-600 bg-stone-100 hover:bg-stone-200 rounded-lg transition-colors"
-                >
-                  Edit
-                </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                {editingEmail ? (
+                  <>
+                    <input type="email" value={emailDraft} onChange={(e) => setEmailDraft(e.target.value)} placeholder="partner@example.com" className="wf-sans" style={{ fontSize: 13, border: '1px solid var(--wf-line-strong)', borderRadius: 8, padding: '8px 12px', outline: 'none', fontFamily: 'var(--wf-sans)' }} />
+                    <button onClick={handleSaveEmail} disabled={isSavingEmail} className="wf-btn wf-btn-forest wf-btn-sm">
+                      {isSavingEmail ? 'Saving…' : 'Save'}
+                    </button>
+                    <button onClick={() => { setEmailDraft(localPartnerEmail); setEditingEmail(false) }} disabled={isSavingEmail} className="wf-btn wf-btn-ghost wf-btn-sm">Cancel</button>
+                  </>
+                ) : (
+                  <>
+                    <span className="wf-sans" style={{ fontSize: 13, color: 'var(--wf-ink-60)', fontStyle: localPartnerEmail ? 'normal' : 'italic' }}>
+                      {localPartnerEmail || 'Not set'}
+                    </span>
+                    <button onClick={() => { setEmailDraft(localPartnerEmail); setEditingEmail(true) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', padding: 4 }}>
+                      <Icon name="edit" size={13} />
+                    </button>
+                  </>
+                )}
               </div>
-            )}
+            </div>
           </div>
-        </section>
+        </div>
 
         {/* Danger zone */}
-        <section>
-          <h3 className="text-sm font-semibold text-red-600 mb-3">Danger zone</h3>
-          <div className="border border-red-200 rounded-xl p-5 flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-stone-800">Delete all data</p>
-              <p className="text-xs text-stone-400 mt-0.5">
-                Permanently removes your wedding profile and all guest messages.
-              </p>
-            </div>
-            <button
-              disabled
-              className="px-4 py-2 text-sm font-medium text-red-500 border border-red-300 rounded-lg opacity-50 cursor-not-allowed"
-              title="Coming soon"
-            >
-              Delete
-            </button>
+        <div style={{ marginTop: 32, padding: '20px 24px', background: 'rgba(180,84,78,0.06)', border: '1px solid rgba(180,84,78,0.2)', borderRadius: 14 }}>
+          <h3 className="wf-serif" style={{ color: 'var(--wf-rose)', margin: '0 0 6px', fontSize: 16, fontWeight: 600 }}>Danger zone</h3>
+          <p className="wf-sans" style={{ fontSize: 13, color: 'var(--wf-ink-60)', margin: '0 0 12px' }}>
+            Permanently removes your wedding profile and all guest messages. This can&apos;t be undone.
+          </p>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button disabled className="wf-btn wf-btn-light wf-btn-sm" style={{ opacity: 0.5, cursor: 'not-allowed' }} title="Coming soon">Delete all data</button>
           </div>
-        </section>
+        </div>
       </div>
     )
   }
 
-  // ----------------------------------------------------------------
-  // Layout
-  // ----------------------------------------------------------------
+  // ─── Layout ───────────────────────────────────────────────────────────────────
+
+  const isInboxFullHeight = view === 'inbox'
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ backgroundColor: C.cream }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', minHeight: '100vh', background: 'var(--wf-cream)' }}>
       {/* Sidebar */}
-      <aside className="w-64 flex-shrink-0 flex flex-col" style={{ backgroundColor: C.forest }}>
-        {/* Wordmark */}
-        <div className="px-6 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-          <p
-            className="text-2xl font-semibold"
-            style={{ color: C.cream, fontFamily: 'var(--newsreader)' }}
-          >
-            Wedflow
-          </p>
+      <aside style={{ background: 'var(--wf-forest)', color: 'var(--wf-cream)', padding: '28px 20px 24px', display: 'flex', flexDirection: 'column', position: 'sticky', top: 0, height: '100vh' }}>
+        {/* Brand */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 12px 28px' }}>
+          <div style={{ width: 104, height: 104, borderRadius: '22%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Image src="/LogoDark.png" alt="Wedflow" width={168} height={168} style={{ width: 168, height: 168, objectFit: 'contain', flexShrink: 0 }} />
+          </div>
+          <span className="wf-serif" style={{ fontSize: 20, fontWeight: 600 }}>Wedflow</span>
+        </div>
+
+        {/* Couple card */}
+        <div style={{ background: 'rgba(253,251,247,0.06)', border: '1px solid rgba(253,251,247,0.1)', borderRadius: 14, padding: '14px', marginBottom: 24, display: 'flex', gap: 12, alignItems: 'center' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--wf-terracotta)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--wf-serif)', fontWeight: 600, fontSize: 14, color: 'var(--wf-cream)' }}>
+            {coupleNames.split(/\s+/).filter(Boolean).slice(0, 2).map((w: string) => w[0]).join('')}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="wf-sans" style={{ fontSize: 13, fontWeight: 600, color: 'var(--wf-cream)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{coupleNames}</div>
+            {daysUntilWedding > 0 && <div className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-cream-ink-50)' }}>{daysUntilWedding} days to go</div>}
+          </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setView(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                view === item.id
-                  ? 'text-white'
-                  : 'hover:text-white'
-              }`}
-              style={
-                view === item.id
-                  ? { backgroundColor: 'rgba(255,255,255,0.15)', color: '#fff' }
-                  : { color: 'rgba(253,251,247,0.7)' }
-              }
-            >
-              <span className="text-base leading-none">{item.icon}</span>
-              {item.label}
-              {item.id === 'inbox' && needsReplyMessages.length > 0 && (
-                <span className="ml-auto inline-flex items-center justify-center w-5 h-5 text-xs font-semibold text-white rounded-full" style={{ backgroundColor: C.terracotta }}>
-                  {needsReplyMessages.length}
-                </span>
-              )}
-            </button>
-          ))}
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {navItems.map((n) => {
+            const active = view === n.id
+            return (
+              <button key={n.id} onClick={() => setView(n.id)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 14px', background: active ? 'var(--wf-cream)' : 'transparent', color: active ? 'var(--wf-forest)' : 'var(--wf-cream-ink)', border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 13, fontWeight: 500, fontFamily: 'var(--wf-sans)', textAlign: 'left', width: '100%', transition: 'all 0.15s' }}
+                onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = 'rgba(253,251,247,0.06)' }}
+                onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent' }}>
+                <Icon name={n.icon} size={17} />
+                <span style={{ flex: 1 }}>{n.label}</span>
+                {n.id === 'inbox' && needsReplyMessages.length > 0 && (
+                  <span style={{ background: 'var(--wf-terracotta)', color: 'var(--wf-cream)', fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 999, minWidth: 18, textAlign: 'center' }}>
+                    {needsReplyMessages.length}
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </nav>
 
-        {/* Footer */}
-        <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,0.15)' }}>
-          <p className="text-xs mb-3 px-1 truncate" style={{ color: 'rgba(253,251,247,0.6)' }}>{coupleNames}</p>
-          <button
-            onClick={async () => {
-              await signOutAction()
-              // Force a full page reload to clear server-side auth state
-              window.location.href = '/'
-            }}
-            className="w-full px-3 py-2 text-xs font-medium rounded-lg transition-colors text-left hover:opacity-90"
-            style={{ color: 'rgba(253,251,247,0.7)', backgroundColor: 'rgba(255,255,255,0.1)' }}
-          >
-            Sign out
+        {/* Footer: readiness + sign out */}
+        <div style={{ marginTop: 'auto' }}>
+          {localProfile && (
+            <div style={{ padding: '14px', borderRadius: 12, background: 'rgba(253,251,247,0.05)', border: '1px solid rgba(253,251,247,0.08)', marginBottom: 14 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <span className="wf-sans" style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--wf-cream-ink-50)' }}>Readiness</span>
+                <span className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-cream)', fontWeight: 600 }}>{localProfile.readiness_score}%</span>
+              </div>
+              <div style={{ height: 4, background: 'rgba(253,251,247,0.1)', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ width: `${localProfile.readiness_score}%`, height: '100%', background: 'var(--wf-terracotta)' }} />
+              </div>
+              <div className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-cream-ink-50)', marginTop: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: localProfile.is_active ? '#6ea260' : 'rgba(253,251,247,0.3)' }} />
+                {localProfile.is_active ? 'Active & responding' : 'Not yet active'}
+              </div>
+            </div>
+          )}
+          <button onClick={async () => { await signOutAction(); window.location.href = '/' }} style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '10px 14px', background: 'transparent', color: 'var(--wf-cream-ink-50)', border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontFamily: 'var(--wf-sans)' }}>
+            <Icon name="signOut" size={15} /> Sign out
           </button>
         </div>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 overflow-y-auto" style={{ backgroundColor: C.cream }}>
-        <div className="p-8">
-          {view === 'home' && renderHome()}
-          {view === 'inbox' && renderInbox()}
-          {view === 'guests' && renderGuests()}
-          {view === 'profile' && renderProfile()}
-          {view === 'settings' && renderSettings()}
-        </div>
+      {/* Main */}
+      <main style={{ overflow: isInboxFullHeight ? 'hidden' : 'auto', height: isInboxFullHeight ? '100vh' : 'auto' }}>
+        {view === 'home' && renderHome()}
+        {view === 'inbox' && renderInbox()}
+        {view === 'guests' && renderGuests()}
+        {view === 'profile' && renderProfile()}
+        {view === 'settings' && renderSettings()}
       </main>
 
       {/* Reply modal */}
@@ -1385,14 +949,36 @@ setToast({ type: 'success', text: 'Reply sent!' })
 
       {/* Toast */}
       {toast && (
-        <div
-          className={`fixed bottom-6 right-6 px-4 py-3 rounded-xl shadow-lg text-sm font-medium text-white z-50 transition-opacity ${
-            toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
-          }`}
-        >
+        <div style={{ position: 'fixed', bottom: 24, right: 24, padding: '12px 16px', borderRadius: 12, boxShadow: 'var(--wf-shadow-lg)', fontSize: 13, fontWeight: 500, color: 'var(--wf-cream)', background: toast.type === 'success' ? '#4a6141' : 'var(--wf-rose)', zIndex: 50, fontFamily: 'var(--wf-sans)' }}>
           {toast.text}
         </div>
       )}
+    </div>
+  )
+}
+
+// ─── Profile section header ────────────────────────────────────────────────────
+
+function ProfileSectionHeader({ icon, title }: { icon: string; title: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+      <div style={{ width: 30, height: 30, borderRadius: 8, background: 'rgba(196,113,74,0.12)', color: 'var(--wf-terracotta-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name={icon} size={15} />
+      </div>
+      <h2 className="wf-serif" style={{ fontSize: 22, color: 'var(--wf-forest)', fontWeight: 600, margin: 0 }}>{title}</h2>
+      <span style={{ flex: 1, height: 1, background: 'var(--wf-line)', marginLeft: 12 }} />
+    </div>
+  )
+}
+
+// ─── Stat tile ────────────────────────────────────────────────────────────────
+
+function StatTile({ eyebrow, value, hint }: { eyebrow: string; value: string | number; hint?: string }) {
+  return (
+    <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 18, padding: '20px 22px', position: 'relative', overflow: 'hidden' }}>
+      <div className="wf-sans" style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--wf-ink-45)', fontWeight: 600 }}>{eyebrow}</div>
+      <div className="wf-serif" style={{ fontSize: 44, fontWeight: 600, color: 'var(--wf-forest)', letterSpacing: '-0.02em', lineHeight: 1.1, marginTop: 10, marginBottom: 6, fontVariantNumeric: 'tabular-nums' }}>{value}</div>
+      {hint && <div className="wf-sans" style={{ fontSize: 12, color: 'var(--wf-ink-60)' }}>{hint}</div>}
     </div>
   )
 }

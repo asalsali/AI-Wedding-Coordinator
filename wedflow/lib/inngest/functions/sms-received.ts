@@ -212,7 +212,7 @@ export const smsReceived = inngest.createFunction(
       const twilioClient = getTwilioClient();
 
       console.log("[send-reply] Sending SMS", {
-        toNumber: guestPhone,
+        messageId,
         fromNumber: twilioNumber,
         messageLength: reply.length,
       });
@@ -223,7 +223,7 @@ export const smsReceived = inngest.createFunction(
         to: guestPhone,
       });
 
-      console.log("[send-reply] Twilio response", twilioResponse);
+      console.log("[send-reply] Twilio SID", twilioResponse?.sid);
 
       if (twilioResponse == null) {
         throw new Error(

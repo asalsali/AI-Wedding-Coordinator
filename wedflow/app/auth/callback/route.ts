@@ -5,7 +5,8 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/dashboard'
+  const rawNext = searchParams.get('next') ?? ''
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/dashboard'
 
   if (code) {
     const cookieStore = await cookies()
@@ -38,7 +39,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect(new URL(next, request.url))
     }
     
-    console.error('Exchange error:', error.message)
+    console.error('auth/callback exchange failed', { code: error.code ?? 'unknown' })
   }
 
   return NextResponse.redirect(new URL('/sign-in?error=auth_failed', request.url))
