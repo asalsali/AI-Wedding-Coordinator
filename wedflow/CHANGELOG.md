@@ -2,6 +2,27 @@
 
 All notable changes to WedFlow are documented here.
 
+## [0.3.0] - 2026-04-23
+
+### Added
+- Circle of Care MVP: new `circle_members` and `task_assignments` database tables with RLS policies
+- Circle member invite flow at `/join/[token]` with couple-first welcome, magic link auth, email binding validation, and copy invite link fallback
+- MOH portal at `/portal` with task-first mobile layout, task counter, task cards (title, person, deadline), done/dismissed states, and role-filtered conversations
+- Circle server actions: invite creation, invite acceptance, portal context loading, task status updates
+- `DESIGN.md` formalizing the WedFlow brand system (colors, typography, spacing, components, accessibility, ARIA patterns)
+- `safety.test.ts` with 17 tests covering reply fact-checking (URLs, times, addresses, dress codes, empty replies)
+- `escalation.test.ts` with 12 tests covering draft generation, API errors, empty responses, minimal profiles
+- `TODOS.md` with full Circle of Care build order and design decisions from reviews
+- Composite index on `guests(couple_id, group_tag)` for portal conversation filtering
+
+### Changed
+- Landing page hero rewritten: "Your wedding takes a village. We help you tend it." with circle diagram replacing phone mockup
+- Landing page copy now names specific roles (MOH, mom, bridesmaids) instead of generic "guests"
+- "How it works" section reframed as "How your people are cared for" with three pillars: guests text, circle coordinates, hard things held gently
+- Features section reframed around the circle of care, not just guest FAQ handling
+- Brand language throughout uses "tend," "care," "hold" rooted in shepherd/flock values
+- Middleware updated to allow `/join` as a public route for circle member invites
+
 ## [0.2.0] - 2026-04-19
 
 ### Added
