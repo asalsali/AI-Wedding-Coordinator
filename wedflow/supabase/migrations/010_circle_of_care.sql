@@ -89,10 +89,14 @@ CREATE INDEX idx_task_assignments_couple_id
 -- ------------------------------------------------------------
 -- Composite index on guests for role-based conversation filtering
 -- MOH portal joins conversations -> guests -> group_tag
+-- Only created if guests table exists (migration 007)
 -- ------------------------------------------------------------
 
-CREATE INDEX idx_guests_couple_group_tag
-  ON guests(couple_id, group_tag);
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'guests') THEN
+    CREATE INDEX IF NOT EXISTS idx_guests_couple_group_tag ON guests(couple_id, group_tag);
+  END IF;
+END $$;
 
 -- ------------------------------------------------------------
 -- Row Level Security
@@ -171,43 +175,48 @@ CREATE POLICY "task_assignments: member manages own assignments"
 -- ---- conversation access for circle members ----
 -- Circle members need SELECT access to conversations and messages
 -- for their role-filtered view. They cannot modify conversations.
+-- These policies depend on the guests table (migration 007).
+-- If guests table does not exist yet, skip these policies.
+-- They can be added later by running this block after 007 is applied.
 
-CREATE POLICY "conversations: circle member reads by guest group"
-  ON conversations
-  FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1
-      FROM circle_members cm
-      JOIN guests g ON g.couple_id = cm.couple_id
-        AND g.conversation_id = conversations.id
-      WHERE cm.user_id = auth.uid()
-        AND cm.status = 'active'
-        AND (
-          -- MOH and bridesmaids see bridal_party conversations
-          (cm.role IN ('moh', 'bridesmaid') AND g.group_tag = 'bridal_party')
-          -- Best man and groomsmen see bridal_party too (cross-silo visibility)
-          OR (cm.role IN ('best_man', 'groomsman') AND g.group_tag = 'bridal_party')
-          -- Family leads see their family side
-          OR (cm.role = 'family_lead' AND g.group_tag IN ('bride_family', 'groom_family'))
-        )
-    )
-  );
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'guests') THEN
 
--- Circle members can read messages in conversations they have access to
-CREATE POLICY "messages: circle member reads accessible conversations"
-  ON messages
-  FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1
-      FROM conversations c
-      JOIN circle_members cm ON cm.user_id = auth.uid() AND cm.status = 'active'
-      JOIN guests g ON g.couple_id = cm.couple_id AND g.conversation_id = c.id
-      WHERE c.id = messages.conversation_id
-        AND (
-          (cm.role IN ('moh', 'bridesmaid', 'best_man', 'groomsman') AND g.group_tag = 'bridal_party')
-          OR (cm.role = 'family_lead' AND g.group_tag IN ('bride_family', 'groom_family'))
+    CREATE POLICY "conversations: circle member reads by guest group"
+      ON conversations
+      FOR SELECT
+      USING (
+        EXISTS (
+          SELECT 1
+          FROM circle_members cm
+          JOIN guests g ON g.couple_id = cm.couple_id
+            AND g.conversation_id = conversations.id
+          WHERE cm.user_id = auth.uid()
+            AND cm.status = 'active'
+            AND (
+              (cm.role IN ('moh', 'bridesmaid') AND g.group_tag = 'bridal_party')
+              OR (cm.role IN ('best_man', 'groomsman') AND g.group_tag = 'bridal_party')
+              OR (cm.role = 'family_lead' AND g.group_tag IN ('bride_family', 'groom_family'))
+            )
         )
-    )
-  );
+      );
+
+    CREATE POLICY "messages: circle member reads accessible conversations"
+      ON messages
+      FOR SELECT
+      USING (
+        EXISTS (
+          SELECT 1
+          FROM conversations c
+          JOIN circle_members cm ON cm.user_id = auth.uid() AND cm.status = 'active'
+          JOIN guests g ON g.couple_id = cm.couple_id AND g.conversation_id = c.id
+          WHERE c.id = messages.conversation_id
+            AND (
+              (cm.role IN ('moh', 'bridesmaid', 'best_man', 'groomsman') AND g.group_tag = 'bridal_party')
+              OR (cm.role = 'family_lead' AND g.group_tag IN ('bride_family', 'groom_family'))
+            )
+        )
+      );
+
+  END IF;
+END $$;
