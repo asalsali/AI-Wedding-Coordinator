@@ -11,7 +11,7 @@ const C = {
   terracotta: '#C4714A',
   text: '#1A1A1A',
 }
-import type { ToneStyle } from '@/types'
+import type { ToneStyle, CircleRole } from '@/types'
 import {
   saveOnboardingStep1,
   saveOnboardingStep2,
@@ -22,12 +22,13 @@ import {
   saveOnboardingStep7,
   getOnboardingData,
 } from './actions'
+import { createCircleInvite } from '@/app/circle/actions'
 
 // ----------------------------------------------------------------
 // Constants
 // ----------------------------------------------------------------
 
-const TOTAL_STEPS = 7
+const TOTAL_STEPS = 8
 
 const DEFAULT_FAQS: LocalFaq[] = [
   { question: 'What is the dress code?', answer: '' },
@@ -211,6 +212,13 @@ export default function OnboardingPage() {
   const [provisionLoading, setProvisionLoading] = useState(false)
   const [provisionError, setProvisionError] = useState<string | null>(null)
 
+  // Step 8 circle invite
+  const [circleInvites, setCircleInvites] = useState<Array<{ name: string; email: string; role: CircleRole; sent: boolean; link?: string }>>([])
+  const [circleInviteName, setCircleInviteName] = useState('')
+  const [circleInviteEmail, setCircleInviteEmail] = useState('')
+  const [circleInviteRole, setCircleInviteRole] = useState<CircleRole>('moh')
+  const [circleInviteError, setCircleInviteError] = useState<string | null>(null)
+
   // Load existing progress on mount (resume support)
   useEffect(() => {
     // Get current user from Supabase
@@ -370,8 +378,33 @@ export default function OnboardingPage() {
     if (!coupleId) return
     withSave(async () => {
       await saveOnboardingStep7({ coupleId, partnerEmail })
-      router.push('/pricing')
+      goNext()
     })
+  }
+
+  const handleCircleInvite = () => {
+    if (!circleInviteName.trim() || !circleInviteEmail.trim()) return
+    setCircleInviteError(null)
+    startTransition(async () => {
+      const result = await createCircleInvite({
+        name: circleInviteName.trim(),
+        email: circleInviteEmail.trim(),
+        role: circleInviteRole,
+      })
+      if (result.success && result.inviteToken) {
+        const link = `${window.location.origin}/join/${result.inviteToken}`
+        setCircleInvites((prev) => [...prev, { name: circleInviteName.trim(), email: circleInviteEmail.trim(), role: circleInviteRole, sent: true, link }])
+        setCircleInviteName('')
+        setCircleInviteEmail('')
+        setCircleInviteRole('bridesmaid')
+      } else {
+        setCircleInviteError(result.error ?? 'Failed to send invite.')
+      }
+    })
+  }
+
+  const handleStep8 = () => {
+    router.push('/pricing')
   }
 
   // ---- Shared style tokens ----
@@ -989,6 +1022,130 @@ export default function OnboardingPage() {
               onContinue={handleStep7}
               continueLabel="Confirm &amp; go live"
               isPending={isPending}
+            />
+          </div>
+        )
+      }
+
+      // ---- Step 8: Invite your circle ----
+      case 8: {
+        const ROLE_OPTIONS: { value: CircleRole; label: string }[] = [
+          { value: 'moh', label: 'Maid of Honor' },
+          { value: 'best_man', label: 'Best Man' },
+          { value: 'family_lead', label: 'Family Lead' },
+          { value: 'bridesmaid', label: 'Bridesmaid' },
+          { value: 'groomsman', label: 'Groomsman' },
+        ]
+
+        return (
+          <div>
+            <div className="mb-8">
+              <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>
+                Invite your circle
+              </h1>
+              <p className="mt-2 text-sm text-stone-500">
+                Your maid of honor, best man, or family leads can help tend your guests.
+                They will see tasks you assign and conversations relevant to their role.
+              </p>
+            </div>
+
+            {/* Sent invites */}
+            {circleInvites.length > 0 && (
+              <div className="mb-6 space-y-2">
+                {circleInvites.map((inv, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl border border-stone-200">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
+                      style={{ backgroundColor: `${C.forest}12`, color: C.forest }}
+                    >
+                      {inv.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-stone-900">{inv.name}</p>
+                      <p className="text-xs text-stone-400">{inv.email} · {ROLE_OPTIONS.find((r) => r.value === inv.role)?.label}</p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className="text-xs font-medium" style={{ color: C.forest }}>&#10003; Invited</span>
+                      {inv.link && (
+                        <button
+                          onClick={() => navigator.clipboard.writeText(inv.link!)}
+                          className="text-xs px-2 py-1 rounded-lg transition-colors hover:opacity-70"
+                          style={{ color: C.forest, border: `1px solid ${C.forest}30` }}
+                        >
+                          Copy link
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Invite form */}
+            <div className="p-5 border border-stone-200 rounded-xl mb-6">
+              <p className="text-sm font-medium text-stone-900 mb-4">Add a circle member</p>
+
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label className="text-xs text-stone-400 font-medium mb-1 block">Name</label>
+                  <input
+                    value={circleInviteName}
+                    onChange={(e) => setCircleInviteName(e.target.value)}
+                    placeholder="Chloe"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-stone-400 font-medium mb-1 block">Email</label>
+                  <input
+                    value={circleInviteEmail}
+                    onChange={(e) => setCircleInviteEmail(e.target.value)}
+                    placeholder="chloe@example.com"
+                    type="email"
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="text-xs text-stone-400 font-medium mb-2 block">Role</label>
+                <div className="flex flex-wrap gap-2">
+                  {ROLE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setCircleInviteRole(opt.value)}
+                      className="px-3 py-1.5 text-xs rounded-full transition-colors"
+                      style={{
+                        backgroundColor: circleInviteRole === opt.value ? C.forest : 'transparent',
+                        color: circleInviteRole === opt.value ? C.cream : C.text,
+                        border: circleInviteRole === opt.value ? `1.5px solid ${C.forest}` : '1px solid #e5e5e5',
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {circleInviteError && (
+                <p className="text-xs text-red-500 mb-3">{circleInviteError}</p>
+              )}
+
+              <button
+                onClick={handleCircleInvite}
+                disabled={isPending || !circleInviteName.trim() || !circleInviteEmail.trim()}
+                className="px-5 py-2.5 text-white text-sm font-medium rounded-full disabled:opacity-40 transition-colors"
+                style={{ backgroundColor: C.forest }}
+              >
+                {isPending ? 'Sending...' : 'Send invite'}
+              </button>
+            </div>
+
+            <NavButtons
+              onBack={goBack}
+              onContinue={handleStep8}
+              continueLabel={circleInvites.length > 0 ? 'Continue to pricing' : 'Skip for now'}
+              isPending={false}
             />
           </div>
         )

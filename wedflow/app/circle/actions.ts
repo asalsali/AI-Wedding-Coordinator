@@ -401,3 +401,93 @@ export async function getCircleMembers(): Promise<CircleMember[]> {
   if (error) return []
   return (data ?? []) as unknown as CircleMember[]
 }
+
+// ----------------------------------------------------------------
+// Create task assignment (couple action)
+// ----------------------------------------------------------------
+
+const CreateTaskSchema = z.object({
+  assignedTo: z.string().uuid(),
+  title: z.string().min(1).max(200),
+  description: z.string().max(1000).optional(),
+  messageId: z.string().uuid().optional(),
+})
+
+export async function createTaskAssignment(
+  input: { assignedTo: string; title: string; description?: string; messageId?: string }
+): Promise<{ success: boolean; error?: string }> {
+  const parsed = CreateTaskSchema.safeParse(input)
+  if (!parsed.success) {
+    return { success: false, error: 'Invalid input.' }
+  }
+
+  const userId = await getAuthedUserId()
+  const coupleId = await getCoupleId(userId)
+  const supabase = getServiceClient()
+
+  // Verify the member belongs to this couple
+  const { data: member } = await supabase
+    .from('circle_members')
+    .select('id')
+    .eq('id', parsed.data.assignedTo)
+    .eq('couple_id', coupleId)
+    .eq('status', 'active')
+    .maybeSingle()
+
+  if (!member) {
+    return { success: false, error: 'Circle member not found or not active.' }
+  }
+
+  const { error } = await supabase
+    .from('task_assignments')
+    .insert({
+      couple_id: coupleId,
+      assigned_to: parsed.data.assignedTo,
+      title: parsed.data.title,
+      description: parsed.data.description ?? null,
+      message_id: parsed.data.messageId ?? null,
+    })
+
+  if (error) return { success: false, error: 'Failed to create task.' }
+  return { success: true }
+}
+
+// ----------------------------------------------------------------
+// Remove circle member (couple action)
+// ----------------------------------------------------------------
+
+export async function removeCircleMember(
+  memberId: string
+): Promise<{ success: boolean; error?: string }> {
+  const userId = await getAuthedUserId()
+  const coupleId = await getCoupleId(userId)
+  const supabase = getServiceClient()
+
+  const { error } = await supabase
+    .from('circle_members')
+    .update({ status: 'removed' })
+    .eq('id', memberId)
+    .eq('couple_id', coupleId)
+
+  if (error) return { success: false, error: 'Failed to remove member.' }
+  return { success: true }
+}
+
+// ----------------------------------------------------------------
+// Get tasks for a couple's circle (couple action)
+// ----------------------------------------------------------------
+
+export async function getCircleTasks(): Promise<TaskAssignment[]> {
+  const userId = await getAuthedUserId()
+  const coupleId = await getCoupleId(userId)
+  const supabase = getServiceClient()
+
+  const { data, error } = await supabase
+    .from('task_assignments')
+    .select('id, couple_id, assigned_to, message_id, title, description, status, created_at, completed_at')
+    .eq('couple_id', coupleId)
+    .order('created_at', { ascending: false })
+
+  if (error) return []
+  return (data ?? []) as unknown as TaskAssignment[]
+}
