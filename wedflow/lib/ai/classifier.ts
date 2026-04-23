@@ -25,7 +25,7 @@ const ALWAYS_SENSITIVE_PATTERNS: RegExp[] = [
   /\b(died|death|funeral|passed away|grieving|grief)\b/i,
   /\b(divorce|separated|not coming together|coming alone)\b/i,
   /\b(can't make it|cannot attend|won't be able|unable to attend)\b/i,
-  /\b(sorry|apologi|feel terrible|feel awful|feel bad)\b/i,
+  /\b(so sorry|i'?m sorry to|apologi|feel terrible|feel awful|feel bad|deeply sorry|truly sorry|sorry for your)\b/i,
   /\b(pregnant|expecting|due date|having a baby)\b/i,
   /\b(fight|argument|issue between|problem with|falling out)\b/i,
   /\b(mental health|anxiety|depression|panic)\b/i,

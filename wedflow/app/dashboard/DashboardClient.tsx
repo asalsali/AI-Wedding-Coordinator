@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition, useEffect, useMemo } from 'react'
+import { useState, useTransition, useEffect, useMemo, useRef } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
@@ -114,7 +114,7 @@ const DATE_FIELDS = new Set(['wedding_date'])
 const TIME_FIELDS = new Set(['ceremony_time', 'reception_time'])
 const SELECT_FIELDS = new Set(['tone'])
 
-function groupMessagesByConversation(messages: MessageRow[]): Conversation[] {
+function groupMessagesByConversation(messages: MessageRow[], repliedIds: Set<string>): Conversation[] {
   const convoMap = new Map<string, MessageRow[]>()
   messages.forEach((msg) => {
     const existing = convoMap.get(msg.conversation_id) || []
@@ -125,7 +125,7 @@ function groupMessagesByConversation(messages: MessageRow[]): Conversation[] {
   convoMap.forEach((msgs, convoId) => {
     msgs.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
     const lastMsg = msgs[msgs.length - 1]
-    const hasNeedsReply = msgs.some((m) => m.direction === 'inbound' && m.classified_as === 'escalated')
+    const hasNeedsReply = msgs.some((m) => m.direction === 'inbound' && m.classified_as === 'escalated' && !repliedIds.has(m.id))
     const summary = generateSummary(msgs)
     conversations.push({ id: convoId, guest_phone_hash: lastMsg.guest_phone_hash, guest_phone: lastMsg.guest_phone, guest_name: lastMsg.guest_name, messages: msgs, lastMessageAt: lastMsg.created_at, hasNeedsReply, messageCount: msgs.length, aiSummary: summary })
   })
@@ -301,6 +301,97 @@ function ReplyModal({ inboundBody, initialDraft, onClose, onSend, isSending }: {
   )
 }
 
+// ─── AI Draft Card (shown inline in thread below escalated messages) ──────────
+
+function AIDraftCard({ draft, onSend, onEdit, onDismiss, isSending }: {
+  draft: MessageRow
+  onSend: () => void
+  onEdit: () => void
+  onDismiss: () => void
+  isSending: boolean
+}) {
+  return (
+    <div style={{ alignSelf: 'flex-end', maxWidth: '85%', marginTop: -2 }}>
+      <div style={{ border: '1.5px dashed rgba(196,113,74,0.4)', borderRadius: 14, padding: '12px 16px 10px', background: 'rgba(196,113,74,0.04)' }}>
+        <div className="wf-sans" style={{ fontSize: 10.5, fontWeight: 600, color: 'var(--wf-terracotta-deep)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5, letterSpacing: '0.03em', textTransform: 'uppercase' }}>
+          <Icon name="sparkle" size={11} /> Suggested reply
+        </div>
+        <p className="wf-sans" style={{ fontSize: 13.5, color: 'var(--wf-ink)', lineHeight: 1.55, margin: '0 0 12px', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+          {draft.body}
+        </p>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button onClick={onSend} disabled={isSending} className="wf-btn wf-btn-primary wf-btn-sm" style={{ fontSize: 12, borderRadius: 10 }}>
+            <Icon name="send" size={11} /> {isSending ? 'Sending...' : 'Send as-is'}
+          </button>
+          <button onClick={onEdit} disabled={isSending} className="wf-btn wf-btn-ghost wf-btn-sm" style={{ fontSize: 12, borderRadius: 10, color: 'var(--wf-forest)' }}>
+            <Icon name="edit" size={11} /> Edit
+          </button>
+          <button onClick={onDismiss} disabled={isSending} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', fontSize: 11, fontFamily: 'var(--wf-sans)', padding: '4px 6px' }}>
+            Dismiss
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Inline Reply Composer ─────────────────────────────────────────────────────
+
+function InlineReplyComposer({ onSend, isSending, initialText, onClearInitial }: {
+  onSend: (text: string) => void
+  isSending: boolean
+  initialText: string
+  onClearInitial: () => void
+}) {
+  const TRIAL_CHAR_LIMIT = 120
+  const [replyText, setReplyText] = useState('')
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const charCount = replyText.length
+  const isOverLimit = charCount > TRIAL_CHAR_LIMIT
+
+  // When initialText changes (e.g. "Edit" pressed on draft card), fill and focus
+  useEffect(() => {
+    if (initialText) {
+      const truncated = initialText.length > TRIAL_CHAR_LIMIT ? initialText.slice(0, TRIAL_CHAR_LIMIT - 3) + '...' : initialText
+      setReplyText(truncated)
+      onClearInitial()
+      setTimeout(() => textareaRef.current?.focus(), 50)
+    }
+  }, [initialText])
+
+  return (
+    <div style={{ borderTop: '1px solid var(--wf-line)', background: 'var(--wf-cream)', padding: '14px 28px 18px', flexShrink: 0 }}>
+      <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
+        <div style={{ flex: 1, border: '1px solid var(--wf-line-strong)', borderRadius: 14, padding: '10px 14px 6px', background: 'var(--wf-paper)', transition: 'border-color 0.15s' }}>
+          <textarea
+            ref={textareaRef}
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            rows={2}
+            disabled={isSending}
+            className="wf-sans"
+            style={{ width: '100%', border: 'none', outline: 'none', resize: 'none', fontSize: 13.5, color: 'var(--wf-ink)', fontFamily: 'var(--wf-sans)', lineHeight: 1.55, background: 'transparent' }}
+            placeholder="Type a reply to this guest..."
+          />
+          <div style={{ textAlign: 'right', marginTop: 2 }}>
+            <span className="wf-sans" style={{ fontSize: 10, color: isOverLimit ? 'var(--wf-rose)' : 'var(--wf-ink-25)' }}>
+              {charCount > 0 ? `${charCount} / ${TRIAL_CHAR_LIMIT}` : ''}
+            </span>
+          </div>
+        </div>
+        <button
+          onClick={() => { onSend(replyText); setReplyText('') }}
+          disabled={isSending || !replyText.trim() || isOverLimit}
+          className="wf-btn wf-btn-primary"
+          style={{ height: 44, paddingLeft: 18, paddingRight: 18, borderRadius: 14, flexShrink: 0 }}
+        >
+          <Icon name="send" size={14} /> {isSending ? 'Sending...' : 'Send'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export default function DashboardClient({ couple, profile, phoneNumber, initialMessages, stats, isDemo = false }: Props) {
@@ -331,6 +422,9 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [priorityFilter, setPriorityFilter] = useState<'all' | 'escalated' | 'routine'>('all')
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [composerInitialText, setComposerInitialText] = useState('')
+  const [dismissedDraftIds, setDismissedDraftIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     if (!toast) return
@@ -338,7 +432,10 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
     return () => clearTimeout(t)
   }, [toast])
 
-  const conversations = useMemo(() => groupMessagesByConversation(messages), [messages])
+  // Thread starts at the top — user scrolls down naturally
+
+  const repliedInboundMsgIds = useMemo(() => new Set(messages.filter((m) => m.direction === 'outbound' && m.was_sent && m.classified_as === 'escalated' && m.replied_to_message_id !== null).map((m) => m.replied_to_message_id as string)), [messages])
+  const conversations = useMemo(() => groupMessagesByConversation(messages, repliedInboundMsgIds), [messages, repliedInboundMsgIds])
   const filteredConversations = useMemo(() => {
     let filtered = conversations
     if (inboxTab === 'needs-reply') filtered = filtered.filter((c) => c.hasNeedsReply)
@@ -356,8 +453,7 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
 
   const coupleNames = [couple.your_name, couple.partner_name].filter(Boolean).join(' & ') || 'Your Wedding'
 
-  const repliedInboundMsgIds = new Set(messages.filter((m) => m.direction === 'outbound' && m.was_sent && m.classified_as === 'escalated' && m.replied_to_message_id !== null).map((m) => m.replied_to_message_id as string))
-  const needsReplyMessages = messages.filter((m) => m.direction === 'inbound' && m.classified_as === 'escalated' && !repliedInboundMsgIds.has(m.id))
+  const needsReplyMessages = useMemo(() => messages.filter((m) => m.direction === 'inbound' && m.classified_as === 'escalated' && !repliedInboundMsgIds.has(m.id)), [messages, repliedInboundMsgIds])
 
   // ─── Handlers ─────────────────────────────────────────────────────────────────
 
@@ -389,10 +485,18 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
   }
 
   function handleSendReply(replyText: string) {
-    if (!replyModal) return
+    // Determine which inbound message to link the reply to:
+    // 1. If reply modal is open, use that message
+    // 2. Otherwise, use the last inbound message in the selected conversation
+    const inboundMsg = replyModal?.inboundMsg ?? (selectedConversation
+      ? selectedConversation.messages.filter((m) => m.direction === 'inbound').slice(-1)[0]
+      : null)
+
+    if (!inboundMsg) return
+
     startSendReply(async () => {
       try {
-        await sendReplyAction(replyModal.inboundMsg.conversation_id, replyText, replyModal.inboundMsg.id)
+        await sendReplyAction(inboundMsg.conversation_id, replyText, inboundMsg.id)
         setReplyModal(null)
         const fresh = await refreshInboxMessages()
         setMessages(fresh)
@@ -499,7 +603,7 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
                         <span className="wf-sans" style={{ fontSize: 13, fontWeight: 600, color: 'var(--wf-forest)' }}>{name}</span>
                         <span className="wf-sans" style={{ fontSize: 10.5, color: 'var(--wf-ink-45)' }}>{timeAgo(msg.created_at)}</span>
                       </div>
-                      <p className="wf-sans" style={{ fontSize: 12.5, color: 'var(--wf-ink-60)', margin: 0, lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{msg.body}</p>
+                      <p className="wf-sans" style={{ fontSize: 12.5, color: 'var(--wf-ink-60)', margin: 0, lineHeight: 1.5, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>{msg.body}</p>
                     </div>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0, fontSize: 10.5, color: isSensitive ? 'var(--wf-rose)' : 'var(--wf-sage)', fontWeight: 500 }}>
                       <span style={{ width: 6, height: 6, borderRadius: '50%', background: isSensitive ? 'var(--wf-rose)' : 'var(--wf-sage)' }} />
@@ -536,7 +640,7 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
     const isEmpty = filteredConversations.length === 0
 
     return (
-      <div style={{ display: 'grid', gridTemplateColumns: selectedConversation ? '340px 1fr' : '1fr', height: 'calc(100vh - 0px)', background: 'var(--wf-cream)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '400px 1fr', height: 'calc(100vh - 0px)', background: 'var(--wf-cream)' }}>
         {/* Thread list */}
         <div style={{ borderRight: '1px solid var(--wf-line)', display: 'flex', flexDirection: 'column', background: 'var(--wf-cream)' }}>
           <div style={{ padding: '24px 22px 16px' }}>
@@ -583,31 +687,46 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
                 const isSel = convo.id === selectedConversationId
                 const lastMsg = convo.messages[convo.messages.length - 1]
                 const toneDot = convo.hasNeedsReply ? 'var(--wf-rose)' : 'var(--wf-sage)'
+                const autoRepliedCount = convo.messages.filter((m) => m.direction === 'outbound' && m.was_sent && m.classified_as !== 'escalated').length
+                const escalatedCount = convo.messages.filter((m) => m.direction === 'inbound' && m.classified_as === 'escalated').length
 
                 return (
-                  <button key={convo.id} onClick={() => setSelectedConversationId(isSel ? null : convo.id)} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '14px', background: isSel ? 'var(--wf-paper)' : 'transparent', border: isSel ? '1px solid var(--wf-line)' : '1px solid transparent', borderRadius: 12, cursor: 'pointer', marginBottom: 2, boxShadow: isSel ? 'var(--wf-shadow-sm)' : 'none', transition: 'all 0.15s', fontFamily: 'var(--wf-sans)' }}
+                  <button key={convo.id} onClick={() => setSelectedConversationId(isSel ? null : convo.id)} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '14px 16px', background: isSel ? 'var(--wf-paper)' : 'transparent', border: isSel ? '1px solid var(--wf-line)' : '1px solid transparent', borderRadius: 12, cursor: 'pointer', marginBottom: 2, boxShadow: isSel ? 'var(--wf-shadow-sm)' : 'none', transition: 'all 0.15s', fontFamily: 'var(--wf-sans)' }}
                     onMouseEnter={(e) => { if (!isSel) e.currentTarget.style.background = 'var(--wf-paper)' }}
                     onMouseLeave={(e) => { if (!isSel) e.currentTarget.style.background = 'transparent' }}>
                     <div style={{ display: 'flex', gap: 12 }}>
-                      <div style={{ width: 36, height: 36, borderRadius: '50%', flexShrink: 0, background: 'rgba(28,59,43,0.1)', color: 'var(--wf-forest)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600 }}>{initials}</div>
+                      <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: convo.hasNeedsReply ? 'rgba(180,84,78,0.1)' : 'rgba(28,59,43,0.1)', color: convo.hasNeedsReply ? 'var(--wf-rose)' : 'var(--wf-forest)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 600 }}>{initials}</div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-                          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--wf-forest)', display: 'flex', alignItems: 'center', gap: 6 }} className="wf-sans">
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: toneDot, flexShrink: 0 }} />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                          <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--wf-forest)', display: 'flex', alignItems: 'center', gap: 6 }} className="wf-sans">
+                            <span style={{ width: 7, height: 7, borderRadius: '50%', background: toneDot, flexShrink: 0 }} />
                             {title}
                           </span>
-                          <span className="wf-sans" style={{ fontSize: 10.5, color: 'var(--wf-ink-45)', flexShrink: 0 }}>{timeAgo(lastMsg.created_at)}</span>
+                          <span className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-ink-45)', flexShrink: 0 }}>{timeAgo(lastMsg.created_at)}</span>
                         </div>
-                        <p className="wf-sans" style={{ fontSize: 12, color: 'var(--wf-ink-60)', margin: 0, lineHeight: 1.45, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>
+                        <p className="wf-sans" style={{ fontSize: 12.5, color: 'var(--wf-ink-60)', margin: 0, lineHeight: 1.5, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>
                           {lastMsg.body}
                         </p>
-                        {convo.hasNeedsReply && (
-                          <div style={{ marginTop: 6 }}>
+                        <div style={{ display: 'flex', gap: 8, marginTop: 6, alignItems: 'center' }}>
+                          {convo.hasNeedsReply && (
                             <span className="wf-sans" style={{ fontSize: 10, color: 'var(--wf-terracotta-deep)', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                               ● Waiting for you
                             </span>
-                          </div>
-                        )}
+                          )}
+                          {!convo.hasNeedsReply && autoRepliedCount > 0 && (
+                            <span className="wf-sans" style={{ fontSize: 10, color: 'var(--wf-sage)', fontWeight: 500 }}>
+                              ✓ {autoRepliedCount} auto-replied
+                            </span>
+                          )}
+                          {escalatedCount > 0 && !convo.hasNeedsReply && (
+                            <span className="wf-sans" style={{ fontSize: 10, color: 'var(--wf-ink-45)' }}>
+                              · {escalatedCount} escalated
+                            </span>
+                          )}
+                          <span className="wf-sans" style={{ fontSize: 10, color: 'var(--wf-ink-25)', marginLeft: 'auto' }}>
+                            {convo.messageCount} msg{convo.messageCount !== 1 ? 's' : ''}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </button>
@@ -617,11 +736,11 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
           </div>
         </div>
 
-        {/* Conversation detail */}
-        {selectedConversation && (
-          <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--wf-cream-warm)' }}>
+        {/* Conversation detail or empty state */}
+        {selectedConversation ? (
+          <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--wf-cream-warm)', height: '100%' }}>
             {/* Thread header */}
-            <div style={{ padding: '20px 32px', borderBottom: '1px solid var(--wf-line)', background: 'var(--wf-cream)', display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ padding: '18px 28px', borderBottom: '1px solid var(--wf-line)', background: 'var(--wf-cream)', display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
               <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--wf-forest)', color: 'var(--wf-cream)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--wf-serif)', fontWeight: 600, fontSize: 16 }}>
                 {getInitials(selectedConversation)}
               </div>
@@ -632,46 +751,125 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
                     <span className="wf-badge wf-badge-sensitive"><Icon name="shield" size={10} /> Sensitive</span>
                   )}
                 </div>
-                {selectedConversation.guest_phone && (
-                  <div className="wf-sans" style={{ fontSize: 12, color: 'var(--wf-ink-60)', marginTop: 2, fontFamily: 'monospace' }}>
-                    {selectedConversation.guest_phone} · {selectedConversation.messageCount} messages
-                  </div>
-                )}
+                <div className="wf-sans" style={{ fontSize: 12, color: 'var(--wf-ink-60)', marginTop: 2, display: 'flex', gap: 8, alignItems: 'center' }}>
+                  {selectedConversation.guest_phone && (
+                    <span style={{ fontFamily: 'monospace' }}>{selectedConversation.guest_phone}</span>
+                  )}
+                  <span>· {selectedConversation.messageCount} messages</span>
+                  {selectedConversation.aiSummary && (
+                    <span style={{ color: 'var(--wf-ink-45)' }}>· {selectedConversation.aiSummary}</span>
+                  )}
+                </div>
               </div>
-              <div style={{ display: 'flex', gap: 6 }}>
-                {selectedConversation.hasNeedsReply && (
-                  <button onClick={() => handleReplyClick(selectedConversation.messages.filter((m) => m.direction === 'inbound' && m.classified_as === 'escalated').slice(-1)[0])} className="wf-btn wf-btn-primary wf-btn-sm">
-                    <Icon name="send" size={12} /> Reply
-                  </button>
-                )}
-                <button onClick={() => setSelectedConversationId(null)} className="wf-btn wf-btn-ghost wf-btn-sm">
-                  <Icon name="x" size={13} />
-                </button>
-              </div>
+              <button onClick={() => setSelectedConversationId(null)} className="wf-btn wf-btn-ghost wf-btn-sm">
+                <Icon name="x" size={13} />
+              </button>
             </div>
 
             {/* Messages */}
-            <div className="wf-scroll" style={{ flex: 1, overflow: 'auto', padding: '36px 60px 20px', display: 'flex', flexDirection: 'column', gap: 22 }}>
-              {selectedConversation.messages.map((msg, i) => {
-                const isIn = msg.direction === 'inbound'
-                return (
-                  <div key={i} style={{ alignSelf: isIn ? 'flex-start' : 'flex-end', maxWidth: '75%' }}>
-                    {msg.classified_as === 'escalated' && isIn && (
-                      <div className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-terracotta-deep)', fontWeight: 600, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6, marginLeft: 12 }}>
-                        <Icon name="shield" size={11} /> Held for your review — not auto-replied
-                      </div>
-                    )}
-                    <div style={{ background: isIn ? 'var(--wf-paper)' : 'var(--wf-forest)', color: isIn ? 'var(--wf-ink)' : 'var(--wf-cream)', border: isIn ? '1px solid var(--wf-line)' : 'none', padding: '12px 16px', borderRadius: 16, borderTopLeftRadius: isIn ? 4 : 16, borderTopRightRadius: isIn ? 16 : 4, fontSize: 14, lineHeight: 1.55, boxShadow: isIn ? 'var(--wf-shadow-sm)' : '0 4px 14px rgba(28,59,43,0.14)' }}>
-                      {msg.body}
-                    </div>
-                    <div className="wf-sans" style={{ fontSize: 10.5, color: 'var(--wf-ink-45)', marginTop: 5, paddingLeft: isIn ? 12 : 0, paddingRight: isIn ? 0 : 12, textAlign: isIn ? 'left' : 'right', display: 'flex', gap: 6, justifyContent: isIn ? 'flex-start' : 'flex-end' }}>
-                      {msg.was_sent && !isIn && <span style={{ color: 'var(--wf-sage)', fontWeight: 600 }}>✓ Auto-replied</span>}
-                      <span>{timeAgo(msg.created_at)}</span>
-                    </div>
-                  </div>
+            <div className="wf-scroll" style={{ flex: 1, overflow: 'auto', padding: '16px 28px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {(() => {
+                // Build a map of inbound message ID → draft message for inline display
+                const draftsByInbound = new Map<string, MessageRow>()
+                selectedConversation.messages.forEach((msg) => {
+                  if (msg.direction === 'outbound' && msg.classified_as === 'escalated' && !msg.was_sent && msg.replied_to_message_id) {
+                    draftsByInbound.set(msg.replied_to_message_id, msg)
+                  }
+                })
+                // For drafts without replied_to_message_id, attach to last escalated inbound
+                const orphanDrafts = selectedConversation.messages.filter((msg) =>
+                  msg.direction === 'outbound' && msg.classified_as === 'escalated' && !msg.was_sent && !msg.replied_to_message_id
                 )
-              })}
+                if (orphanDrafts.length > 0) {
+                  const lastEscalated = [...selectedConversation.messages].reverse().find((m) => m.direction === 'inbound' && m.classified_as === 'escalated')
+                  if (lastEscalated && !draftsByInbound.has(lastEscalated.id)) {
+                    draftsByInbound.set(lastEscalated.id, orphanDrafts[0])
+                  }
+                }
+
+                return selectedConversation.messages.map((msg, i) => {
+                  const isIn = msg.direction === 'inbound'
+                  const isEscalatedInbound = msg.classified_as === 'escalated' && isIn
+                  const isDraft = !isIn && msg.classified_as === 'escalated' && !msg.was_sent
+                  const isRepliedTo = repliedInboundMsgIds.has(msg.id)
+                  const draft = isEscalatedInbound ? draftsByInbound.get(msg.id) : null
+                  const showDraft = draft && !isRepliedTo && !dismissedDraftIds.has(draft.id)
+
+                  // Skip unsent draft messages from normal rendering (shown via AIDraftCard)
+                  if (isDraft) return null
+
+                  return (
+                    <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {/* Message bubble */}
+                      <div style={{ alignSelf: isIn ? 'flex-start' : 'flex-end', maxWidth: '80%' }}>
+                        {isEscalatedInbound && (
+                          <div className="wf-sans" style={{ fontSize: 10.5, color: isRepliedTo ? 'var(--wf-sage)' : 'var(--wf-terracotta-deep)', fontWeight: 600, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 5, marginLeft: 10 }}>
+                            <Icon name="shield" size={11} /> {isRepliedTo ? 'Replied' : 'Needs your review'}
+                          </div>
+                        )}
+                        <div style={{
+                          background: isIn ? 'var(--wf-paper)' : 'var(--wf-forest)',
+                          color: isIn ? 'var(--wf-ink)' : 'var(--wf-cream)',
+                          border: isEscalatedInbound && !isRepliedTo
+                            ? '1px solid rgba(196,113,74,0.35)'
+                            : isIn ? '1px solid var(--wf-line)' : 'none',
+                          borderLeft: isEscalatedInbound && !isRepliedTo
+                            ? '3px solid var(--wf-terracotta-deep)'
+                            : isIn ? '1px solid var(--wf-line)' : 'none',
+                          padding: '10px 14px',
+                          borderRadius: 14, borderTopLeftRadius: isIn ? 4 : 14, borderTopRightRadius: isIn ? 14 : 4,
+                          fontSize: 13.5, lineHeight: 1.5, whiteSpace: 'pre-wrap' as const, wordBreak: 'break-word' as const,
+                          boxShadow: isIn ? 'var(--wf-shadow-sm)' : '0 2px 8px rgba(28,59,43,0.12)',
+                        }}>
+                          {msg.body}
+                        </div>
+                        <div className="wf-sans" style={{ fontSize: 10.5, color: 'var(--wf-ink-45)', marginTop: 3, paddingLeft: isIn ? 10 : 0, paddingRight: isIn ? 0 : 10, textAlign: isIn ? 'left' : 'right', display: 'flex', gap: 6, justifyContent: isIn ? 'flex-start' : 'flex-end' }}>
+                          {msg.was_sent && !isIn && <span style={{ color: 'var(--wf-sage)', fontWeight: 600 }}>✓ Auto-replied</span>}
+                          <span>{timeAgo(msg.created_at)}</span>
+                        </div>
+                      </div>
+
+                      {/* AI Draft Card — shown inline right after the escalated message */}
+                      {showDraft && (
+                        <AIDraftCard
+                          draft={draft}
+                          isSending={isSendingReply}
+                          onSend={() => handleSendReply(draft.body)}
+                          onEdit={() => setComposerInitialText(draft.body)}
+                          onDismiss={() => setDismissedDraftIds((prev) => new Set([...prev, draft.id]))}
+                        />
+                      )}
+                    </div>
+                  )
+                })
+              })()}
+              <div ref={messagesEndRef} />
             </div>
+
+            {/* Inline reply composer */}
+            <InlineReplyComposer
+              onSend={handleSendReply}
+              isSending={isSendingReply}
+              initialText={composerInitialText}
+              onClearInitial={() => setComposerInitialText('')}
+            />
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--wf-cream-warm)', padding: 48 }}>
+            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(28,59,43,0.06)', color: 'var(--wf-forest)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+              <Icon name="messageCircle" size={28} />
+            </div>
+            <h3 className="wf-serif" style={{ fontSize: 20, fontWeight: 600, color: 'var(--wf-forest)', margin: '0 0 8px' }}>Select a conversation</h3>
+            <p className="wf-sans" style={{ fontSize: 13, color: 'var(--wf-ink-60)', margin: 0, textAlign: 'center', maxWidth: 280 }}>
+              Choose a thread from the left to view the full conversation and reply to your guests.
+            </p>
+            {needsReplyMessages.length > 0 && (
+              <div style={{ marginTop: 20, padding: '10px 16px', background: 'rgba(196,113,74,0.08)', border: '1px solid rgba(196,113,74,0.2)', borderRadius: 10 }}>
+                <span className="wf-sans" style={{ fontSize: 12, color: 'var(--wf-terracotta-deep)', fontWeight: 500 }}>
+                  {needsReplyMessages.length} message{needsReplyMessages.length !== 1 ? 's' : ''} waiting for your reply
+                </span>
+              </div>
+            )}
           </div>
         )}
       </div>

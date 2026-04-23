@@ -44,14 +44,16 @@ const DRESS_CODE_TERMS = [
 // ----------------------------------------------------------------
 
 /**
- * Extracts the HH:MM portion from an ISO datetime string (naive — ignores
- * timezone offset) and generates all reasonable string representations
- * that the AI might use when formatting a time in a reply.
+ * Extracts hours and minutes from a time string and generates all reasonable
+ * string representations the AI might use when formatting a time in a reply.
  *
- * Example: "2024-06-15T15:00:00-05:00" → ["3pm", "3 pm", "3:00pm", "3:00 pm", "15:00"]
+ * Accepts both ISO datetime ("2024-06-15T15:00:00-05:00") and plain HH:MM ("15:00", "14:30").
+ *
+ * Example: "15:00" → ["3pm", "3 pm", "3:00pm", "3:00 pm", "15:00"]
  */
-function generateTimeVariants(isoString: string): string[] {
-  const match = isoString.match(/T(\d{2}):(\d{2})/);
+function generateTimeVariants(timeString: string): string[] {
+  // Try ISO format first (has T prefix), then plain HH:MM
+  const match = timeString.match(/T(\d{2}):(\d{2})/) ?? timeString.match(/^(\d{2}):(\d{2})/);
   if (!match) return [];
 
   const h24 = parseInt(match[1], 10);

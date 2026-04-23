@@ -9,8 +9,6 @@ export async function draftEscalationReply(
   profile: WeddingProfile,
   client: Anthropic
 ): Promise<string> {
-  // Inject minimal profile context so the tone/vibe informs the draft.
-  // Full logistics are deliberately omitted — the couple adds those when editing.
   const profileContext = buildProfileContext(profile);
 
   let rawText: string;
@@ -24,7 +22,7 @@ export async function draftEscalationReply(
       messages: [
         {
           role: "user",
-          content: `Couple's profile (tone only — do not include logistics in the draft):\n${profileContext}\n\nGuest message to respond to:\n"${message}"`,
+          content: `Couple's wedding profile:\n${profileContext}\n\nGuest message to respond to:\n"${message}"`,
         },
       ],
     });
@@ -48,10 +46,30 @@ export async function draftEscalationReply(
 }
 
 function buildProfileContext(profile: WeddingProfile): string {
-  const parts: string[] = [];
-  if (profile.tone) parts.push(`Tone: ${profile.tone}`);
-  if (profile.vibe_word) parts.push(`Vibe: ${profile.vibe_word}`);
+  const lines: string[] = [];
+
+  if (profile.tone) lines.push(`Tone: ${profile.tone}`);
+  if (profile.vibe_word) lines.push(`Vibe: ${profile.vibe_word}`);
   if (profile.sample_message)
-    parts.push(`Sample message style: "${profile.sample_message}"`);
-  return parts.length > 0 ? parts.join("\n") : "(No tone details available.)";
+    lines.push(`Sample message style: "${profile.sample_message}"`);
+  if (profile.venue_name) lines.push(`Venue: ${profile.venue_name}`);
+  if (profile.venue_address) lines.push(`Address: ${profile.venue_address}`);
+  if (profile.ceremony_time) lines.push(`Ceremony time: ${profile.ceremony_time}`);
+  if (profile.reception_time) lines.push(`Reception time: ${profile.reception_time}`);
+  if (profile.dress_code) lines.push(`Dress code: ${profile.dress_code}`);
+  if (profile.hotel_block) lines.push(`Hotel block: ${profile.hotel_block}`);
+  if (profile.parking_info) lines.push(`Parking: ${profile.parking_info}`);
+  if (profile.registry_links && profile.registry_links.length > 0)
+    lines.push(`Registry: ${profile.registry_links.join(", ")}`);
+
+  if (profile.faqs.length > 0) {
+    lines.push("");
+    lines.push("Couple's FAQs:");
+    for (const faq of profile.faqs) {
+      lines.push(`  Q: ${faq.question}`);
+      lines.push(`  A: ${faq.answer}`);
+    }
+  }
+
+  return lines.length > 0 ? lines.join("\n") : "(No profile details available.)";
 }

@@ -138,122 +138,53 @@ function Nav() {
   );
 }
 
-// ─── Hero phone mockup ─────────────────────────────────────────────────────────
+// ─── Circle Diagram ───────────────────────────────────────────────────────────
 
-function HeroPhone() {
+function CircleDiagram() {
   return (
-    <div style={{ position: "relative", height: 560 }}>
-      {/* Background tilt card */}
+    <div style={{ position: "relative", width: 380, height: 380, margin: "0 auto" }}>
+      {/* Outer ring: guests */}
       <div style={{
-        position: "absolute",
-        inset: "20px 40px",
-        background: "var(--wf-cream-warm)",
-        borderRadius: 32,
-        border: "1px solid var(--wf-line)",
-        transform: "rotate(-1.5deg)",
+        position: "absolute", inset: 0,
+        borderRadius: "50%",
+        border: "2px dashed var(--wf-line-strong)",
       }} />
-      {/* Phone frame */}
+      {/* Middle ring: inner circle */}
       <div style={{
         position: "absolute",
-        inset: "0 60px",
-        background: "var(--wf-forest-deep)",
-        borderRadius: 48,
-        padding: 10,
-        boxShadow: "var(--wf-shadow-xl), 0 0 0 1px rgba(28,59,43,0.1)",
-      }}>
-        <div style={{
-          background: "var(--wf-cream)",
-          borderRadius: 40,
-          height: "100%",
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-        }}>
-          {/* Status bar */}
-          <div style={{ padding: "14px 24px 10px", fontSize: 11, color: "var(--wf-forest)", display: "flex", justifyContent: "space-between", fontWeight: 600 }}>
-            <span>9:41</span>
-            <span>●●●</span>
-          </div>
-          {/* Contact header */}
-          <div style={{ padding: "10px 24px 14px", borderBottom: "1px solid var(--wf-line)", display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 104, height: 104, borderRadius: 10, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Image src="/LogoLight.png" alt="Wedflow" width={168} height={168} style={{ width: 168, height: 168, objectFit: 'contain', flexShrink: 0 }} />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "var(--wf-forest)" }}>Wedflow · Alex &amp; Kirsten</div>
-              <div style={{ fontSize: 10.5, color: "var(--wf-ink-45)" }}>+1 (825) 465-4504</div>
-            </div>
-            <span style={{ display: "flex", gap: 4, alignItems: "center", fontSize: 10, color: "var(--wf-sage)", fontWeight: 500 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--wf-sage)" }} />
-              Live
-            </span>
-          </div>
-          {/* Messages */}
-          <div style={{ flex: 1, padding: "18px 18px 8px", display: "flex", flexDirection: "column", gap: 12, overflow: "hidden" }}>
-            <div style={{ alignSelf: "flex-start", maxWidth: "78%" }}>
-              <div style={{ fontSize: 10, color: "var(--wf-ink-45)", marginBottom: 4, marginLeft: 10 }}>Sarah · 9:14</div>
-              <div style={{ background: "var(--wf-paper)", border: "1px solid var(--wf-line)", padding: "10px 14px", borderRadius: 16, borderTopLeftRadius: 4, fontSize: 13, color: "var(--wf-ink)", boxShadow: "var(--wf-shadow-sm)" }}>
-                What&apos;s the dress code? 👗
-              </div>
-            </div>
-            <div style={{ alignSelf: "flex-end", maxWidth: "82%" }}>
-              <div style={{ fontSize: 10, color: "var(--wf-ink-45)", marginBottom: 4, textAlign: "right", marginRight: 10 }}>Wedflow · auto-replied</div>
-              <div style={{ background: "var(--wf-forest)", color: "var(--wf-cream)", padding: "10px 14px", borderRadius: 16, borderTopRightRadius: 4, fontSize: 13, boxShadow: "0 4px 12px rgba(28,59,43,0.16)", lineHeight: 1.45 }}>
-                Garden formal — florals and linens very welcome! 🌿
-              </div>
-            </div>
-            <div style={{ alignSelf: "flex-start", maxWidth: "78%" }}>
-              <div style={{ fontSize: 10, color: "var(--wf-ink-45)", marginBottom: 4, marginLeft: 10 }}>James · 9:31</div>
-              <div style={{ background: "var(--wf-paper)", border: "1px solid var(--wf-line)", padding: "10px 14px", borderRadius: 16, borderTopLeftRadius: 4, fontSize: 13, color: "var(--wf-ink)", boxShadow: "var(--wf-shadow-sm)" }}>
-                Is there parking nearby? 🚗
-              </div>
-            </div>
-            <div style={{ alignSelf: "flex-end", maxWidth: "82%" }}>
-              <div style={{ fontSize: 10, color: "var(--wf-ink-45)", marginBottom: 4, textAlign: "right", marginRight: 10 }}>Wedflow · auto-replied</div>
-              <div style={{ background: "var(--wf-forest)", color: "var(--wf-cream)", padding: "10px 14px", borderRadius: 16, borderTopRightRadius: 4, fontSize: 13, boxShadow: "0 4px 12px rgba(28,59,43,0.16)", lineHeight: 1.45 }}>
-                Free parking in Lot C — just east of the main entrance.
-              </div>
-            </div>
-            {/* Sensitive — held */}
-            <div style={{ alignSelf: "flex-start", maxWidth: "82%", marginTop: 4 }}>
-              <div style={{ fontSize: 10, color: "var(--wf-terracotta-deep)", marginBottom: 4, marginLeft: 10, display: "flex", gap: 6, alignItems: "center" }}>
-                🛡 Held for your review
-              </div>
-              <div style={{ background: "var(--wf-cream-warm)", border: "1.5px dashed var(--wf-terracotta-soft)", padding: "10px 14px", borderRadius: 16, borderTopLeftRadius: 4, fontSize: 12.5, color: "var(--wf-ink-60)", fontStyle: "italic", lineHeight: 1.45 }}>
-                &ldquo;Actually, I don&apos;t know how to say this but…&rdquo;
-              </div>
-            </div>
-          </div>
-          {/* Compose bar */}
-          <div style={{ padding: "10px 14px 14px", borderTop: "1px solid var(--wf-line)" }}>
-            <div style={{ background: "var(--wf-cream-warm)", borderRadius: 999, padding: "9px 16px", fontSize: 12, color: "var(--wf-ink-45)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              iMessage
-              <span>↗</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Floating stat card */}
+        top: 65, left: 65, width: 250, height: 250,
+        borderRadius: "50%",
+        border: "2px solid rgba(123,145,116,0.35)",
+        background: "rgba(123,145,116,0.04)",
+      }} />
+      {/* Center: couple */}
       <div style={{
-        position: "absolute", top: 30, right: -10,
-        background: "var(--wf-paper)", border: "1px solid var(--wf-line)",
-        borderRadius: 12, padding: "10px 14px", boxShadow: "var(--wf-shadow-md)",
-        fontSize: 11, display: "flex", alignItems: "center", gap: 8,
-        transform: "rotate(3deg)",
+        position: "absolute",
+        top: 130, left: 130, width: 120, height: 120,
+        borderRadius: "50%",
+        background: "var(--wf-forest)",
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        boxShadow: "var(--wf-shadow-lg)",
       }}>
-        <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--wf-sage)" }} />
-        <span style={{ color: "var(--wf-ink-60)" }}>14 auto-replied today</span>
+        <Image src="/WedFlowlogo.png" alt="WedFlow" width={36} height={36} style={{ marginBottom: 4 }} />
+        <span className="wf-serif" style={{ fontSize: 12, color: "var(--wf-cream)", textAlign: "center", lineHeight: 1.2 }}>
+          You and<br />your partner
+        </span>
       </div>
-      {/* Floating tag */}
-      <div style={{
-        position: "absolute", bottom: 50, left: -20,
-        background: "var(--wf-forest)", color: "var(--wf-cream)",
-        borderRadius: 12, padding: "10px 14px", boxShadow: "var(--wf-shadow-lg)",
-        fontSize: 11, display: "flex", alignItems: "center", gap: 8,
-        transform: "rotate(-4deg)",
-      }}>
-        ✦ <span>In your voice, always</span>
-      </div>
+      {/* Floating labels */}
+      <span style={{ position: "absolute", top: 12, left: 100, fontSize: 11, padding: "4px 10px", borderRadius: 12, background: "rgba(28,59,43,0.06)", color: "var(--wf-ink-45)" }}>
+        &ldquo;Dress code?&rdquo;
+      </span>
+      <span style={{ position: "absolute", bottom: 20, right: 30, fontSize: 11, padding: "4px 10px", borderRadius: 12, background: "rgba(28,59,43,0.06)", color: "var(--wf-ink-45)" }}>
+        &ldquo;Parking?&rdquo;
+      </span>
+      <span style={{ position: "absolute", top: 70, right: 10, fontSize: 11, padding: "4px 10px", borderRadius: 12, background: "rgba(123,145,116,0.15)", color: "#4a6844" }}>
+        MOH coordinating
+      </span>
+      <span style={{ position: "absolute", bottom: 60, left: 0, fontSize: 11, padding: "4px 10px", borderRadius: 12, background: "rgba(232,179,154,0.25)", color: "#8a5a3a" }}>
+        Mom, handling it
+      </span>
     </div>
   );
 }
@@ -266,21 +197,21 @@ function Hero() {
       <div style={{ maxWidth: 1240, margin: "0 auto", padding: "0 40px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1.15fr 1fr", gap: 80, alignItems: "center" }}>
           <div className="animate-fade-in-up">
-            <span className="wf-eyebrow">The Wedding Concierge</span>
+            <span className="wf-eyebrow">Your Circle of Care</span>
             <h1 className="wf-serif" style={{
-              fontSize: "clamp(56px, 7vw, 96px)",
-              lineHeight: 1.02,
+              fontSize: "clamp(48px, 6vw, 80px)",
+              lineHeight: 1.08,
               color: "var(--wf-forest)",
               margin: "32px 0 28px",
               letterSpacing: "-0.02em",
-              fontWeight: 600,
+              fontWeight: 500,
             }}>
-              Your guests<br />
-              have <em style={{ fontWeight: 500 }}>something</em><br />
-              <em style={{ fontWeight: 500 }}>to say.</em>
+              Your wedding takes<br />
+              <em style={{ fontWeight: 500, color: "var(--wf-terracotta)" }}>a village.</em><br />
+              We help you tend it.
             </h1>
-            <p className="wf-sans animate-fade-in-up-delay" style={{ fontSize: 17, lineHeight: 1.65, color: "var(--wf-ink-60)", maxWidth: 480, marginBottom: 40 }}>
-              Wedflow is the first inbound AI SMS concierge built for weddings. Your guests text a dedicated number with questions — and the things they can&apos;t say to your face. The AI replies in your voice, and holds the sensitive ones for your eyes only.
+            <p className="wf-sans animate-fade-in-up-delay" style={{ fontSize: 17, lineHeight: 1.7, color: "var(--wf-ink-60)", maxWidth: 460, marginBottom: 40 }}>
+              Guests text with questions. Your maid of honor coordinates the bridesmaids. Your mom handles the family dynamics. WedFlow keeps all of it moving so you can be present for what matters.
             </p>
             <div className="animate-fade-in-up-delay-2">
               <EmailCapture />
@@ -290,7 +221,7 @@ function Hero() {
             </div>
           </div>
           <div className="animate-fade-in-up-delay">
-            <HeroPhone />
+            <CircleDiagram />
           </div>
         </div>
       </div>
@@ -304,7 +235,7 @@ function SocialProofBar() {
   return (
     <div style={{ background: "var(--wf-cream)", borderTop: "1px solid var(--wf-line)", borderBottom: "1px solid var(--wf-line)", padding: "22px 0", textAlign: "center" }}>
       <p className="wf-serif" style={{ fontSize: 15, color: "var(--wf-ink-45)", fontStyle: "italic", letterSpacing: "0.01em" }}>
-        The emotional buffer for what guests can&apos;t say directly — trusted by couples across Canada.
+        The emotional buffer between you and the people who love you most. Trusted by couples across Canada.
       </p>
     </div>
   );
@@ -316,18 +247,18 @@ function HowItWorks() {
   const steps = [
     {
       num: "01",
-      title: "Guests text your WedFlow number",
-      body: "Questions, RSVPs, dietary restrictions — and the things they can't say to your face. Everything comes to one place.",
+      title: "Guests text, WedFlow answers",
+      body: "Dress code, parking, venue, registry. Guests text one number and get an instant reply in your voice. No app to download.",
     },
     {
       num: "02",
-      title: "AI replies in your voice, instantly",
-      body: "Logistics and FAQs get warm, accurate responses that sound like you. No more 2 a.m. interruptions.",
+      title: "Your circle coordinates",
+      body: "Your maid of honor, best man, and family get their own dashboard. They see their tasks, handle their people, and keep you out of the weeds.",
     },
     {
       num: "03",
-      title: "Sensitive messages? Escalated to you",
-      body: "When a guest shares something emotional, it's quietly held for your review — with a thoughtful draft ready.",
+      title: "Hard things, held gently",
+      body: "When a guest shares something emotional, WedFlow holds it. It drafts a reply and waits for you, or hands it to someone you trust.",
     },
   ];
 
@@ -336,14 +267,14 @@ function HowItWorks() {
       <div style={{ maxWidth: 1160, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 80, alignItems: "end", marginBottom: 80 }}>
           <div>
-            <span className="wf-eyebrow wf-eyebrow-forest">How it works</span>
+            <span className="wf-eyebrow wf-eyebrow-forest">How your people are cared for</span>
             <h2 className="wf-serif" style={{ fontSize: "clamp(40px, 5vw, 60px)", lineHeight: 1.05, color: "var(--wf-cream)", margin: "24px 0 0", fontWeight: 500, letterSpacing: "-0.02em" }}>
-              Effortless,<br />
-              <em style={{ fontWeight: 400 }}>from the first message.</em>
+              Every person,<br />
+              <em style={{ fontWeight: 400 }}>tended to.</em>
             </h2>
           </div>
           <p className="wf-sans" style={{ fontSize: 16, color: "var(--wf-cream-ink)", lineHeight: 1.7, maxWidth: 460, justifySelf: "end" }}>
-            Three steps. Ten minutes to set up. And the calm of knowing every guest question has a thoughtful reply — even the ones that matter most.
+            Ten minutes to set up. From that moment, every guest question gets a thoughtful reply. Every task lands in the right hands. Every hard conversation is held with care.
           </p>
         </div>
 
@@ -372,24 +303,24 @@ function HowItWorks() {
 function Features() {
   const features = [
     {
-      title: "A calm centre for guest inquiries",
-      body: "Dress code, venue directions, parking, registry — your concierge handles the questions guests ask dozens of times, so you never have to.",
-      accent: "Handles repeats.",
+      title: "Guests get answers instantly",
+      body: "Dress code, venue, parking, registry. Your guests text one number. WedFlow replies in your voice, instantly. No app for them to download, no group chat to manage.",
+      accent: "In your voice, always.",
     },
     {
-      title: "Drafted replies, in your voice",
-      body: "When a message calls for your personal touch, Wedflow prepares a thoughtful reply for your review. Approve, edit, or send as-is.",
-      accent: "Always on-brand.",
+      title: "Your inner circle gets real tools",
+      body: "Your maid of honor, best man, and family leads each get their own view. They see what belongs to them, handle their tasks, and keep you out of the details.",
+      accent: "Everyone knows their part.",
     },
     {
-      title: "Sensitive messages, kept private",
-      body: "If a guest opens up about something emotional, the AI recognizes it, pauses, and escalates it quietly — with a draft ready for you.",
-      accent: "Discretion built-in.",
+      title: "Hard things, held with care",
+      body: "When a guest shares something emotional, WedFlow recognizes it. It pauses, drafts something thoughtful, and holds it for you, or passes it to someone you trust.",
+      accent: "Care, not automation.",
     },
     {
-      title: "Set up in ten minutes",
-      body: "Share your wedding details once during a guided onboarding. From that moment, your concierge is ready — no maintenance required.",
-      accent: "Ten minutes, once.",
+      title: "Ten minutes to set up. That is it.",
+      body: "Share your wedding details once. Invite your circle. From that moment, every question, every task, every sensitive message is tended to.",
+      accent: "One setup, always on.",
     },
   ];
 
@@ -399,8 +330,8 @@ function Features() {
         <div style={{ textAlign: "center", marginBottom: 72 }}>
           <span className="wf-eyebrow wf-eyebrow-centered">What&apos;s included</span>
           <h2 className="wf-serif" style={{ fontSize: "clamp(40px, 5vw, 62px)", lineHeight: 1.05, color: "var(--wf-forest)", margin: "24px 0 0", fontWeight: 500, letterSpacing: "-0.02em" }}>
-            Everything your day<br />
-            <em style={{ fontWeight: 500 }}>deserves.</em>
+            Everything your circle<br />
+            <em style={{ fontWeight: 500 }}>needs.</em>
           </h2>
         </div>
 
@@ -470,7 +401,7 @@ function FinalCTA() {
           <em style={{ fontWeight: 500 }}>your full attention.</em>
         </h2>
         <p className="wf-sans" style={{ fontSize: 17, color: "var(--wf-ink-60)", marginBottom: 40, lineHeight: 1.65 }}>
-          Let Wedflow hold the questions. You hold each other.
+          Let WedFlow tend to your village. You tend to each other.
         </p>
         <Link href="/sign-up" className="wf-btn wf-btn-primary wf-btn-lg" style={{ padding: "16px 36px", fontSize: 14 }}>
           Begin Your Journey →

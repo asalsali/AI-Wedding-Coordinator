@@ -55,6 +55,46 @@ export interface AuditLog {
   error_message: string | null;
 }
 
+// ----------------------------------------------------------------
+// Circle of Care types
+// ----------------------------------------------------------------
+
+export type CircleRole = "moh" | "best_man" | "family_lead" | "bridesmaid" | "groomsman";
+export type CircleMemberStatus = "invited" | "active" | "removed";
+export type TaskStatus = "pending" | "in_progress" | "done" | "dismissed";
+
+export interface CircleMember {
+  id: string;
+  couple_id: string;
+  user_id: string | null;
+  name: string;
+  email: string;
+  phone_hash: string | null;
+  role: CircleRole;
+  status: CircleMemberStatus;
+  invite_token: string;
+  invite_expires_at: string;
+  invited_at: string;
+  accepted_at: string | null;
+  created_at: string;
+}
+
+export interface TaskAssignment {
+  id: string;
+  couple_id: string;
+  assigned_to: string;
+  message_id: string | null;
+  title: string;
+  description: string | null;
+  status: TaskStatus;
+  created_at: string;
+  completed_at: string | null;
+}
+
+// ----------------------------------------------------------------
+// Wedding Profile
+// ----------------------------------------------------------------
+
 export interface WeddingProfile {
   id: string;
   couple_id: string;

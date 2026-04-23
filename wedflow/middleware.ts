@@ -6,6 +6,7 @@ const isPublicRoute = [
   '/sign-in',
   '/sign-up',
   '/pricing',
+  '/join',
   '/api/webhooks/twilio',
   '/api/inngest',
   '/api/stripe/webhook',

@@ -1,7 +1,7 @@
 import { createHash } from "crypto";
 import { z } from "zod";
 import { validateTwilioWebhook } from "@/lib/twilio/validate";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceRoleClient } from "@/lib/supabase/server";
 import { inngest } from "@/lib/inngest/client";
 
 // POST only — no GET handler exported
@@ -70,7 +70,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const { From, To, Body, MessageSid } = payload;
-  const supabase = await createClient();
+  const supabase = createServiceRoleClient();
 
   // Step 3: Look up the couple by the Twilio number they were texted on
   const { data: phoneRow, error: phoneError } = await supabase
