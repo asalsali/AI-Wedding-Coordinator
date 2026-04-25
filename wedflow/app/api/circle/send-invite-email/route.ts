@@ -35,20 +35,30 @@ export async function POST(request: Request) {
       },
     })
 
-    if (linkError || !data?.properties?.action_link) {
-      return NextResponse.json(
-        { error: 'Could not generate sign-in link.' },
-        { status: 500 }
-      )
+    if (linkError) {
+      console.error('generateLink error:', linkError.message)
+      // Fall back to Supabase's default OTP email
+      return NextResponse.json({ fallback: true, error: 'Could not generate link. Use the fallback flow.' }, { status: 200 })
+    }
+
+    if (!data?.properties?.action_link) {
+      console.error('generateLink: no action_link in response')
+      return NextResponse.json({ fallback: true }, { status: 200 })
     }
 
     const magicLink = data.properties.action_link
     const roleLabel = ROLE_LABELS[role] || role
 
-    // Send personalized email via Resend
-    const resend = new Resend(process.env.RESEND_API_KEY!)
+    // Try sending via Resend
+    const resendKey = process.env.RESEND_API_KEY
+    if (!resendKey) {
+      console.error('RESEND_API_KEY not set, falling back')
+      return NextResponse.json({ fallback: true }, { status: 200 })
+    }
 
-    const { error: emailError } = await resend.emails.send({
+    const resend = new Resend(resendKey)
+
+    const { data: emailData, error: emailError } = await resend.emails.send({
       from: 'WedFlow <onboarding@resend.dev>',
       to: email,
       subject: `${coupleName} invited you into their wedding circle`,
@@ -64,32 +74,25 @@ export async function POST(request: Request) {
     <tr>
       <td align="center">
         <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 480px;">
-          <!-- Header -->
           <tr>
             <td align="center" style="padding-bottom: 32px;">
               <span style="font-size: 20px; font-weight: 600; color: #1C3B2B; letter-spacing: -0.01em;">WedFlow</span>
             </td>
           </tr>
-
-          <!-- Main card -->
           <tr>
             <td style="background: #ffffff; border-radius: 20px; padding: 40px 36px; border: 1px solid #f0ede8;">
               <h1 style="font-size: 24px; font-weight: 400; color: #1C3B2B; line-height: 1.3; margin: 0 0 8px; text-align: center;">
                 ${coupleName} invited you into their circle
               </h1>
-
               <p style="font-size: 14px; color: #8a8580; text-align: center; margin: 0 0 24px;">
                 as their <strong style="color: #1C3B2B;">${roleLabel}</strong>
               </p>
-
               <p style="font-size: 15px; line-height: 1.6; color: #4a4745; margin: 0 0 12px;">
                 Hi ${name},
               </p>
               <p style="font-size: 15px; line-height: 1.6; color: #4a4745; margin: 0 0 24px;">
                 ${coupleName} would love your help as their wedding day approaches. As their ${roleLabel.toLowerCase()}, you will have your own portal where you can see tasks they assign to you and conversations relevant to your role.
               </p>
-
-              <!-- CTA button -->
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center" style="padding: 8px 0 24px;">
@@ -99,7 +102,6 @@ export async function POST(request: Request) {
                   </td>
                 </tr>
               </table>
-
               <p style="font-size: 13px; color: #8a8580; line-height: 1.5; margin: 0; text-align: center;">
                 This link expires in 24 hours. If the button does not work, copy and paste this URL into your browser:
               </p>
@@ -108,8 +110,6 @@ export async function POST(request: Request) {
               </p>
             </td>
           </tr>
-
-          <!-- Footer -->
           <tr>
             <td align="center" style="padding-top: 24px;">
               <p style="font-size: 12px; color: #b0aca7; margin: 0;">
@@ -127,13 +127,12 @@ export async function POST(request: Request) {
     })
 
     if (emailError) {
-      console.error('Resend error:', emailError)
-      return NextResponse.json(
-        { error: 'Could not send the invite email.' },
-        { status: 500 }
-      )
+      console.error('Resend send error:', emailError)
+      // Email failed but we have the magic link, return it so the client can show a fallback
+      return NextResponse.json({ fallback: true, magicLink }, { status: 200 })
     }
 
+    console.log('Invite email sent:', emailData?.id)
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('send-invite-email error:', err)

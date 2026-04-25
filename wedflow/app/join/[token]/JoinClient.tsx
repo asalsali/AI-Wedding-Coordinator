@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { createBrowserClient } from "@supabase/ssr";
 import type { CircleRole } from "@/types";
 
 const ROLE_LABELS: Record<CircleRole, string> = {
@@ -33,6 +34,11 @@ export default function JoinClient({
   const [step, setStep] = useState<"view" | "sent" | "accepting" | "done" | "error">("view");
   const [errorMsg, setErrorMsg] = useState("");
   const [copied, setCopied] = useState(false);
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   // Expired invite
   if (invite.expired) {
@@ -75,6 +81,7 @@ export default function JoinClient({
     setErrorMsg("");
 
     try {
+      // Try the custom Resend email first
       const res = await fetch("/api/circle/send-invite-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,11 +95,23 @@ export default function JoinClient({
         }),
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        setErrorMsg(data.error || "Could not send the sign-in link. Try copying the invite link instead.");
+      const data = await res.json();
+
+      if (data.success) return; // Resend email sent
+
+      // If Resend failed, fall back to Supabase's built-in OTP email
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/join/${token}/accept`,
+        },
+      });
+
+      if (otpError) {
+        setErrorMsg("Could not send the sign-in link. Try copying the invite link instead.");
         setStep("error");
       }
+      // Otherwise OTP sent, stay on "sent" step
     } catch {
       setErrorMsg("Could not send the sign-in link. Try copying the invite link instead.");
       setStep("error");
