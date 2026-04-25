@@ -21,31 +21,37 @@ export async function POST(request: Request) {
       .from('waitlist')
       .insert({ email })
 
-    if (error) {
-      // Duplicate email — return success so we don't leak whether an address is registered
-      if (error.code === '23505') return NextResponse.json({ ok: true })
-      throw error
-    }
+    const isDuplicate = error?.code === '23505'
+    if (error && !isDuplicate) throw error
 
-    // Notify founder — fire and forget, don't block the response
+    // Notify founder on every signup (including duplicates, so you know someone tried)
     const notifyEmail = process.env.WAITLIST_NOTIFY_EMAIL
     const resendKey = process.env.RESEND_API_KEY
     if (notifyEmail && resendKey) {
       const resend = new Resend(resendKey)
-      resend.emails.send({
+      const { data: emailData, error: emailError } = await resend.emails.send({
         from: 'WedFlow <onboarding@resend.dev>',
         to: notifyEmail,
-        subject: `New waitlist signup: ${email}`,
-        text: `${email} just joined the Wedflow paid beta waitlist.`,
-      }).then((result) => {
-        if (result.error) console.error('Waitlist notify error:', result.error)
-      }).catch((err) => {
-        console.error('Waitlist notify failed:', err)
+        subject: isDuplicate
+          ? `Waitlist retry: ${email}`
+          : `New waitlist signup: ${email}`,
+        text: isDuplicate
+          ? `${email} tried to join the waitlist again (already signed up).`
+          : `${email} just joined the Wedflow paid beta waitlist.`,
       })
+
+      if (emailError) {
+        console.error('Waitlist notify error:', JSON.stringify(emailError))
+      } else {
+        console.log('Waitlist notify sent:', emailData?.id)
+      }
+    } else {
+      console.warn('Waitlist notify skipped: WAITLIST_NOTIFY_EMAIL=' + (notifyEmail ?? 'unset') + ', RESEND_API_KEY=' + (resendKey ? 'set' : 'unset'))
     }
 
     return NextResponse.json({ ok: true })
-  } catch {
+  } catch (err) {
+    console.error('Waitlist error:', err)
     return NextResponse.json({ error: 'Something went wrong. Please try again.' }, { status: 500 })
   }
 }
