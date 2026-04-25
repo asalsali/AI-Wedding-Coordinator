@@ -33,12 +33,14 @@ export async function POST(request: Request) {
     if (notifyEmail && resendKey) {
       const resend = new Resend(resendKey)
       resend.emails.send({
-        from: 'Wedflow <onboarding@resend.dev>',
+        from: 'WedFlow <onboarding@resend.dev>',
         to: notifyEmail,
         subject: `New waitlist signup: ${email}`,
         text: `${email} just joined the Wedflow paid beta waitlist.`,
-      }).catch(() => {
-        // Swallow — a failed notification should never fail the signup
+      }).then((result) => {
+        if (result.error) console.error('Waitlist notify error:', result.error)
+      }).catch((err) => {
+        console.error('Waitlist notify failed:', err)
       })
     }
 
