@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
@@ -36,7 +36,19 @@ export default function PortalClient({
 }) {
   const [tasks, setTasks] = useState(initialTasks);
   const [updatingTask, setUpdatingTask] = useState<string | null>(null);
+  const [showHomeScreenBanner, setShowHomeScreenBanner] = useState(false);
   const router = useRouter();
+
+  // Show "Add to Home Screen" prompt on mobile if not already installed as PWA
+  useEffect(() => {
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches
+      || ('standalone' in window.navigator && (window.navigator as unknown as { standalone: boolean }).standalone);
+    const dismissed = localStorage.getItem("wf-homescreen-dismissed");
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile && !isStandalone && !dismissed) {
+      setShowHomeScreenBanner(true);
+    }
+  }, []);
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -121,6 +133,23 @@ export default function PortalClient({
           Sign out
         </button>
       </header>
+
+      {/* Add to Home Screen banner */}
+      {showHomeScreenBanner && (
+        <div style={{ background: "var(--wf-forest)", color: "var(--wf-cream)", padding: "12px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>Add WedFlow to your home screen</div>
+            <div style={{ fontSize: 11, opacity: 0.7 }}>
+              {/iPhone|iPad/i.test(typeof navigator !== 'undefined' ? navigator.userAgent : '')
+                ? 'Tap the share button, then "Add to Home Screen"'
+                : 'Tap the menu button, then "Add to Home Screen"'}
+            </div>
+          </div>
+          <button onClick={() => { setShowHomeScreenBanner(false); localStorage.setItem("wf-homescreen-dismissed", "1"); }} style={{ background: "none", border: "none", color: "var(--wf-cream)", cursor: "pointer", padding: 4, fontSize: 18, lineHeight: 1, opacity: 0.7 }}>
+            ×
+          </button>
+        </div>
+      )}
 
       {/* Content */}
       <main style={{ maxWidth: 640, margin: "0 auto", padding: 16 }}>

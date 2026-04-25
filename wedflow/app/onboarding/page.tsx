@@ -1067,13 +1067,22 @@ export default function OnboardingPage() {
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <span className="text-xs font-medium" style={{ color: C.forest }}>&#10003; Invited</span>
                       {inv.link && (
-                        <button
-                          onClick={() => navigator.clipboard.writeText(inv.link!)}
-                          className="text-xs px-2 py-1 rounded-lg transition-colors hover:opacity-70"
-                          style={{ color: C.forest, border: `1px solid ${C.forest}30` }}
-                        >
-                          Copy link
-                        </button>
+                        <>
+                          <button
+                            onClick={() => navigator.clipboard.writeText(inv.link!)}
+                            className="text-xs px-2 py-1 rounded-lg transition-colors hover:opacity-70"
+                            style={{ color: C.forest, border: `1px solid ${C.forest}30` }}
+                          >
+                            Copy link
+                          </button>
+                          <a
+                            href={`sms:?body=${encodeURIComponent(`You're invited to our wedding circle! Join here: ${inv.link}`)}`}
+                            className="text-xs px-2 py-1 rounded-lg transition-colors hover:opacity-70"
+                            style={{ color: C.forest, border: `1px solid ${C.forest}30`, textDecoration: 'none' }}
+                          >
+                            Text
+                          </a>
+                        </>
                       )}
                     </div>
                   </div>

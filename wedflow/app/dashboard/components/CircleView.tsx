@@ -171,9 +171,14 @@ export function CircleView() {
         <div style={{ marginBottom: 20, padding: '14px 18px', borderRadius: 14, background: inviteResult.type === 'success' ? 'rgba(106,162,96,0.1)' : 'rgba(180,84,78,0.08)', border: `1px solid ${inviteResult.type === 'success' ? 'rgba(106,162,96,0.25)' : 'rgba(180,84,78,0.2)'}`, display: 'flex', alignItems: 'center', gap: 12 }}>
           <span className="wf-sans" style={{ fontSize: 13, color: inviteResult.type === 'success' ? 'var(--wf-forest)' : 'var(--wf-rose)', flex: 1 }}>{inviteResult.text}</span>
           {inviteResult.link && (
-            <button onClick={() => copyInviteLink(inviteResult.link!)} className="wf-btn wf-btn-ghost wf-btn-sm">
-              <Icon name="copy" size={12} /> Copy invite link
-            </button>
+            <>
+              <button onClick={() => copyInviteLink(inviteResult.link!)} className="wf-btn wf-btn-ghost wf-btn-sm">
+                <Icon name="copy" size={12} /> Copy link
+              </button>
+              <a href={`sms:?body=${encodeURIComponent(`You're invited to our wedding circle on WedFlow! Join here: ${inviteResult.link}`)}`} className="wf-btn wf-btn-ghost wf-btn-sm" style={{ textDecoration: 'none' }}>
+                <Icon name="send" size={12} /> Text link
+              </a>
+            </>
           )}
           <button onClick={() => setInviteResult(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', padding: 2 }}>
             <Icon name="x" size={14} />

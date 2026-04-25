@@ -112,12 +112,12 @@ function Nav() {
       WebkitBackdropFilter: "blur(14px) saturate(1.2)",
       borderBottom: "1px solid var(--wf-line)",
     }}>
-      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "18px 40px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-          <div style={{ width: 112, height: 112, borderRadius: '22%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Image src="/LogoLight.png" alt="Wedflow" width={180} height={180} style={{ width: 180, height: 180, objectFit: 'contain', flexShrink: 0 }} priority />
+      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "14px 40px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
+          <div style={{ width: 40, height: 40, borderRadius: '22%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Image src="/LogoLight.png" alt="Wedflow" width={40} height={40} style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0 }} priority />
           </div>
-          <span className="wf-serif" style={{ fontSize: 20, fontWeight: 600, color: "var(--wf-forest)", letterSpacing: "-0.01em" }}>
+          <span className="wf-serif" style={{ fontSize: 18, fontWeight: 600, color: "var(--wf-forest)", letterSpacing: "-0.01em" }}>
             Wedflow
           </span>
         </Link>
@@ -141,50 +141,79 @@ function Nav() {
 // ─── Circle Diagram ───────────────────────────────────────────────────────────
 
 function CircleDiagram() {
+  const cx = 200, cy = 200;
+
+  // Role nodes positioned around the middle ring
+  const roles = [
+    { label: "MOH", angle: -60, color: "#7B9174" },
+    { label: "Best Man", angle: 20, color: "#7B9174" },
+    { label: "Mom", angle: 100, color: "#C4714A" },
+    { label: "Dad", angle: 180, color: "#C4714A" },
+    { label: "Bridesmaid", angle: -130, color: "#7B9174" },
+  ];
+
+  // Guest message bubbles on the outer ring
+  const guests = [
+    { text: "Dress code?", angle: -40 },
+    { text: "Parking?", angle: 50 },
+    { text: "Registry?", angle: 140 },
+    { text: "Hotel?", angle: -150 },
+  ];
+
   return (
-    <div style={{ position: "relative", width: 380, height: 380, margin: "0 auto" }}>
-      {/* Outer ring: guests */}
-      <div style={{
-        position: "absolute", inset: 0,
-        borderRadius: "50%",
-        border: "2px dashed var(--wf-line-strong)",
-      }} />
-      {/* Middle ring: inner circle */}
-      <div style={{
-        position: "absolute",
-        top: 65, left: 65, width: 250, height: 250,
-        borderRadius: "50%",
-        border: "2px solid rgba(123,145,116,0.35)",
-        background: "rgba(123,145,116,0.04)",
-      }} />
-      {/* Center: couple */}
-      <div style={{
-        position: "absolute",
-        top: 130, left: 130, width: 120, height: 120,
-        borderRadius: "50%",
-        background: "var(--wf-forest)",
-        display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-        boxShadow: "var(--wf-shadow-lg)",
-      }}>
-        <Image src="/WedFlowlogo.png" alt="WedFlow" width={36} height={36} style={{ marginBottom: 4 }} />
-        <span className="wf-serif" style={{ fontSize: 12, color: "var(--wf-cream)", textAlign: "center", lineHeight: 1.2 }}>
-          You and<br />your partner
-        </span>
-      </div>
-      {/* Floating labels */}
-      <span style={{ position: "absolute", top: 12, left: 100, fontSize: 11, padding: "4px 10px", borderRadius: 12, background: "rgba(28,59,43,0.06)", color: "var(--wf-ink-45)" }}>
-        &ldquo;Dress code?&rdquo;
-      </span>
-      <span style={{ position: "absolute", bottom: 20, right: 30, fontSize: 11, padding: "4px 10px", borderRadius: 12, background: "rgba(28,59,43,0.06)", color: "var(--wf-ink-45)" }}>
-        &ldquo;Parking?&rdquo;
-      </span>
-      <span style={{ position: "absolute", top: 70, right: 10, fontSize: 11, padding: "4px 10px", borderRadius: 12, background: "rgba(123,145,116,0.15)", color: "#4a6844" }}>
-        MOH coordinating
-      </span>
-      <span style={{ position: "absolute", bottom: 60, left: 0, fontSize: 11, padding: "4px 10px", borderRadius: 12, background: "rgba(232,179,154,0.25)", color: "#8a5a3a" }}>
-        Mom, handling it
-      </span>
+    <div style={{ position: "relative", width: 400, height: 400, margin: "0 auto" }}>
+      <svg viewBox="0 0 400 400" width="400" height="400" style={{ position: "absolute", inset: 0 }}>
+        {/* Outer ring: guests */}
+        <circle cx={cx} cy={cy} r={185} fill="none" stroke="var(--wf-line-strong)" strokeWidth="1.5" strokeDasharray="6 4" opacity={0.6} />
+        {/* Ring label */}
+        <text x={cx} y={24} textAnchor="middle" fill="var(--wf-ink-25)" fontSize="9" fontFamily="var(--wf-sans)" letterSpacing="0.12em" style={{ textTransform: "uppercase" } as React.CSSProperties}>GUESTS</text>
+
+        {/* Middle ring: inner circle */}
+        <circle cx={cx} cy={cy} r={120} fill="rgba(123,145,116,0.04)" stroke="rgba(123,145,116,0.3)" strokeWidth="1.5" />
+        {/* Ring label */}
+        <text x={cx} y={92} textAnchor="middle" fill="rgba(123,145,116,0.5)" fontSize="9" fontFamily="var(--wf-sans)" letterSpacing="0.12em" style={{ textTransform: "uppercase" } as React.CSSProperties}>YOUR CIRCLE</text>
+
+        {/* Center: couple */}
+        <circle cx={cx} cy={cy} r={48} fill="#1C3B2B" />
+        <text x={cx} y={cy - 4} textAnchor="middle" fill="#FDFBF7" fontSize="13" fontFamily="var(--wf-serif)" fontWeight="500">You &amp;</text>
+        <text x={cx} y={cy + 14} textAnchor="middle" fill="#FDFBF7" fontSize="13" fontFamily="var(--wf-serif)" fontWeight="500">Partner</text>
+
+        {/* Connection lines from couple to circle members */}
+        {roles.map((role, i) => {
+          const rad = (role.angle * Math.PI) / 180;
+          const rx = cx + Math.cos(rad) * 120;
+          const ry = cy + Math.sin(rad) * 120;
+          return (
+            <line key={`line-${i}`} x1={cx} y1={cy} x2={rx} y2={ry} stroke="rgba(123,145,116,0.15)" strokeWidth="1" />
+          );
+        })}
+
+        {/* Role nodes */}
+        {roles.map((role, i) => {
+          const rad = (role.angle * Math.PI) / 180;
+          const rx = cx + Math.cos(rad) * 120;
+          const ry = cy + Math.sin(rad) * 120;
+          return (
+            <g key={`role-${i}`}>
+              <circle cx={rx} cy={ry} r={22} fill="white" stroke={role.color} strokeWidth="1.5" />
+              <text x={rx} y={ry + 4} textAnchor="middle" fill={role.color} fontSize="9" fontFamily="var(--wf-sans)" fontWeight="600">{role.label}</text>
+            </g>
+          );
+        })}
+
+        {/* Guest message bubbles */}
+        {guests.map((guest, i) => {
+          const rad = (guest.angle * Math.PI) / 180;
+          const gx = cx + Math.cos(rad) * 178;
+          const gy = cy + Math.sin(rad) * 178;
+          return (
+            <g key={`guest-${i}`}>
+              <rect x={gx - 32} y={gy - 11} width={64} height={22} rx={11} fill="rgba(28,59,43,0.07)" />
+              <text x={gx} y={gy + 3.5} textAnchor="middle" fill="var(--wf-ink-45)" fontSize="9.5" fontFamily="var(--wf-sans)" fontStyle="italic">{guest.text}</text>
+            </g>
+          );
+        })}
+      </svg>
     </div>
   );
 }
@@ -417,11 +446,11 @@ function Footer() {
   return (
     <footer style={{ background: "var(--wf-forest-deep)", padding: "48px 40px" }}>
       <div style={{ maxWidth: 1160, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{ width: 112, height: 112, borderRadius: '22%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Image src="/LogoDark.png" alt="Wedflow" width={180} height={180} style={{ width: 180, height: 180, objectFit: 'contain', flexShrink: 0 }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 36, height: 36, borderRadius: '22%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Image src="/LogoDark.png" alt="Wedflow" width={36} height={36} style={{ width: 36, height: 36, objectFit: 'contain', flexShrink: 0 }} />
           </div>
-          <span className="wf-serif" style={{ fontSize: 18, color: "var(--wf-cream)", fontWeight: 600 }}>Wedflow</span>
+          <span className="wf-serif" style={{ fontSize: 16, color: "var(--wf-cream)", fontWeight: 600 }}>Wedflow</span>
           <span className="wf-sans" style={{ fontSize: 12, color: "var(--wf-cream-ink-50)", marginLeft: 8 }}>
             Made with care for couples everywhere.
           </span>

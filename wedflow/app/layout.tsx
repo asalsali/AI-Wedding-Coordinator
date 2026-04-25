@@ -40,6 +40,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#1C3B2B" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="apple-touch-icon" href="/WedFlowlogo.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} ${plusJakarta.variable} antialiased`}
       >
