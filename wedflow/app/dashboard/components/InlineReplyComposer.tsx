@@ -15,8 +15,7 @@ export function InlineReplyComposer({ onSend, isSending, initialText, onClearIni
 
   useEffect(() => {
     if (initialText) {
-      const truncated = initialText.length > TRIAL_CHAR_LIMIT ? initialText.slice(0, TRIAL_CHAR_LIMIT - 3) + '...' : initialText
-      setReplyText(truncated)
+      setReplyText(initialText)
       onClearInitial()
       setTimeout(() => textareaRef.current?.focus(), 50)
     }
@@ -38,7 +37,9 @@ export function InlineReplyComposer({ onSend, isSending, initialText, onClearIni
           />
           <div style={{ textAlign: 'right', marginTop: 2 }}>
             <span className="wf-sans" style={{ fontSize: 10, color: isOverLimit ? 'var(--wf-rose)' : 'var(--wf-ink-25)' }}>
-              {charCount > 0 ? `${charCount} / ${TRIAL_CHAR_LIMIT}` : ''}
+              {isOverLimit
+                ? `Replies are limited to ${TRIAL_CHAR_LIMIT} characters during the trial period (${charCount} / ${TRIAL_CHAR_LIMIT})`
+                : charCount > 0 ? `${charCount} / ${TRIAL_CHAR_LIMIT}` : ''}
             </span>
           </div>
         </div>

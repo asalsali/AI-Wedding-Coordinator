@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Image from 'next/image'
 import { Icon } from './Icon'
 import { StatTile } from './StatTile'
@@ -22,6 +23,7 @@ export function HomeView({
   coupleNames, localProfile, phoneNumber, daysUntilWedding,
   messages, needsReplyMessages, stats, isRefreshing, onRefresh, onNavigateInbox,
 }: HomeViewProps) {
+  const [copied, setCopied] = useState(false)
   const autoReplied = messages.filter((m) => m.direction === 'outbound' && m.was_sent).length
   const totalIn = messages.filter((m) => m.direction === 'inbound').length
   const pct = totalIn > 0 ? Math.round((autoReplied / totalIn) * 100) : 0
@@ -37,7 +39,7 @@ export function HomeView({
           </h1>
           {localProfile?.wedding_date && (
             <p className="wf-sans" style={{ color: 'var(--wf-ink-60)', fontSize: 15 }}>
-              {localProfile.venue_name && `${localProfile.venue_name} · `}{daysUntilWedding > 0 ? `${daysUntilWedding} days to go` : 'Today! 🎉'}
+              {localProfile.venue_name && `${localProfile.venue_name} · `}{daysUntilWedding > 0 ? `${daysUntilWedding} days to go` : 'Today!'}
             </p>
           )}
         </div>
@@ -63,8 +65,15 @@ export function HomeView({
           </p>
           {phoneNumber && (
             <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={() => navigator.clipboard.writeText(phoneNumber)} className="wf-btn" style={{ background: 'var(--wf-terracotta)', color: 'var(--wf-cream)', fontSize: 13 }}>
-                <Icon name="copy" size={13} /> Copy number
+              <button onClick={() => {
+                navigator.clipboard.writeText(phoneNumber).then(() => {
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 2000)
+                }).catch(() => {
+                  setCopied(false)
+                })
+              }} className="wf-btn" style={{ background: 'var(--wf-terracotta)', color: 'var(--wf-cream)', fontSize: 13 }}>
+                <Icon name={copied ? 'check' : 'copy'} size={13} /> {copied ? 'Copied!' : 'Copy number'}
               </button>
             </div>
           )}
@@ -79,7 +88,7 @@ export function HomeView({
         <StatTile eyebrow="Needs your reply" value={needsReplyMessages.length} hint={needsReplyMessages.length === 0 ? 'All caught up!' : 'waiting for you'} />
         <StatTile eyebrow="Total messages" value={stats.totalMessages} hint="+from your guests" />
         <StatTile eyebrow="Auto-replied" value={autoReplied} hint={`${pct}% handled for you`} />
-        <StatTile eyebrow="Days until" value={daysUntilWedding > 0 ? daysUntilWedding : '🎉'} hint={localProfile?.wedding_date ? new Date(localProfile.wedding_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : undefined} />
+        <StatTile eyebrow="Days until" value={daysUntilWedding > 0 ? daysUntilWedding : 'Today'} hint={localProfile?.wedding_date ? new Date(localProfile.wedding_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : undefined} />
       </div>
 
       {/* Recent messages */}

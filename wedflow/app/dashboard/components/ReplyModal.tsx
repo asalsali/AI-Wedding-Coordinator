@@ -5,8 +5,7 @@ export function ReplyModal({ inboundBody, initialDraft, onClose, onSend, isSendi
   inboundBody: string; initialDraft: string; onClose: () => void; onSend: (text: string) => void; isSending: boolean
 }) {
   const TRIAL_CHAR_LIMIT = 120
-  const truncated = initialDraft.length > TRIAL_CHAR_LIMIT ? initialDraft.slice(0, TRIAL_CHAR_LIMIT - 3) + '...' : initialDraft
-  const [text, setText] = useState(truncated)
+  const [text, setText] = useState(initialDraft)
   const charCount = text.length
   const isOverLimit = charCount > TRIAL_CHAR_LIMIT
 
@@ -29,7 +28,9 @@ export function ReplyModal({ inboundBody, initialDraft, onClose, onSend, isSendi
             <div style={{ border: '1px solid var(--wf-line-strong)', borderRadius: 12, padding: '12px 14px 8px' }}>
               <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4} disabled={isSending} className="wf-sans" style={{ width: '100%', border: 'none', outline: 'none', resize: 'none', fontSize: 13, color: 'var(--wf-ink)', fontFamily: 'var(--wf-sans)', lineHeight: 1.55, background: 'transparent' }} placeholder="Type your reply…" />
               <div style={{ textAlign: 'right', fontSize: 11, color: isOverLimit ? 'var(--wf-rose)' : 'var(--wf-ink-45)', marginTop: 4 }}>
-                {isOverLimit ? `${charCount} / ${TRIAL_CHAR_LIMIT} — too long for trial` : `${charCount} / ${TRIAL_CHAR_LIMIT}`}
+                {isOverLimit
+                  ? `Replies are limited to ${TRIAL_CHAR_LIMIT} characters during the trial period (${charCount} / ${TRIAL_CHAR_LIMIT})`
+                  : `${charCount} / ${TRIAL_CHAR_LIMIT}`}
               </div>
             </div>
           </div>

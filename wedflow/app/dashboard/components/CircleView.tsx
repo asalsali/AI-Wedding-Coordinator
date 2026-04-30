@@ -45,6 +45,7 @@ export function CircleView() {
   const [members, setMembers] = useState<CircleMember[]>([])
   const [tasks, setTasks] = useState<TaskAssignment[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
 
   // Invite form
   const [showInviteForm, setShowInviteForm] = useState(false)
@@ -64,14 +65,24 @@ export function CircleView() {
   // Remove member
   const [isRemoving, startRemove] = useTransition()
 
+  function loadCircleData() {
+    setLoading(true)
+    setLoadError(false)
+    Promise.all([getCircleMembers(), getCircleTasks()])
+      .then(([m, t]) => {
+        setMembers(m)
+        setTasks(t)
+      })
+      .catch(() => {
+        setLoadError(true)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
   useEffect(() => {
-    async function load() {
-      const [m, t] = await Promise.all([getCircleMembers(), getCircleTasks()])
-      setMembers(m)
-      setTasks(t)
-      setLoading(false)
-    }
-    load()
+    loadCircleData()
   }, [])
 
   function handleInvite() {
@@ -137,6 +148,23 @@ export function CircleView() {
         <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 32px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
           Loading...
         </h1>
+      </div>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <div style={{ padding: '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
+        <span className="wf-eyebrow">Your circle</span>
+        <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 16px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+          Something went wrong.
+        </h1>
+        <p className="wf-sans" style={{ color: 'var(--wf-ink-60)', fontSize: 15, marginBottom: 20 }}>
+          Could not load circle members. Try again.
+        </p>
+        <button onClick={loadCircleData} className="wf-btn wf-btn-forest">
+          <Icon name="refresh" size={14} /> Retry
+        </button>
       </div>
     )
   }
