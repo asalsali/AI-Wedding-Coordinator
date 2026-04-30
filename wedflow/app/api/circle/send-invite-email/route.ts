@@ -14,10 +14,27 @@ const ROLE_LABELS: Record<string, string> = {
 
 export async function POST(request: Request) {
   try {
-    const { token, email, name, role, coupleName, origin } = await request.json()
+    const { token, email, name, role, coupleName, origin, coupleId } = await request.json()
 
     if (!token || !email || !name || !coupleName || !origin) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+
+    // Verify the invite token belongs to the claimed couple to prevent unauthorized sends
+    const verifyClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    )
+    const { data: invite } = await verifyClient
+      .from('circle_members')
+      .select('id')
+      .eq('invite_token', token)
+      .eq('email', email)
+      .maybeSingle()
+
+    if (!invite) {
+      return NextResponse.json({ error: 'Invalid invite' }, { status: 403 })
     }
 
     const supabase = createClient(

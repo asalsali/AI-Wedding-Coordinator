@@ -8,6 +8,8 @@ import { generateReply } from "@/lib/ai/reply";
 import { checkReplySafety } from "@/lib/ai/safety";
 import { draftEscalationReply } from "@/lib/ai/escalation";
 import { WeddingProfile, Faq, ToneStyle } from "@/types";
+import { writeAuditLog } from "@/lib/audit/service";
+import { notifyEscalation } from "@/lib/notifications/escalation";
 
 // requires: ANTHROPIC_API_KEY, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 // requires: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
@@ -117,6 +119,15 @@ export const smsReceived = inngest.createFunction(
 
     if (!profile) {
       // Couple hasn't finished onboarding — no profile to reply from. Skip silently.
+      await step.run("audit-no-profile", () =>
+        writeAuditLog({
+          coupleId,
+          eventType: "message_failed",
+          resourceType: "message",
+          resourceId: messageId,
+          metadata: { reason: "no_profile" },
+        })
+      );
       return { skipped: true, reason: "no_profile" };
     }
 
@@ -125,6 +136,20 @@ export const smsReceived = inngest.createFunction(
       const client = new Anthropic();
       return classifyMessage(body, client);
     });
+
+    // Audit: classification result
+    await step.run("audit-classified", () =>
+      writeAuditLog({
+        coupleId,
+        eventType: "message_classified",
+        resourceType: "message",
+        resourceId: messageId,
+        metadata: {
+          classification: classification.classification,
+          confidence: classification.confidence,
+        },
+      })
+    );
 
     const escalate = shouldEscalate(classification);
 
@@ -160,6 +185,26 @@ export const smsReceived = inngest.createFunction(
           replied_to_message_id: messageId,
         });
       });
+
+      // Audit: escalation due to classification
+      await step.run("audit-escalated-classification", () =>
+        writeAuditLog({
+          coupleId,
+          eventType: "message_escalated",
+          resourceType: "message",
+          resourceId: messageId,
+          metadata: {
+            reason: "classification",
+            classification: classification.classification,
+            confidence: classification.confidence,
+          },
+        })
+      );
+
+      // Notify couple via email
+      await step.run("notify-escalation-classification", () =>
+        notifyEscalation(coupleId, "classification", messageId)
+      );
 
       return { escalated: true, reason: "classification" };
     }
@@ -206,11 +251,31 @@ export const smsReceived = inngest.createFunction(
         });
       });
 
+      // Audit: escalation due to safety check failure
+      await step.run("audit-escalated-safety", () =>
+        writeAuditLog({
+          coupleId,
+          eventType: "message_escalated",
+          resourceType: "message",
+          resourceId: messageId,
+          metadata: {
+            reason: "safety_check_failed",
+            classification: classification.classification,
+            confidence: classification.confidence,
+          },
+        })
+      );
+
+      // Notify couple via email
+      await step.run("notify-escalation-safety", () =>
+        notifyEscalation(coupleId, "safety_check_failed", messageId)
+      );
+
       return { escalated: true, reason: "safety_check_failed" };
     }
 
     // Step 5: Send outbound SMS via Twilio
-    await step.run("send-reply", async () => {
+    const twilioSid = await step.run("send-reply", async () => {
       const twilioClient = getTwilioClient();
 
       console.log("[send-reply] Sending SMS", {
@@ -232,6 +297,8 @@ export const smsReceived = inngest.createFunction(
           `[send-reply] Twilio returned null/undefined for messageId=${messageId}`
         );
       }
+
+      return twilioResponse.sid;
     });
 
     // Step 6: Persist outbound message and mark inbound as classified
@@ -256,6 +323,21 @@ export const smsReceived = inngest.createFunction(
         sent_at: now,
       });
     });
+
+    // Audit: message sent successfully
+    await step.run("audit-sent", () =>
+      writeAuditLog({
+        coupleId,
+        eventType: "message_sent",
+        resourceType: "message",
+        resourceId: messageId,
+        metadata: {
+          twilioSid: twilioSid ?? null,
+          classification: classification.classification,
+          confidence: classification.confidence,
+        },
+      })
+    );
 
     return { sent: true };
   }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Icon } from './Icon'
 import type { MessageRow } from '../types'
 
@@ -18,6 +18,18 @@ export function AIDraftCard({ draft, onSend, onEdit, onDismiss, onAssign, isSend
   circleMembers?: CircleMemberOption[]
 }) {
   const [showAssignMenu, setShowAssignMenu] = useState(false)
+  const assignDropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!showAssignMenu) return
+    const handler = (e: MouseEvent) => {
+      if (assignDropdownRef.current && !assignDropdownRef.current.contains(e.target as Node)) {
+        setShowAssignMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [showAssignMenu])
 
   return (
     <div style={{ alignSelf: 'flex-end', maxWidth: '85%', marginTop: -2 }}>
@@ -36,7 +48,7 @@ export function AIDraftCard({ draft, onSend, onEdit, onDismiss, onAssign, isSend
             <Icon name="edit" size={11} /> Edit
           </button>
           {onAssign && circleMembers && circleMembers.length > 0 && (
-            <div style={{ position: 'relative' }}>
+            <div ref={assignDropdownRef} style={{ position: 'relative' }}>
               <button
                 onClick={() => setShowAssignMenu(!showAssignMenu)}
                 disabled={isSending}

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { validateTwilioWebhook } from "@/lib/twilio/validate";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { inngest } from "@/lib/inngest/client";
+import { writeAuditLog } from "@/lib/audit/service";
 
 // POST only — no GET handler exported
 export const dynamic = "force-dynamic";
@@ -192,6 +193,15 @@ export async function POST(request: Request): Promise<Response> {
     });
     return new Response("", { status: 500 });
   }
+
+  // Audit: message received
+  await writeAuditLog({
+    coupleId,
+    eventType: "message_received",
+    resourceType: "message",
+    resourceId: msgParsed.data.id,
+    metadata: { messageSid: MessageSid, conversationId },
+  });
 
   // Step 6: Enqueue the AI pipeline — return 200 immediately (Twilio 15s timeout)
   // The full classifier → reply → safety → send flow runs inside Inngest.

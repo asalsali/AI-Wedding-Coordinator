@@ -126,7 +126,7 @@ export async function addGuest(formData: FormData): Promise<{ guest?: Guest; err
       group_id: groupId || null,
       status: 'invited',
     })
-    .select()
+    .select('id, created_at, updated_at, couple_id, name, phone, email, rsvp_status, rsvp_guest_count, dietary_restrictions, plus_one, plus_one_name, group_tag, notes, conversation_id')
     .single()
 
   if (error) {
@@ -249,7 +249,7 @@ export async function updateGuest(
       notes,
     })
     .eq('id', guestId)
-    .select()
+    .select('id, created_at, updated_at, couple_id, name, phone, email, rsvp_status, rsvp_guest_count, dietary_restrictions, plus_one, plus_one_name, group_tag, notes, conversation_id')
     .single()
 
   if (error) {
@@ -371,7 +371,7 @@ export async function bulkImportGuests(
   const { data, error } = await serviceClient
     .from('guests')
     .insert(normalizedGuests)
-    .select()
+    .select('id, created_at, updated_at, couple_id, name, phone, email, rsvp_status, rsvp_guest_count, dietary_restrictions, plus_one, plus_one_name, group_tag, notes, conversation_id')
 
   if (error) {
     return { error: error.message }

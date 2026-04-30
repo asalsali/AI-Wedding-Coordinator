@@ -304,7 +304,7 @@ export async function createGuestAction(
       group_tag: parsed.data.group_tag,
       notes: parsed.data.notes || null,
     })
-    .select('*')
+    .select('id, created_at, updated_at, couple_id, name, phone, email, rsvp_status, rsvp_guest_count, dietary_restrictions, plus_one, plus_one_name, group_tag, notes, conversation_id')
     .single()
 
   if (error) throw new Error(`Failed to create guest: ${error.message}`)
@@ -351,7 +351,7 @@ export async function updateGuestAction(
     .update(updates)
     .eq('id', parsed.data.id)
     .eq('couple_id', coupleId)
-    .select('*')
+    .select('id, created_at, updated_at, couple_id, name, phone, email, rsvp_status, rsvp_guest_count, dietary_restrictions, plus_one, plus_one_name, group_tag, notes, conversation_id')
     .single()
 
   if (error) throw new Error(`Failed to update guest: ${error.message}`)
@@ -375,7 +375,7 @@ export async function listGuestsAction(): Promise<Guest[]> {
 
   const { data, error } = await supabase
     .from('guests')
-    .select('*')
+    .select('id, created_at, updated_at, couple_id, name, phone, email, rsvp_status, rsvp_guest_count, dietary_restrictions, plus_one, plus_one_name, group_tag, notes, conversation_id')
     .eq('couple_id', coupleId)
     .order('name')
 
@@ -586,7 +586,7 @@ export async function getDemoCoupleData(): Promise<{
   // Get profile
   const { data: profile } = await supabase
     .from('wedding_profiles')
-    .select('*')
+    .select('id, venue_name, venue_address, wedding_date, ceremony_time, reception_time, dress_code, registry_links, hotel_block, parking_info, tone, vibe_word, sample_message, readiness_score, is_active')
     .eq('couple_id', couple.id)
     .maybeSingle()
   

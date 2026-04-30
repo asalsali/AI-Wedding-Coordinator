@@ -1,34 +1,41 @@
 export default function DashboardLoading() {
   return (
-    <div className="flex h-screen bg-stone-50">
+    <div style={{ display: 'flex', height: '100vh', background: '#FDFBF7' }}>
       {/* Sidebar skeleton */}
-      <aside className="w-64 flex-shrink-0 bg-white border-r border-stone-200 flex flex-col">
-        <div className="p-6 border-b border-stone-100">
-          <div className="w-12 h-12 bg-stone-200 rounded-lg animate-pulse" />
+      <aside style={{ width: 260, flexShrink: 0, background: '#1C3B2B', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: 24, borderBottom: '1px solid rgba(253,251,247,0.08)' }}>
+          <div style={{ width: 48, height: 48, background: 'rgba(253,251,247,0.1)', borderRadius: 10, animation: 'pulse 1.8s ease-in-out infinite' }} />
         </div>
-        <nav className="flex-1 p-4 space-y-1">
+        <nav style={{ flex: 1, padding: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-10 bg-stone-100 rounded-lg animate-pulse" />
+            <div key={i} style={{ height: 40, background: 'rgba(253,251,247,0.06)', borderRadius: 10, animation: 'pulse 1.8s ease-in-out infinite', animationDelay: `${i * 0.1}s` }} />
           ))}
         </nav>
-        <div className="p-4 border-t border-stone-100 space-y-2">
-          <div className="h-4 bg-stone-100 rounded animate-pulse w-3/4" />
-          <div className="h-8 bg-stone-100 rounded animate-pulse" />
+        <div style={{ padding: 16, borderTop: '1px solid rgba(253,251,247,0.08)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ height: 16, background: 'rgba(253,251,247,0.06)', borderRadius: 4, animation: 'pulse 1.8s ease-in-out infinite', width: '75%' }} />
+          <div style={{ height: 32, background: 'rgba(253,251,247,0.06)', borderRadius: 8, animation: 'pulse 1.8s ease-in-out infinite' }} />
         </div>
       </aside>
 
       {/* Main content skeleton */}
-      <main className="flex-1 overflow-y-auto p-8">
-        <div className="max-w-3xl mx-auto space-y-6">
-          <div className="h-10 bg-stone-200 rounded-xl animate-pulse w-72" />
-          <div className="h-64 bg-stone-200 rounded-2xl animate-pulse" />
-          <div className="grid grid-cols-3 gap-4">
+      <main style={{ flex: 1, overflowY: 'auto', padding: 32 }}>
+        <div style={{ maxWidth: 768, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <div style={{ height: 40, background: '#e8e4df', borderRadius: 12, animation: 'pulse 1.8s ease-in-out infinite', width: 288 }} />
+          <div style={{ height: 256, background: '#e8e4df', borderRadius: 16, animation: 'pulse 1.8s ease-in-out infinite', animationDelay: '0.15s' }} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-28 bg-stone-200 rounded-xl animate-pulse" />
+              <div key={i} style={{ height: 112, background: '#e8e4df', borderRadius: 12, animation: 'pulse 1.8s ease-in-out infinite', animationDelay: `${0.2 + i * 0.1}s` }} />
             ))}
           </div>
         </div>
       </main>
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+      `}</style>
     </div>
   )
 }
