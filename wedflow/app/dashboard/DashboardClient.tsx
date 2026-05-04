@@ -20,6 +20,7 @@ import { GuestsView } from './components/GuestsView'
 import { ProfileView } from './components/ProfileView'
 import { SettingsView } from './components/SettingsView'
 import { CircleView } from './components/CircleView'
+import { NotificationPrompt } from './components/NotificationPrompt'
 
 export default function DashboardClient({ couple, profile, phoneNumber, initialMessages, stats, isDemo = false }: DashboardProps) {
   const [view, setView] = useState<View>('home')
@@ -258,6 +259,8 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
       {/* Main */}
       <main style={{ overflow: isInboxFullHeight ? 'hidden' : 'auto', height: isInboxFullHeight ? (isMobile ? 'calc(100vh - 50px)' : '100vh') : 'auto' }}>
         {view === 'home' && (
+          <>
+          <NotificationPrompt />
           <HomeView
             coupleNames={coupleNames}
             localProfile={localProfile}
@@ -270,6 +273,7 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
             onRefresh={handleRefresh}
             onNavigateInbox={() => setView('inbox')}
           />
+          </>
         )}
         {view === 'inbox' && (
           <InboxView
