@@ -41,6 +41,7 @@ export const PLANS = [
       'The full white-glove experience. Everything in Essential plus a dedicated setup call, priority support and early access to new features.',
     features: [
       'Everything in Essential',
+      'Full guest phone number visibility',
       'Dedicated setup call',
       'Priority support',
       'Early access to new features',

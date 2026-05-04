@@ -46,7 +46,14 @@ function Ff({ form, set, edit, m }: { form: FG; set: (f: FG) => void; edit: bool
   )
 }
 
-export function GuestsView() {
+function maskPhone(phone: string | null, plan: string | null): string {
+  if (!phone) return '\u2014'
+  if (plan === 'concierge') return phone
+  const last4 = phone.replace(/\D/g, '').slice(-4)
+  return `***-***-${last4}`
+}
+
+export function GuestsView({ plan = null }: { plan?: string | null }) {
   const [guests, setGuests] = useState<Guest[]>([])
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState<string | null>(null)
@@ -137,6 +144,12 @@ export function GuestsView() {
               </div>))}
           </div>)}
 
+        {plan !== 'concierge' && (
+          <div style={{ marginBottom: 16, padding: '10px 14px', background: 'var(--wf-sand)', border: '1px solid var(--wf-line)', borderRadius: 10, fontSize: 12, fontFamily: 'var(--wf-sans)', color: 'var(--wf-ink-60)' }}>
+            Guest phone numbers are masked on your current plan. Upgrade to Concierge to see full phone numbers.
+          </div>
+        )}
+
         <div style={{ display: 'flex', flexDirection: m ? 'column' : 'row', flexWrap: 'wrap', gap: 10, marginBottom: 20, alignItems: m ? 'stretch' : 'center' }}>
           <input style={{ ...I, maxWidth: m ? '100%' : 240, flex: m ? '1 1 auto' : undefined, minHeight: m ? 44 : undefined }} placeholder="Search by name, phone, or email" value={search} onChange={(e) => setSearch(e.target.value)} />
           <div style={{ display: 'flex', gap: 10 }}>
@@ -203,7 +216,7 @@ export function GuestsView() {
                 return (
                   <tr key={g.id} onClick={() => doEdit(g)} style={{ borderBottom: '1px solid var(--wf-line)', cursor: 'pointer', transition: 'background 0.1s' }} onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(28,59,43,0.02)' }} onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}>
                     <td style={{ padding: '12px 14px', fontWeight: 600, color: 'var(--wf-forest)' }}>{g.name}</td>
-                    <td style={{ padding: '12px 14px', color: 'var(--wf-ink-60)' }}>{g.phone || '\u2014'}</td>
+                    <td style={{ padding: '12px 14px', color: 'var(--wf-ink-60)' }}>{maskPhone(g.phone, plan)}</td>
                     <td style={{ padding: '12px 14px', color: 'var(--wf-ink-60)' }}>{g.email || '\u2014'}</td>
                     <td style={{ padding: '12px 14px' }}><RB s={g.rsvp_status} /></td>
                     <td style={{ padding: '12px 14px' }}><GB g={g.group_tag} /></td>
@@ -232,7 +245,7 @@ export function GuestsView() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                     <div>
                       <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--wf-forest)', fontFamily: 'var(--wf-sans)' }}>{g.name}</div>
-                      {g.phone && <div style={{ fontSize: 12, color: 'var(--wf-ink-60)', fontFamily: 'var(--wf-sans)', marginTop: 2 }}>{g.phone}</div>}
+                      {g.phone && <div style={{ fontSize: 12, color: 'var(--wf-ink-60)', fontFamily: 'var(--wf-sans)', marginTop: 2 }}>{maskPhone(g.phone, plan)}</div>}
                       {g.email && <div style={{ fontSize: 12, color: 'var(--wf-ink-60)', fontFamily: 'var(--wf-sans)', marginTop: 1 }}>{g.email}</div>}
                     </div>
                     <RB s={g.rsvp_status} />

@@ -23,12 +23,22 @@ const TwilioSmsPayloadSchema = z.object({
 // DB result schemas — narrow Supabase query data safely
 // ----------------------------------------------------------------
 
-const PhoneNumberRowSchema = z.object({
+const GuestRowSchema = z.object({
   couple_id: z.string().uuid(),
 });
 
 const ConversationRowSchema = z.object({
   id: z.string().uuid(),
+});
+
+const ConversationWithCoupleRowSchema = z.object({
+  id: z.string().uuid(),
+  couple_id: z.string().uuid(),
+});
+
+const CoupleRowSchema = z.object({
+  id: z.string().uuid(),
+  created_at: z.string(),
 });
 
 const MessageRowSchema = z.object({
@@ -41,6 +51,39 @@ const MessageRowSchema = z.object({
 
 function hashPhone(phone: string): string {
   return createHash("sha256").update(phone).digest("hex");
+}
+
+/**
+ * When a guest phone matches multiple couples and there's no prior conversation,
+ * resolve to the most recently created couple record.
+ */
+async function resolveMostRecentCouple(
+  supabase: ReturnType<typeof createServiceRoleClient>,
+  coupleIds: string[],
+  messageSid: string
+): Promise<string> {
+  const { data: couples, error } = await supabase
+    .from("couples")
+    .select("id, created_at")
+    .in("id", coupleIds)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error || !couples) {
+    // Should not happen — these couple IDs came from the guests table
+    console.error("wedflow/sms.received: failed to resolve most recent couple", {
+      messageSid,
+    });
+    // Fall back to first coupleId from the list
+    return coupleIds[0];
+  }
+
+  const parsed = CoupleRowSchema.safeParse(couples);
+  if (!parsed.success) {
+    return coupleIds[0];
+  }
+  return parsed.data.id;
 }
 
 // ----------------------------------------------------------------
@@ -73,33 +116,71 @@ export async function POST(request: Request): Promise<Response> {
   const { From, To, Body, MessageSid } = payload;
   const supabase = createServiceRoleClient();
 
-  // Step 3: Look up the couple by the Twilio number they were texted on
-  const { data: phoneRow, error: phoneError } = await supabase
-    .from("phone_numbers")
+  // Step 3: Resolve the couple by looking up the guest's phone number.
+  // Beta model: all couples share one Twilio number, so we route by guest phone.
+  const { data: guestRows, error: guestError } = await supabase
+    .from("guests")
     .select("couple_id")
-    .eq("twilio_number", To)
-    .eq("status", "active")
-    .single();
+    .eq("phone", From);
 
-  if (phoneError || !phoneRow) {
-    // Number not registered to any couple — acknowledge and discard
-    // Log message ID only, never log body content
-    console.info("wedflow/sms.received: unregistered number", {
-      messageSid: MessageSid,
-      to: To,
-    });
-    return new Response("", { status: 200 });
-  }
-
-  const phoneRowParsed = PhoneNumberRowSchema.safeParse(phoneRow);
-  if (!phoneRowParsed.success) {
-    console.error("wedflow/sms.received: unexpected phone_numbers row shape", {
+  if (guestError) {
+    console.error("wedflow/sms.received: guests lookup failed", {
       messageSid: MessageSid,
     });
     return new Response("", { status: 500 });
   }
 
-  const { couple_id: coupleId } = phoneRowParsed.data;
+  if (!guestRows || guestRows.length === 0) {
+    // Guest phone not registered — return a friendly TwiML response
+    const twiml = `<?xml version="1.0" encoding="UTF-8"?><Response><Message>Hi! This number isn&apos;t set up for your wedding yet. Ask your couple to add your phone number to their guest list on WedFlow.</Message></Response>`;
+    return new Response(twiml, {
+      status: 200,
+      headers: { "Content-Type": "text/xml" },
+    });
+  }
+
+  let coupleId: string;
+
+  if (guestRows.length === 1) {
+    const parsed = GuestRowSchema.safeParse(guestRows[0]);
+    if (!parsed.success) {
+      console.error("wedflow/sms.received: unexpected guests row shape", {
+        messageSid: MessageSid,
+      });
+      return new Response("", { status: 500 });
+    }
+    coupleId = parsed.data.couple_id;
+  } else {
+    // Edge case: guest phone matches multiple couples.
+    // Use the couple with the most recent conversation with this guest.
+    const guestPhoneHashForLookup = hashPhone(From);
+    const coupleIds = guestRows
+      .map((r) => GuestRowSchema.safeParse(r))
+      .filter((r): r is { success: true; data: z.infer<typeof GuestRowSchema> } => r.success)
+      .map((r) => r.data.couple_id);
+
+    const { data: recentConv } = await supabase
+      .from("conversations")
+      .select("id, couple_id")
+      .eq("guest_phone_hash", guestPhoneHashForLookup)
+      .in("couple_id", coupleIds)
+      .order("last_message_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (recentConv) {
+      const parsed = ConversationWithCoupleRowSchema.safeParse(recentConv);
+      if (parsed.success) {
+        coupleId = parsed.data.couple_id;
+      } else {
+        // Fallback: most recently created couple
+        coupleId = await resolveMostRecentCouple(supabase, coupleIds, MessageSid);
+      }
+    } else {
+      // No prior conversation — use the most recently created couple
+      coupleId = await resolveMostRecentCouple(supabase, coupleIds, MessageSid);
+    }
+  }
   const guestPhoneHash = hashPhone(From);
 
   // Step 4: Find or create a conversation for this (couple, guest) pair

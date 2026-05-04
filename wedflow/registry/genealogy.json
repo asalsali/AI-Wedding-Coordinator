@@ -223,6 +223,32 @@
       "skills": ["frontend", "responsive", "twilio"],
       "mannaExpected": "low",
       "testament": "memory/inheritance/image-and-twilio-testament.json"
+    },
+    {
+      "id": "backend-routing",
+      "parentId": "root",
+      "mandate": "SMS routing pivot: drop phone_numbers UNIQUE constraint, rewrite webhook to route by guest phone, fix provision for shared number",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-04T14:30:00Z",
+      "sunsetAt": "2026-05-04T15:00:00Z",
+      "status": "archived",
+      "skills": ["backend", "supabase", "twilio", "inngest", "webhook"],
+      "mannaExpected": "medium",
+      "testament": "memory/inheritance/backend-routing-testament.json"
+    },
+    {
+      "id": "frontend-gating",
+      "parentId": "root",
+      "mandate": "Guest phone UX emphasis in onboarding, mask phone numbers for non-Concierge tiers, add phone visibility to Concierge feature list",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-04T14:30:00Z",
+      "sunsetAt": "2026-05-04T15:00:00Z",
+      "status": "archived",
+      "skills": ["frontend", "pricing", "onboarding", "ux"],
+      "mannaExpected": "low",
+      "testament": "memory/inheritance/frontend-gating-testament.json"
     }
   ],
   "sabbathCount": 1,

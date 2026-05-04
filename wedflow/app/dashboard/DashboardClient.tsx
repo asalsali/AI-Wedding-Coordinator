@@ -277,7 +277,7 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
           />
         )}
         {view === 'circle' && <CircleView />}
-        {view === 'guests' && <GuestsView />}
+        {view === 'guests' && <GuestsView plan={localCouple.plan} />}
         {view === 'profile' && localProfile && (
           <ProfileView
             profile={localProfile}

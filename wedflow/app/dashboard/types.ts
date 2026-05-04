@@ -27,6 +27,7 @@ export interface Couple {
   your_name: string | null
   partner_name: string | null
   partner_email: string | null
+  plan: string | null
 }
 
 export interface Profile {

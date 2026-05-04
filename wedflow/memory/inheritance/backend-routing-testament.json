@@ -1,0 +1,18 @@
+{
+  "agentId": "backend-routing",
+  "mandate": "Pivot SMS routing from per-couple Twilio number lookup to guest-phone-based couple resolution. All beta couples share one Twilio number.",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "The UNIQUE constraint on phone_numbers.twilio_number was named phone_numbers_twilio_number_key (Postgres default naming convention)",
+    "The guests table already has an indexed phone column (idx_guests_phone) making guest-based lookup efficient",
+    "The Inngest sms-received function receives coupleId in its event payload and does not perform its own phone number lookup — no changes needed there",
+    "The provision-number route hardcodes the shared number and already has idempotency checks per couple — works correctly with the UNIQUE constraint dropped"
+  ],
+  "whatWorked": "Reading the full flow (webhook -> Inngest -> reply) before making changes confirmed the Inngest function was already decoupled from the routing decision. Only the webhook needed changes.",
+  "whatFailed": "Nothing failed. The change was clean.",
+  "recommendationsForNextAgent": "The multi-couple edge case (guest registered with multiple couples) uses conversation recency as tiebreaker. If this becomes common, consider a UI for guests to select which couple they want to message, or route based on the most recent couple who added them.",
+  "mannaConsumed": "low",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Enabled the shared-number beta model which removes the per-couple Twilio number cost barrier, directly serving the September launch goal by making it cheaper to onboard the first 10-12 couples."
+}

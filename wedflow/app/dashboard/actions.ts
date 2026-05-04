@@ -541,7 +541,7 @@ export async function signOutAction(): Promise<void> {
 // Demo mode: Get demo couple data for Alex & Kirsten
 // ----------------------------------------------------------------
 export async function getDemoCoupleData(): Promise<{
-  couple: { id: string; email: string; your_name: string; partner_name: string; partner_email: string | null }
+  couple: { id: string; email: string; your_name: string; partner_name: string; partner_email: string | null; plan: string | null }
   profile: {
     id: string
     venue_name: string
@@ -567,7 +567,7 @@ export async function getDemoCoupleData(): Promise<{
   // Find the demo couple
   const { data: couple, error: coupleError } = await supabase
     .from('couples')
-    .select('id, email, your_name, partner_name, partner_email')
+    .select('id, email, your_name, partner_name, partner_email, plan')
     .eq('email', 'ak.salsali2025@gmail.com')
     .maybeSingle()
   
@@ -648,6 +648,7 @@ export async function getDemoCoupleData(): Promise<{
       your_name: couple.your_name || 'Alex',
       partner_name: couple.partner_name || 'Kirsten',
       partner_email: couple.partner_email,
+      plan: (couple as Record<string, unknown>).plan as string | null ?? null,
     },
     profile: profile ? {
       id: profile.id,

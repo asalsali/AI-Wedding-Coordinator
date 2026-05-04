@@ -96,7 +96,7 @@ export default async function DashboardPage({
 
   const { data: couple } = await serviceClient
     .from('couples')
-    .select('id, email, your_name, partner_name, partner_email')
+    .select('id, email, your_name, partner_name, partner_email, plan')
     .eq('auth_user_id', user.id)
     .maybeSingle()
 
@@ -180,6 +180,7 @@ export default async function DashboardPage({
         your_name: couple.your_name as string | null,
         partner_name: couple.partner_name as string | null,
         partner_email: couple.partner_email as string | null,
+        plan: (couple.plan as string | null) ?? null,
       }}
       profile={
         p

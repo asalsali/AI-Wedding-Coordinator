@@ -984,6 +984,10 @@ export default function OnboardingPage() {
                   <p className="text-xs mt-4" style={{ color: C.cream, opacity: 0.6 }}>
                     Share this number with your guests so they can text your wedding coordinator.
                   </p>
+                  <p className="text-xs mt-3" style={{ color: C.cream, opacity: 0.5 }}>
+                    Add your guests&apos; phone numbers so they can text your wedding number.
+                    Guests without a phone number on file won&apos;t be able to use SMS.
+                  </p>
                 </div>
               ) : null}
             </div>
