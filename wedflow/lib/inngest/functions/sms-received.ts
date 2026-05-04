@@ -10,6 +10,7 @@ import { draftEscalationReply } from "@/lib/ai/escalation";
 import { WeddingProfile, Faq, ToneStyle } from "@/types";
 import { writeAuditLog } from "@/lib/audit/service";
 import { notifyEscalation } from "@/lib/notifications/escalation";
+import { sendPushToCouple } from "@/lib/push/send";
 
 // requires: ANTHROPIC_API_KEY, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 // requires: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
@@ -206,6 +207,19 @@ export const smsReceived = inngest.createFunction(
         notifyEscalation(coupleId, "classification", messageId)
       );
 
+      // Push notification to couple's devices (best-effort, non-blocking)
+      await step.run("push-notify-classification", async () => {
+        try {
+          await sendPushToCouple(coupleId, {
+            title: "Message needs your attention",
+            body: body.slice(0, 40) + (body.length > 40 ? "..." : ""),
+            data: { url: "/dashboard" },
+          });
+        } catch {
+          // Push is additive — failure does not block escalation
+        }
+      });
+
       return { escalated: true, reason: "classification" };
     }
 
@@ -270,6 +284,19 @@ export const smsReceived = inngest.createFunction(
       await step.run("notify-escalation-safety", () =>
         notifyEscalation(coupleId, "safety_check_failed", messageId)
       );
+
+      // Push notification to couple's devices (best-effort, non-blocking)
+      await step.run("push-notify-safety", async () => {
+        try {
+          await sendPushToCouple(coupleId, {
+            title: "Message needs your attention",
+            body: body.slice(0, 40) + (body.length > 40 ? "..." : ""),
+            data: { url: "/dashboard" },
+          });
+        } catch {
+          // Push is additive — failure does not block escalation
+        }
+      });
 
       return { escalated: true, reason: "safety_check_failed" };
     }

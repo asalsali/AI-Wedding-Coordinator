@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Newsreader, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { ServiceWorkerRegistration } from "./components/ServiceWorkerRegistration";
+import { InstallPrompt } from "./components/InstallPrompt";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,6 +53,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} ${plusJakarta.variable} antialiased`}
       >
         {children}
+        <ServiceWorkerRegistration />
+        <InstallPrompt />
       </body>
     </html>
   );
