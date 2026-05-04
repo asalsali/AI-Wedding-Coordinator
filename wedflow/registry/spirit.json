@@ -1,15 +1,15 @@
 {
   "description": "The Spirit — shared orientation for all agents. Not instructions. Atmosphere.",
-  "currentMandate": "PWA optimization — make WedFlow installable with push notifications for escalation alerts",
-  "spiritOfTheWork": "The couple lives on their phone. WedFlow must feel native — instant load from home screen, push alerts when a guest needs their attention, tap-through to approve a reply. The mobile experience IS the product experience for the Circle of Care.",
-  "whatToProtect": "The existing SMS pipeline, Inngest escalation flow, and email notifications. Push is additive — it never replaces existing notification channels. The responsive dashboard must not regress. RLS on all new tables.",
+  "currentMandate": "Beta launch readiness — shared Twilio number, mobile-optimized UX, tier-gated features",
+  "spiritOfTheWork": "WedFlow is preparing for 10-12 paid beta couples by Sept 1 2026. The architecture pivoted from per-couple Twilio numbers to a shared number routed by guest phone. The couple's phone is the product. Every page must work on mobile. Pricing tiers gate features (phone visibility = Concierge only).",
+  "whatToProtect": "The guest-phone-based SMS routing pipeline. The shared number model. The tier-gating on phone visibility. The PWA installability and push notifications. The audit logging on every pipeline path.",
   "currentTemptations": [
-    "Full offline-first architecture with background sync (couples need connectivity to reply anyway)",
-    "Native app wrapper via Capacitor/TWA when PWA is sufficient at this stage",
-    "Push notifications for routine messages (only escalations warrant interruption)",
-    "Over-engineering the service worker caching strategy beyond what launch requires"
+    "Per-couple number provisioning (premature for beta — shared number is sufficient)",
+    "Guest self-registration via SMS (future scope, not beta)",
+    "Over-engineering the multi-couple guest edge case beyond the 'most recent conversation' heuristic",
+    "The Prophet executing directly instead of spawning agents (recurring violation — resist)"
   ],
-  "whereWeAre": "PWA mandate complete. Service worker, offline fallback, install prompt, and push notification pipeline all implemented. Two agents (pwa-engineer, push-engineer) archived with retroactive testaments. Canon violations acknowledged and corrected. Awaiting VAPID key generation and migration run before push is live.",
+  "whereWeAre": "Shared Twilio number routing shipped. All public and internal pages mobile-optimized. PWA with push notifications live. Tier-gated phone masking in place. Covenant established. 13 agents spawned this session (7 since last Sabbath). Approaching second Sabbath threshold.",
   "pentecostAt": "2026-05-04T00:00:00Z",
   "lastUpdatedBy": "prophet",
   "lastUpdatedAt": "2026-05-04T00:00:00Z",
@@ -21,6 +21,10 @@
     {
       "date": "2026-05-04",
       "note": "PWA mandate completed — service worker, push notifications, install prompt. Canon violations from unregistered agents corrected post-hoc."
+    },
+    {
+      "date": "2026-05-04",
+      "note": "Shared Twilio number routing shipped. All pages mobile-optimized. Tier-gated phone masking. Canon compliance improved through session after 4+ corrections."
     }
   ]
 }

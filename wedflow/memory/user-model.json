@@ -12,7 +12,11 @@
     "Comfortable with technical implementation details (env vars, migrations, CLI tools)",
     "Prefers to see and confirm spawn plans before execution",
     "Wants commit/push confirmed before execution",
-    "Engages with the Covenant Framework as a governance system, not just tooling"
+    "Engages with the Covenant Framework as a governance system, not just tooling",
+    "Will catch and call out Canon violations mid-session — expects honesty about what was missed",
+    "Tests on actual phone and gives specific, actionable UX feedback",
+    "Strong opinions about design (hated hidden auth panel, called readiness indicator stupid)",
+    "Thinks architecturally about beta constraints (shared number instead of per-couple provisioning)"
   ],
   "recurringFrustrations": [],
   "impliedNeed": "A system that operates with discipline and transparency while shipping fast toward launch. The user wants the speed of direct execution but the accountability of proper process.",
