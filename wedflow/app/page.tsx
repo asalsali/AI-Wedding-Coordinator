@@ -45,8 +45,8 @@ function EmailCapture({ variant = "light" }: { variant?: "light" | "dark" }) {
   }
 
   return (
-    <div style={{ maxWidth: 460 }}>
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: 10 }}>
+    <div style={{ maxWidth: 460, width: "100%" }}>
+      <form onSubmit={handleSubmit} className="wf-email-form">
         <input
           type="email"
           value={email}
@@ -91,6 +91,7 @@ function EmailCapture({ variant = "light" }: { variant?: "light" | "dark" }) {
 
 function Nav() {
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const supabase = createClient(
@@ -112,7 +113,7 @@ function Nav() {
       WebkitBackdropFilter: "blur(14px) saturate(1.2)",
       borderBottom: "1px solid var(--wf-line)",
     }}>
-      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "14px 40px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div className="wf-nav-inner">
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
           <div style={{ width: 40, height: 40, borderRadius: '22%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <Image src="/LogoLight.png" alt="Wedflow" width={40} height={40} style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0 }} priority />
@@ -121,7 +122,9 @@ function Nav() {
             Wedflow
           </span>
         </Link>
-        <div style={{ display: "flex", alignItems: "center", gap: 28, fontSize: 13 }}>
+
+        {/* Desktop nav links */}
+        <div className="wf-nav-desktop">
           <a href="#how-it-works" className="wf-sans" style={{ color: "var(--wf-ink-60)", textDecoration: "none" }}>How it works</a>
           <a href="#features" className="wf-sans" style={{ color: "var(--wf-ink-60)", textDecoration: "none" }}>Features</a>
           {isSignedIn ? (
@@ -133,7 +136,34 @@ function Nav() {
             </>
           )}
         </div>
+
+        {/* Mobile hamburger */}
+        <button className="wf-nav-mobile-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--wf-forest)" strokeWidth="2" strokeLinecap="round">
+            {mobileMenuOpen ? (
+              <><line x1="6" y1="6" x2="18" y2="18" /><line x1="6" y1="18" x2="18" y2="6" /></>
+            ) : (
+              <><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></>
+            )}
+          </svg>
+        </button>
       </div>
+
+      {/* Mobile dropdown */}
+      {mobileMenuOpen && (
+        <div className="wf-nav-mobile-menu">
+          <a href="#how-it-works" className="wf-sans" onClick={() => setMobileMenuOpen(false)}>How it works</a>
+          <a href="#features" className="wf-sans" onClick={() => setMobileMenuOpen(false)}>Features</a>
+          {isSignedIn ? (
+            <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>Go to Dashboard →</Link>
+          ) : (
+            <>
+              <Link href="/sign-in" onClick={() => setMobileMenuOpen(false)}>Sign in</Link>
+              <Link href="/sign-up" className="wf-btn wf-btn-primary" style={{ textAlign: "center" }} onClick={() => setMobileMenuOpen(false)}>Begin Your Journey →</Link>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 }
@@ -161,8 +191,8 @@ function CircleDiagram() {
   ];
 
   return (
-    <div style={{ position: "relative", width: 400, height: 400, margin: "0 auto" }}>
-      <svg viewBox="0 0 400 400" width="400" height="400" style={{ position: "absolute", inset: 0 }}>
+    <div style={{ position: "relative", width: "100%", maxWidth: 400, aspectRatio: "1", margin: "0 auto" }}>
+      <svg viewBox="0 0 400 400" width="100%" height="100%" style={{ position: "absolute", inset: 0 }}>
         {/* Outer ring: guests */}
         <circle cx={cx} cy={cy} r={185} fill="none" stroke="var(--wf-line-strong)" strokeWidth="1.5" strokeDasharray="6 4" opacity={0.6} />
         {/* Ring label */}
@@ -222,24 +252,17 @@ function CircleDiagram() {
 
 function Hero() {
   return (
-    <section style={{ background: "var(--wf-cream)", paddingTop: 96, paddingBottom: 120 }}>
-      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "0 40px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.15fr 1fr", gap: 80, alignItems: "center" }}>
+    <section className="wf-hero">
+      <div className="wf-hero-container">
+        <div className="wf-hero-grid">
           <div className="animate-fade-in-up">
             <span className="wf-eyebrow">Your Circle of Care</span>
-            <h1 className="wf-serif" style={{
-              fontSize: "clamp(48px, 6vw, 80px)",
-              lineHeight: 1.08,
-              color: "var(--wf-forest)",
-              margin: "32px 0 28px",
-              letterSpacing: "-0.02em",
-              fontWeight: 500,
-            }}>
+            <h1 className="wf-serif wf-hero-title">
               Your wedding takes<br />
               <em style={{ fontWeight: 500, color: "var(--wf-terracotta)" }}>a village.</em><br />
               We help you tend it.
             </h1>
-            <p className="wf-sans animate-fade-in-up-delay" style={{ fontSize: 17, lineHeight: 1.7, color: "var(--wf-ink-60)", maxWidth: 460, marginBottom: 40 }}>
+            <p className="wf-sans animate-fade-in-up-delay wf-hero-subtitle">
               Guests text with questions. Your maid of honor coordinates the bridesmaids. Your mom handles the family dynamics. WedFlow keeps all of it moving so you can be present for what matters.
             </p>
             <div className="animate-fade-in-up-delay-2">
@@ -249,7 +272,7 @@ function Hero() {
               </p>
             </div>
           </div>
-          <div className="animate-fade-in-up-delay">
+          <div className="animate-fade-in-up-delay wf-hero-diagram">
             <CircleDiagram />
           </div>
         </div>
@@ -292,24 +315,24 @@ function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" style={{ background: "var(--wf-forest)", padding: "120px 40px" }}>
-      <div style={{ maxWidth: 1160, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 80, alignItems: "end", marginBottom: 80 }}>
+    <section id="how-it-works" className="wf-how-section">
+      <div className="wf-how-inner">
+        <div className="wf-how-header">
           <div>
             <span className="wf-eyebrow wf-eyebrow-forest">How your people are cared for</span>
-            <h2 className="wf-serif" style={{ fontSize: "clamp(40px, 5vw, 60px)", lineHeight: 1.05, color: "var(--wf-cream)", margin: "24px 0 0", fontWeight: 500, letterSpacing: "-0.02em" }}>
+            <h2 className="wf-serif" style={{ fontSize: "clamp(32px, 5vw, 60px)", lineHeight: 1.05, color: "var(--wf-cream)", margin: "24px 0 0", fontWeight: 500, letterSpacing: "-0.02em" }}>
               Every person,<br />
               <em style={{ fontWeight: 400 }}>tended to.</em>
             </h2>
           </div>
-          <p className="wf-sans" style={{ fontSize: 16, color: "var(--wf-cream-ink)", lineHeight: 1.7, maxWidth: 460, justifySelf: "end" }}>
+          <p className="wf-sans" style={{ fontSize: 16, color: "var(--wf-cream-ink)", lineHeight: 1.7, maxWidth: 460 }}>
             Ten minutes to set up. From that moment, every guest question gets a thoughtful reply. Every task lands in the right hands. Every hard conversation is held with care.
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 1, background: "rgba(253,251,247,0.08)" }}>
+        <div className="wf-how-steps">
           {steps.map((s, i) => (
-            <div key={i} style={{ background: "var(--wf-forest)", padding: "48px 40px", minHeight: 280 }}>
+            <div key={i} className="wf-how-step">
               <div className="wf-serif" style={{ fontSize: 72, color: "var(--wf-terracotta)", lineHeight: 1, fontStyle: "italic", fontWeight: 500, marginBottom: 32, letterSpacing: "-0.02em" }}>
                 {s.num}
               </div>
@@ -354,24 +377,19 @@ function Features() {
   ];
 
   return (
-    <section id="features" style={{ background: "var(--wf-cream)", padding: "120px 40px" }}>
-      <div style={{ maxWidth: 1160, margin: "0 auto" }}>
+    <section id="features" className="wf-features-section">
+      <div className="wf-features-inner">
         <div style={{ textAlign: "center", marginBottom: 72 }}>
           <span className="wf-eyebrow wf-eyebrow-centered">What&apos;s included</span>
-          <h2 className="wf-serif" style={{ fontSize: "clamp(40px, 5vw, 62px)", lineHeight: 1.05, color: "var(--wf-forest)", margin: "24px 0 0", fontWeight: 500, letterSpacing: "-0.02em" }}>
+          <h2 className="wf-serif" style={{ fontSize: "clamp(32px, 5vw, 62px)", lineHeight: 1.05, color: "var(--wf-forest)", margin: "24px 0 0", fontWeight: 500, letterSpacing: "-0.02em" }}>
             Everything your circle<br />
             <em style={{ fontWeight: 500 }}>needs.</em>
           </h2>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }}>
+        <div className="wf-features-grid">
           {features.map((f, i) => (
-            <div
-              key={i}
-              style={{ background: "var(--wf-paper)", borderRadius: 20, padding: "36px 36px 32px", border: "1px solid var(--wf-line)", position: "relative", overflow: "hidden", transition: "all 0.25s" }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "var(--wf-shadow-lg)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
-            >
+            <div key={i} className="wf-feature-card">
               <h3 className="wf-serif" style={{ fontSize: 22, fontWeight: 600, color: "var(--wf-forest)", marginBottom: 10, lineHeight: 1.3 }}>
                 {f.title}
               </h3>
@@ -393,7 +411,7 @@ function Features() {
 
 function Testimonial() {
   return (
-    <section style={{ background: "var(--wf-forest)", padding: "140px 40px", position: "relative", overflow: "hidden" }}>
+    <section className="wf-testimonial-section">
       <div className="wf-serif" style={{ position: "absolute", top: 40, left: "50%", transform: "translateX(-50%)", fontSize: 120, color: "var(--wf-terracotta)", lineHeight: 1, fontStyle: "italic", fontWeight: 500, opacity: 0.9 }}>
         &ldquo;
       </div>
@@ -417,7 +435,7 @@ function Testimonial() {
 
 function FinalCTA() {
   return (
-    <section style={{ background: "var(--wf-cream)", padding: "140px 40px 160px" }}>
+    <section className="wf-final-cta">
       <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
         {/* Ornamental divider */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 40 }}>
@@ -444,25 +462,37 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer style={{ background: "var(--wf-forest-deep)", padding: "48px 40px" }}>
-      <div style={{ maxWidth: 1160, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 32, flexWrap: "wrap" }}>
+    <footer className="wf-footer">
+      <div className="wf-footer-inner">
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 36, height: 36, borderRadius: '22%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Image src="/LogoDark.png" alt="Wedflow" width={36} height={36} style={{ width: 36, height: 36, objectFit: 'contain', flexShrink: 0 }} />
           </div>
           <span className="wf-serif" style={{ fontSize: 16, color: "var(--wf-cream)", fontWeight: 600 }}>Wedflow</span>
-          <span className="wf-sans" style={{ fontSize: 12, color: "var(--wf-cream-ink-50)", marginLeft: 8 }}>
+          <span className="wf-sans wf-footer-tagline">
             Made with care for couples everywhere.
           </span>
         </div>
-        <div style={{ display: "flex", gap: 28, fontSize: 12 }}>
-          <Link href="/sign-in" className="wf-sans" style={{ color: "var(--wf-cream-ink-50)", textDecoration: "none" }}>Sign in</Link>
-          <a href="#" className="wf-sans" style={{ color: "var(--wf-cream-ink-50)", textDecoration: "none" }}>Pricing</a>
-          <a href="#" className="wf-sans" style={{ color: "var(--wf-cream-ink-50)", textDecoration: "none" }}>Privacy</a>
-          <a href="#" className="wf-sans" style={{ color: "var(--wf-cream-ink-50)", textDecoration: "none" }}>Contact</a>
+        <div className="wf-footer-links">
+          <Link href="/sign-in" className="wf-sans">Sign in</Link>
+          <a href="#" className="wf-sans">Pricing</a>
+          <a href="#" className="wf-sans">Privacy</a>
+          <a href="#" className="wf-sans">Contact</a>
         </div>
       </div>
     </footer>
+  );
+}
+
+// ─── Sticky Mobile CTA ────────────────────────────────────────────────────────
+
+function MobileStickyBanner() {
+  return (
+    <div className="wf-mobile-sticky-cta">
+      <Link href="/sign-up" className="wf-btn wf-btn-primary" style={{ width: "100%", textAlign: "center", padding: "14px 24px" }}>
+        Request Early Access →
+      </Link>
+    </div>
   );
 }
 
@@ -479,6 +509,7 @@ export default function LandingPage() {
       <Testimonial />
       <FinalCTA />
       <Footer />
+      <MobileStickyBanner />
     </div>
   );
 }
