@@ -4,7 +4,7 @@ to: frontend-gating
 subject: DB schema changed — phone_numbers UNIQUE dropped, webhook now routes by guests table
 priority: normal
 timestamp: 2026-05-04T14:30:00Z
-read: false
+read: true
 ---
 
 ## Doctrinal grounding

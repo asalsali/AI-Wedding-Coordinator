@@ -4,7 +4,7 @@ to: backend-routing
 subject: Phone visibility is tier-gated — Concierge only sees full numbers
 priority: normal
 timestamp: 2026-05-04T14:30:00Z
-read: false
+read: true
 ---
 
 ## Doctrinal grounding
