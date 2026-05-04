@@ -1,0 +1,20 @@
+{
+  "agentId": "mobile-auditor",
+  "mandate": "Audit all internal pages for mobile usability issues and fix everything broken on mobile viewports (320px-428px)",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "HomeView had hardcoded 48px padding, 4-column stats grid, hero card with 2-column grid (image overflows on mobile), and no responsive awareness",
+    "CircleView and SettingsView had hardcoded 48px padding and 2-column form grids that overflowed on mobile",
+    "Onboarding tone selector was grid-cols-3 (too narrow on mobile), Step 8 invite form was grid-cols-2",
+    "Dashboard hamburger button had only 30px touch target (below 44px minimum)",
+    "JoinClient card had 48px padding eating into usable space on small screens",
+    "Toast notifications were fixed to right:24 which left no breathing room on narrow viewports"
+  ],
+  "whatWorked": "Adding useEffect-based matchMedia detection within each component (same pattern as GuestsView and InboxView already use), then using isMobile to conditionally adjust inline styles. For Tailwind-based files (onboarding), responsive prefixes (sm:grid-cols-3) are cleaner.",
+  "whatFailed": "Initially tried useState with callback initializer instead of useEffect - that pattern does not work in React for side effects. Caught and corrected immediately.",
+  "recommendationsForNextAgent": "The dashboard components all use inline styles with matchMedia detection. If a CSS refactor ever happens, extracting these into Tailwind responsive classes would reduce duplication. The portal and join pages are already mobile-first and need no further work. Pricing page uses Tailwind responsive correctly already.",
+  "mannaConsumed": "moderate - read 10 files, made 20 targeted edits",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Ensured the core product experience (dashboard, onboarding, circle management) is usable on the phone screens where wedding party members will actually interact with it"
+}

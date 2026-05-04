@@ -200,10 +200,12 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
               border: 'none',
               color: 'var(--wf-cream)',
               cursor: 'pointer',
-              padding: 4,
+              padding: 10,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              minWidth: 44,
+              minHeight: 44,
             }}
             aria-label="Open menu"
           >
@@ -325,7 +327,7 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
 
       {/* Toast */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: 24, right: 24, padding: '12px 16px', borderRadius: 12, boxShadow: 'var(--wf-shadow-lg)', fontSize: 13, fontWeight: 500, color: 'var(--wf-cream)', background: toast.type === 'success' ? '#4a6141' : 'var(--wf-rose)', zIndex: 50, fontFamily: 'var(--wf-sans)' }}>
+        <div style={{ position: 'fixed', bottom: 24, left: isMobile ? 16 : 'auto', right: isMobile ? 16 : 24, padding: '12px 16px', borderRadius: 12, boxShadow: 'var(--wf-shadow-lg)', fontSize: 13, fontWeight: 500, color: 'var(--wf-cream)', background: toast.type === 'success' ? '#4a6141' : 'var(--wf-rose)', zIndex: 50, fontFamily: 'var(--wf-sans)' }}>
           {toast.text}
         </div>
       )}

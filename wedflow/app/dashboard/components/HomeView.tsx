@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Icon } from './Icon'
 import { StatTile } from './StatTile'
@@ -23,15 +23,23 @@ export function HomeView({
   coupleNames, localProfile, phoneNumber, daysUntilWedding,
   messages, needsReplyMessages, stats, isRefreshing, onRefresh, onNavigateInbox,
 }: HomeViewProps) {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)')
+    setIsMobile(mql.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
   const [copied, setCopied] = useState(false)
   const autoReplied = messages.filter((m) => m.direction === 'outbound' && m.was_sent).length
   const totalIn = messages.filter((m) => m.direction === 'inbound').length
   const pct = totalIn > 0 ? Math.round((autoReplied / totalIn) * 100) : 0
 
   return (
-    <div style={{ padding: '40px 48px 80px', maxWidth: 1080, margin: '0 auto' }}>
+    <div style={{ padding: isMobile ? '24px 16px 80px' : '40px 48px 80px', maxWidth: 1080, margin: '0 auto' }}>
       {/* Header row */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 24, marginBottom: 32, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'flex-end', gap: isMobile ? 16 : 24, marginBottom: isMobile ? 24 : 32, flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
         <div style={{ flex: '1 1 480px', minWidth: 0 }}>
           <span className="wf-eyebrow">Your dashboard</span>
           <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 6px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
@@ -54,8 +62,8 @@ export function HomeView({
       </div>
 
       {/* Hero card — phone number */}
-      <div style={{ background: 'var(--wf-forest)', borderRadius: 28, overflow: 'hidden', marginBottom: 28, display: 'grid', gridTemplateColumns: '1.25fr 1fr', minHeight: 300, boxShadow: 'var(--wf-shadow-lg)' }}>
-        <div style={{ padding: '44px 48px', color: 'var(--wf-cream)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <div style={{ background: 'var(--wf-forest)', borderRadius: isMobile ? 20 : 28, overflow: 'hidden', marginBottom: isMobile ? 20 : 28, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.25fr 1fr', minHeight: isMobile ? undefined : 300, boxShadow: 'var(--wf-shadow-lg)' }}>
+        <div style={{ padding: isMobile ? '28px 20px' : '44px 48px', color: 'var(--wf-cream)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <span className="wf-eyebrow wf-eyebrow-forest">Your Wedflow number</span>
           <div className="wf-serif" style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 500, color: 'var(--wf-cream)', marginTop: 14, marginBottom: 8, letterSpacing: '-0.01em', lineHeight: 1.1, fontVariantNumeric: 'tabular-nums' }}>
             {phoneNumber ? phoneNumber.replace(/(\+\d{1})(\d{3})(\d{3})(\d{4})/, '$1 ($2) $3-$4') : 'Not yet assigned'}
@@ -78,13 +86,13 @@ export function HomeView({
             </div>
           )}
         </div>
-        <div style={{ background: 'var(--wf-cream-warm)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--wf-cream-warm)', position: 'relative', overflow: 'hidden', display: isMobile ? 'none' : 'block' }}>
           <Image src="/Couple1.png" alt="Couple illustration" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
         </div>
       </div>
 
       {/* Stats row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 28 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: isMobile ? 10 : 14, marginBottom: isMobile ? 20 : 28 }}>
         <StatTile eyebrow="Needs your reply" value={needsReplyMessages.length} hint={needsReplyMessages.length === 0 ? 'All caught up!' : 'waiting for you'} />
         <StatTile eyebrow="Total messages" value={stats.totalMessages} hint="+from your guests" />
         <StatTile eyebrow="Auto-replied" value={autoReplied} hint={`${pct}% handled for you`} />

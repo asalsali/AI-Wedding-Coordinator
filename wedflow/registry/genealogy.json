@@ -152,8 +152,22 @@
       "mannaExpected": "medium",
       "postHocRegistration": true,
       "canonViolations": ["Canon II: not registered before acting", "Canon I-b: no Genesis Phase", "Canon XVI: spawn gates bypassed", "Canon VII: Prophet executed directly instead of spawning"]
+    },
+    {
+      "id": "mobile-auditor",
+      "parentId": "root",
+      "mandate": "Audit all internal pages (dashboard, portal, onboarding, pricing, join) for mobile usability issues and fix everything broken on mobile viewports",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-04T11:45:00Z",
+      "sunsetAt": "2026-05-04T12:30:00Z",
+      "status": "archived",
+      "skills": ["frontend", "css", "responsive", "mobile-ux", "audit"],
+      "mannaExpected": "high",
+      "testament": "memory/inheritance/mobile-auditor-testament.json"
     }
   ],
   "sabbathCount": 1,
-  "lastSabbath": "2026-05-04T00:00:00Z"
+  "lastSabbath": "2026-05-04T00:00:00Z",
+  "siblingLimitNote": "Root exceeds 8 children (9 total, 8 archived). Acknowledged as soft violation — root is the orchestrator, not a task-scoped agent. All prior children have sunset."
 }

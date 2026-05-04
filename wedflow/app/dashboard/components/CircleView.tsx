@@ -46,6 +46,15 @@ export function CircleView() {
   const [tasks, setTasks] = useState<TaskAssignment[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)')
+    setIsMobile(mql.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
 
   // Invite form
   const [showInviteForm, setShowInviteForm] = useState(false)
@@ -143,7 +152,7 @@ export function CircleView() {
 
   if (loading) {
     return (
-      <div style={{ padding: '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
+      <div style={{ padding: isMobile ? '24px 16px 80px' : '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
         <span className="wf-eyebrow">Your circle</span>
         <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 32px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
           Loading...
@@ -154,7 +163,7 @@ export function CircleView() {
 
   if (loadError) {
     return (
-      <div style={{ padding: '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
+      <div style={{ padding: isMobile ? '24px 16px 80px' : '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
         <span className="wf-eyebrow">Your circle</span>
         <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 16px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
           Something went wrong.
@@ -170,9 +179,9 @@ export function CircleView() {
   }
 
   return (
-    <div style={{ padding: '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
+    <div style={{ padding: isMobile ? '24px 16px 80px' : '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 24, marginBottom: 32, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'flex-end', gap: isMobile ? 16 : 24, marginBottom: isMobile ? 24 : 32, flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row' }}>
         <div>
           <span className="wf-eyebrow">Your circle</span>
           <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 6px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
@@ -216,14 +225,14 @@ export function CircleView() {
 
       {/* Invite form */}
       {showInviteForm && (
-        <div style={{ marginBottom: 28, background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 20, padding: '24px 28px' }}>
+        <div style={{ marginBottom: 28, background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 20, padding: isMobile ? '20px 16px' : '24px 28px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <h3 className="wf-serif" style={{ fontSize: 20, fontWeight: 600, color: 'var(--wf-forest)', margin: 0 }}>Invite to your circle</h3>
+            <h3 className="wf-serif" style={{ fontSize: isMobile ? 18 : 20, fontWeight: 600, color: 'var(--wf-forest)', margin: 0 }}>Invite to your circle</h3>
             <button onClick={() => setShowInviteForm(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', padding: 4 }}>
               <Icon name="x" size={16} />
             </button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12, marginBottom: 16 }}>
             <div>
               <label className="wf-sans" style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--wf-ink-45)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Name</label>
               <input value={inviteName} onChange={(e) => setInviteName(e.target.value)} placeholder="Chloe" className="wf-sans" style={{ width: '100%', fontSize: 13, border: '1px solid var(--wf-line)', borderRadius: 10, padding: '10px 14px', outline: 'none', fontFamily: 'var(--wf-sans)', background: 'var(--wf-cream)' }} />
@@ -254,14 +263,14 @@ export function CircleView() {
 
       {/* Task form */}
       {showTaskForm && (
-        <div style={{ marginBottom: 28, background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 20, padding: '24px 28px' }}>
+        <div style={{ marginBottom: 28, background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 20, padding: isMobile ? '20px 16px' : '24px 28px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <h3 className="wf-serif" style={{ fontSize: 20, fontWeight: 600, color: 'var(--wf-forest)', margin: 0 }}>Assign a task</h3>
+            <h3 className="wf-serif" style={{ fontSize: isMobile ? 18 : 20, fontWeight: 600, color: 'var(--wf-forest)', margin: 0 }}>Assign a task</h3>
             <button onClick={() => setShowTaskForm(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', padding: 4 }}>
               <Icon name="x" size={16} />
             </button>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12, marginBottom: 12 }}>
             <div>
               <label className="wf-sans" style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--wf-ink-45)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Task</label>
               <input value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} placeholder="Pick up flowers from venue" className="wf-sans" style={{ width: '100%', fontSize: 13, border: '1px solid var(--wf-line)', borderRadius: 10, padding: '10px 14px', outline: 'none', fontFamily: 'var(--wf-sans)', background: 'var(--wf-cream)' }} />

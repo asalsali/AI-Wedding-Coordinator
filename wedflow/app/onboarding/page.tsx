@@ -710,7 +710,7 @@ export default function OnboardingPage() {
             <div className="space-y-6">
               <div>
                 <label className={labelClass}>Base tone</label>
-                <div className="grid grid-cols-3 gap-3 mt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-1">
                   {toneOptions.map(({ value, label, description }) => (
                     <button
                       key={value}
@@ -884,7 +884,7 @@ export default function OnboardingPage() {
             </div>
 
             {/* Complete / Missing */}
-            <div className="grid grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
               <div>
                 <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-3">
                   Complete
@@ -1053,7 +1053,7 @@ export default function OnboardingPage() {
             {circleInvites.length > 0 && (
               <div className="mb-6 space-y-2">
                 {circleInvites.map((inv, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl border border-stone-200">
+                  <div key={i} className="flex flex-wrap items-center gap-3 p-3 rounded-xl border border-stone-200">
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
                       style={{ backgroundColor: `${C.forest}12`, color: C.forest }}
@@ -1094,7 +1094,7 @@ export default function OnboardingPage() {
             <div className="p-5 border border-stone-200 rounded-xl mb-6">
               <p className="text-sm font-medium text-stone-900 mb-4">Add a circle member</p>
 
-              <div className="grid grid-cols-2 gap-3 mb-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div>
                   <label className="text-xs text-stone-400 font-medium mb-1 block">Name</label>
                   <input

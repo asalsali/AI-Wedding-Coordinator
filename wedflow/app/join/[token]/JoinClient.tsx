@@ -238,7 +238,7 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: "column",
     alignItems: "center",
     gap: 16,
-    padding: 48,
+    padding: "32px 20px",
   },
   heading: {
     fontSize: 28,

@@ -1,4 +1,4 @@
-import { useState, useTransition } from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import { Icon } from './Icon'
 import { updatePartnerEmailAction } from '../actions'
 import type { Couple } from '../types'
@@ -13,6 +13,15 @@ export function SettingsView({ couple, onPartnerEmailUpdate }: SettingsViewProps
   const [emailDraft, setEmailDraft] = useState(couple.partner_email ?? '')
   const [localPartnerEmail, setLocalPartnerEmail] = useState(couple.partner_email ?? '')
   const [isSavingEmail, startSaveEmail] = useTransition()
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 767px)')
+    setIsMobile(mql.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
 
   function handleSaveEmail() {
     startSaveEmail(async () => {
@@ -26,8 +35,8 @@ export function SettingsView({ couple, onPartnerEmailUpdate }: SettingsViewProps
   }
 
   return (
-    <div style={{ padding: '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
-      <div style={{ marginBottom: 32 }}>
+    <div style={{ padding: isMobile ? '24px 16px 80px' : '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
+      <div style={{ marginBottom: isMobile ? 24 : 32 }}>
         <span className="wf-eyebrow">Settings</span>
         <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 6px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
           Shape how <em style={{ fontWeight: 500 }}>your concierge behaves.</em>
@@ -44,7 +53,7 @@ export function SettingsView({ couple, onPartnerEmailUpdate }: SettingsViewProps
           <h2 className="wf-serif" style={{ fontSize: 20, color: 'var(--wf-forest)', fontWeight: 600, margin: 0 }}>Your account</h2>
         </div>
         <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 14, overflow: 'hidden' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 20, padding: '16px 22px', borderBottom: '1px solid var(--wf-line)', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 8 : 20, padding: isMobile ? '14px 16px' : '16px 22px', borderBottom: '1px solid var(--wf-line)', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between' }}>
             <div>
               <div className="wf-sans" style={{ fontSize: 13, fontWeight: 500, color: 'var(--wf-forest)' }}>Account email</div>
               <div className="wf-sans" style={{ fontSize: 11.5, color: 'var(--wf-ink-45)', marginTop: 3 }}>Managed by Clerk — edit in your account settings</div>
@@ -52,7 +61,7 @@ export function SettingsView({ couple, onPartnerEmailUpdate }: SettingsViewProps
             <span className="wf-sans" style={{ fontSize: 13, color: 'var(--wf-ink-60)' }}>{couple.email}</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 20, padding: '16px 22px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 8 : 20, padding: isMobile ? '14px 16px' : '16px 22px', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between' }}>
             <div>
               <div className="wf-sans" style={{ fontSize: 13, fontWeight: 500, color: 'var(--wf-forest)' }}>Partner email</div>
               <div className="wf-sans" style={{ fontSize: 11.5, color: 'var(--wf-ink-45)', marginTop: 3 }}>For notifications and shared access</div>
