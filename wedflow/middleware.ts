@@ -7,10 +7,12 @@ const isPublicRoute = [
   '/sign-up',
   '/pricing',
   '/join',
+  '/offline',
   '/api/webhooks/twilio',
   '/api/inngest',
   '/api/stripe/webhook',
   '/api/stripe/checkout',
+  '/api/waitlist',
   '/auth/callback',
 ]
 
