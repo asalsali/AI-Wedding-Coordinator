@@ -1,0 +1,18 @@
+{
+  "agentId": "mobile-polish",
+  "mandate": "Fix three mobile layout regressions: hide hero email on mobile, stack auth pages with compact panel, fix inbox composer overflow",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "Uncommitted changes from a prior Canon-violating direct execution were already correct — agent verified rather than re-implemented",
+    "Auth page decorative panel must NOT be hidden on mobile (user explicitly rejected that approach). Compact with max-height:360px and reduced padding instead.",
+    "InboxView height calc must subtract 50px for the mobile top bar, otherwise the composer is pushed below viewport",
+    "overflow:hidden on the detail panel flex container is necessary to keep the composer pinned at the bottom"
+  ],
+  "whatWorked": "CSS class-based responsive approach: wf-auth-layout, wf-auth-panel, wf-auth-form-container with mobile overrides via @media query. Using !important on padding to override inline styles.",
+  "whatFailed": "Agent was blocked from running git commands (Bash permission denied for git operations). The Prophet had to complete commit/push/testament on the agent's behalf.",
+  "recommendationsForNextAgent": "The auth pages still use inline styles for most properties. The CSS class approach works via !important overrides but is fragile. A future pass could migrate the auth page styles fully to CSS classes. The 50px top bar height is hardcoded — if the mobile top bar height changes, the InboxView calc will break.",
+  "mannaConsumed": "~57,000 tokens",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Final mobile polish for the marketing campaign. Landing page has a single clear waitlist CTA, auth pages work on phones, and couples can actually use the inbox reply composer on mobile."
+}

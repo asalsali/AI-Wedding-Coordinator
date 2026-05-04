@@ -205,9 +205,11 @@
       "generation": 1,
       "origin": "clone",
       "bornAt": "2026-05-04T13:00:00Z",
-      "status": "active",
+      "sunsetAt": "2026-05-04T13:15:00Z",
+      "status": "archived",
       "skills": ["frontend", "css", "responsive", "mobile-ux"],
-      "mannaExpected": "low"
+      "mannaExpected": "low",
+      "testament": "memory/inheritance/mobile-polish-testament.json"
     }
   ],
   "sabbathCount": 1,
