@@ -210,6 +210,19 @@
       "skills": ["frontend", "css", "responsive", "mobile-ux"],
       "mannaExpected": "low",
       "testament": "memory/inheritance/mobile-polish-testament.json"
+    },
+    {
+      "id": "image-and-twilio",
+      "parentId": "root",
+      "mandate": "Show dashboard home image on mobile resized, verify Twilio upgrade compatibility",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-04T14:00:00Z",
+      "sunsetAt": "2026-05-04T14:10:00Z",
+      "status": "archived",
+      "skills": ["frontend", "responsive", "twilio"],
+      "mannaExpected": "low",
+      "testament": "memory/inheritance/image-and-twilio-testament.json"
     }
   ],
   "sabbathCount": 1,
