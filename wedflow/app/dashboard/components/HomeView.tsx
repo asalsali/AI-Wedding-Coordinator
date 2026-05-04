@@ -86,9 +86,11 @@ export function HomeView({
             </div>
           )}
         </div>
-        <div style={{ background: 'var(--wf-cream-warm)', position: 'relative', overflow: 'hidden', display: isMobile ? 'none' : 'block' }}>
-          <Image src="/Couple1.png" alt="Couple illustration" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
-        </div>
+        {!isMobile && (
+          <div style={{ background: 'var(--wf-cream-warm)', position: 'relative', overflow: 'hidden' }}>
+            <Image src="/Couple1.png" alt="Couple illustration" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
+          </div>
+        )}
       </div>
 
       {/* Stats row */}

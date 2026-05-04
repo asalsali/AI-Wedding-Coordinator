@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { Icon } from './Icon'
 
-export function InlineReplyComposer({ onSend, isSending, initialText, onClearInitial }: {
+export function InlineReplyComposer({ onSend, isSending, initialText, onClearInitial, isMobile = false }: {
   onSend: (text: string) => void
   isSending: boolean
   initialText: string
   onClearInitial: () => void
+  isMobile?: boolean
 }) {
   const TRIAL_CHAR_LIMIT = 120
   const [replyText, setReplyText] = useState('')
@@ -22,17 +23,40 @@ export function InlineReplyComposer({ onSend, isSending, initialText, onClearIni
   }, [initialText])
 
   return (
-    <div style={{ borderTop: '1px solid var(--wf-line)', background: 'var(--wf-cream)', padding: '14px 28px 18px', flexShrink: 0 }}>
-      <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
-        <div style={{ flex: 1, border: '1px solid var(--wf-line-strong)', borderRadius: 14, padding: '10px 14px 6px', background: 'var(--wf-paper)', transition: 'border-color 0.15s' }}>
+    <div style={{
+      borderTop: '1px solid var(--wf-line)',
+      background: 'var(--wf-cream)',
+      padding: isMobile ? '12px 12px 16px' : '14px 28px 18px',
+      flexShrink: 0,
+      ...(isMobile ? { paddingBottom: 'max(16px, env(safe-area-inset-bottom))' } : {}),
+    }}>
+      <div style={{ display: 'flex', gap: isMobile ? 8 : 10, alignItems: 'flex-end' }}>
+        <div style={{
+          flex: 1,
+          border: '1px solid var(--wf-line-strong)',
+          borderRadius: isMobile ? 18 : 14,
+          padding: isMobile ? '12px 14px 8px' : '10px 14px 6px',
+          background: 'var(--wf-paper)',
+          transition: 'border-color 0.15s',
+        }}>
           <textarea
             ref={textareaRef}
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
-            rows={2}
+            rows={isMobile ? 3 : 2}
             disabled={isSending}
             className="wf-sans"
-            style={{ width: '100%', border: 'none', outline: 'none', resize: 'none', fontSize: 13.5, color: 'var(--wf-ink)', fontFamily: 'var(--wf-sans)', lineHeight: 1.55, background: 'transparent' }}
+            style={{
+              width: '100%',
+              border: 'none',
+              outline: 'none',
+              resize: 'none',
+              fontSize: isMobile ? 16 : 13.5,
+              color: 'var(--wf-ink)',
+              fontFamily: 'var(--wf-sans)',
+              lineHeight: 1.55,
+              background: 'transparent',
+            }}
             placeholder="Type a reply to this guest..."
           />
           <div style={{ textAlign: 'right', marginTop: 2 }}>
@@ -47,9 +71,17 @@ export function InlineReplyComposer({ onSend, isSending, initialText, onClearIni
           onClick={() => { onSend(replyText); setReplyText('') }}
           disabled={isSending || !replyText.trim() || isOverLimit}
           className="wf-btn wf-btn-primary"
-          style={{ height: 44, paddingLeft: 18, paddingRight: 18, borderRadius: 14, flexShrink: 0 }}
+          style={{
+            height: isMobile ? 48 : 44,
+            minWidth: isMobile ? 48 : undefined,
+            paddingLeft: isMobile ? 14 : 18,
+            paddingRight: isMobile ? 14 : 18,
+            borderRadius: isMobile ? 16 : 14,
+            flexShrink: 0,
+            fontSize: isMobile ? 14 : undefined,
+          }}
         >
-          <Icon name="send" size={14} /> {isSending ? 'Sending...' : 'Send'}
+          <Icon name="send" size={isMobile ? 16 : 14} /> {isSending ? 'Sending...' : 'Send'}
         </button>
       </div>
     </div>

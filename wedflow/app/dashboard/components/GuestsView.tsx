@@ -137,13 +137,17 @@ export function GuestsView() {
               </div>))}
           </div>)}
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 20, alignItems: 'center' }}>
-          <input style={{ ...I, maxWidth: m ? '100%' : 240, flex: m ? '1 1 100%' : undefined }} placeholder="Search by name, phone, or email" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <select style={{ ...S, maxWidth: 180, flex: m ? '1' : undefined }} value={gf} onChange={(e) => setGf(e.target.value as GuestGroup | 'all')}><option value="all">All groups</option>{AG.map((g) => <option key={g} value={g}>{GL[g]}</option>)}</select>
-          <select style={{ ...S, maxWidth: 160, flex: m ? '1' : undefined }} value={rf} onChange={(e) => setRf(e.target.value as RsvpStatus | 'all')}><option value="all">All RSVP</option>{AR.map((s) => <option key={s} value={s}>{RL[s]}</option>)}</select>
-          <div style={{ flex: 1 }} />
-          <button style={B} onClick={() => { setShowCsv(true); setCsvRes(null) }}>Import CSV</button>
-          <button style={P} onClick={() => { setShowAdd(true); setAf({ ...EF }) }}>Add guest</button>
+        <div style={{ display: 'flex', flexDirection: m ? 'column' : 'row', flexWrap: 'wrap', gap: 10, marginBottom: 20, alignItems: m ? 'stretch' : 'center' }}>
+          <input style={{ ...I, maxWidth: m ? '100%' : 240, flex: m ? '1 1 auto' : undefined, minHeight: m ? 44 : undefined }} placeholder="Search by name, phone, or email" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <div style={{ display: 'flex', gap: 10 }}>
+            <select style={{ ...S, flex: 1, maxWidth: m ? '100%' : 180, minHeight: m ? 44 : undefined }} value={gf} onChange={(e) => setGf(e.target.value as GuestGroup | 'all')}><option value="all">All groups</option>{AG.map((g) => <option key={g} value={g}>{GL[g]}</option>)}</select>
+            <select style={{ ...S, flex: 1, maxWidth: m ? '100%' : 160, minHeight: m ? 44 : undefined }} value={rf} onChange={(e) => setRf(e.target.value as RsvpStatus | 'all')}><option value="all">All RSVP</option>{AR.map((s) => <option key={s} value={s}>{RL[s]}</option>)}</select>
+          </div>
+          {!m && <div style={{ flex: 1 }} />}
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button style={{ ...B, flex: m ? 1 : undefined, minHeight: m ? 44 : undefined }} onClick={() => { setShowCsv(true); setCsvRes(null) }}>Import CSV</button>
+            <button style={{ ...P, flex: m ? 1 : undefined, minHeight: m ? 44 : undefined }} onClick={() => { setShowAdd(true); setAf({ ...EF }) }}>Add guest</button>
+          </div>
         </div>
 
         {showCsv && (

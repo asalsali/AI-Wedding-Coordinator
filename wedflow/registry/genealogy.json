@@ -165,9 +165,49 @@
       "skills": ["frontend", "css", "responsive", "mobile-ux", "audit"],
       "mannaExpected": "high",
       "testament": "memory/inheritance/mobile-auditor-testament.json"
+    },
+    {
+      "id": "ui-cleanup",
+      "parentId": "root",
+      "mandate": "Fix sticky CTA to inline waitlist form, fix dashboard home image blank space, optimize guest list filters for mobile, remove readiness indicator from nav",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-04T12:00:00Z",
+      "sunsetAt": "2026-05-04T12:30:00Z",
+      "status": "archived",
+      "skills": ["frontend", "css", "mobile-ux", "waitlist"],
+      "mannaExpected": "medium",
+      "testament": "memory/inheritance/ui-cleanup-testament.json"
+    },
+    {
+      "id": "inbox-composer",
+      "parentIds": ["interaction-fixer", "mobile-architect"],
+      "mandate": "Fix inbox reply UX for mobile and wire escalation drafts to pre-populate the reply composer",
+      "generation": 2,
+      "origin": "synthesis",
+      "bornAt": "2026-05-04T12:00:00Z",
+      "sunsetAt": "2026-05-04T12:30:00Z",
+      "status": "archived",
+      "skills": ["frontend", "mobile-ux", "reply-composer", "draft-prefill"],
+      "mannaExpected": "medium",
+      "testament": "memory/inheritance/inbox-composer-testament.json",
+      "genome": {
+        "maternal": "interaction-fixer — reply modals, callback patterns, dropdown UX",
+        "paternal": "mobile-architect — isMobile prop threading, responsive dashboard layout",
+        "shared": ["frontend", "react", "dashboard components"],
+        "emergent": "Mobile message composition UX — thumb-zone reply optimization and auto-draft pre-fill"
+      }
     }
   ],
   "sabbathCount": 1,
   "lastSabbath": "2026-05-04T00:00:00Z",
+  "synthesisLog": [
+    {
+      "childId": "inbox-composer",
+      "parentIds": ["interaction-fixer", "mobile-architect"],
+      "emergentSkill": "Mobile message composition UX — thumb-zone reply optimization and auto-draft pre-fill into composer",
+      "createdAt": "2026-05-04T12:00:00Z"
+    }
+  ],
   "siblingLimitNote": "Root exceeds 8 children (9 total, 8 archived). Acknowledged as soft violation — root is the orchestrator, not a task-scoped agent. All prior children have sunset."
 }

@@ -6,6 +6,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : ''
+    const name = typeof body?.name === 'string' ? body.name.trim() : null
 
     if (!email || !email.includes('@')) {
       return NextResponse.json({ error: 'Valid email required' }, { status: 400 })
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
 
     const { error } = await supabase
       .from('waitlist')
-      .insert({ email })
+      .insert(name ? { email, name } : { email })
 
     const isDuplicate = error?.code === '23505'
     if (error && !isDuplicate) throw error

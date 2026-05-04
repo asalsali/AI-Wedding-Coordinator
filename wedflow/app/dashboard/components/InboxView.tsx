@@ -86,6 +86,22 @@ export function InboxView({
   const unclearCount = tabConversations.filter((c) => c.emotionalWeight === 'unclear').length
   const routineCount = tabConversations.filter((c) => c.emotionalWeight === 'routine').length
 
+  // Auto-pre-fill composer with draft when selecting a conversation that has one
+  useEffect(() => {
+    if (!selectedConversation) return
+    // Find an unsent escalated outbound draft in this conversation
+    const draft = selectedConversation.messages.find(
+      (msg) => msg.direction === 'outbound' && msg.classified_as === 'escalated' && !msg.was_sent
+    )
+    if (!draft) return
+    // Only pre-fill if the inbound message it replies to hasn't been replied to yet
+    const inboundRepliedTo = draft.replied_to_message_id
+    if (inboundRepliedTo && repliedInboundMsgIds.has(inboundRepliedTo)) return
+    // Don't pre-fill if the user dismissed this draft
+    if (dismissedDraftIds.has(draft.id)) return
+    setComposerInitialText(draft.body)
+  }, [selectedConversationId])
+
   function handleSendReply(text: string) {
     const inboundMsg = selectedConversation
       ? selectedConversation.messages.filter((m) => m.direction === 'inbound').slice(-1)[0]
@@ -400,6 +416,7 @@ export function InboxView({
         isSending={isSendingReply}
         initialText={composerInitialText}
         onClearInitial={() => setComposerInitialText('')}
+        isMobile={isMobile}
       />
     </div>
   ) : (

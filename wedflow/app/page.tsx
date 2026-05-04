@@ -487,11 +487,99 @@ function Footer() {
 // ─── Sticky Mobile CTA ────────────────────────────────────────────────────────
 
 function MobileStickyBanner() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim() || isSubmitting) return;
+    setIsSubmitting(true);
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), email: email.trim() }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setSubmitted(true);
+    } catch {
+      setErrorMsg("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="wf-mobile-sticky-cta">
+        <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "center", padding: "8px 0" }}>
+          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--wf-terracotta)", flexShrink: 0 }} />
+          <p className="wf-sans" style={{ fontSize: 13, fontWeight: 500, color: "var(--wf-forest)", margin: 0 }}>
+            You&apos;re on the list. We&apos;ll reach out with next steps.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="wf-mobile-sticky-cta">
-      <Link href="/sign-up" className="wf-btn wf-btn-primary" style={{ width: "100%", textAlign: "center", padding: "14px 24px" }}>
-        Request Early Access →
-      </Link>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%" }}>
+        <div style={{ display: "flex", gap: 8 }}>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Full name"
+            required
+            disabled={isSubmitting}
+            className="wf-sans"
+            style={{
+              flex: 1,
+              padding: "10px 14px",
+              borderRadius: 999,
+              border: "1px solid var(--wf-line-strong)",
+              background: "var(--wf-paper)",
+              fontSize: 13,
+              color: "var(--wf-ink)",
+              outline: "none",
+              minWidth: 0,
+            }}
+          />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            required
+            disabled={isSubmitting}
+            className="wf-sans"
+            style={{
+              flex: 1,
+              padding: "10px 14px",
+              borderRadius: 999,
+              border: "1px solid var(--wf-line-strong)",
+              background: "var(--wf-paper)",
+              fontSize: 13,
+              color: "var(--wf-ink)",
+              outline: "none",
+              minWidth: 0,
+            }}
+          />
+        </div>
+        <button type="submit" disabled={isSubmitting} className="wf-btn wf-btn-primary" style={{ width: "100%", textAlign: "center", padding: "12px 24px", fontSize: 14 }}>
+          {isSubmitting ? "Submitting..." : "Request Early Access"}
+        </button>
+      </form>
+      {errorMsg && (
+        <p className="wf-sans" style={{ fontSize: 11, color: "var(--wf-terracotta)", marginTop: 4, textAlign: "center" }}>
+          {errorMsg}
+        </p>
+      )}
     </div>
   );
 }

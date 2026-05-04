@@ -468,7 +468,7 @@ html, body {
     z-index: 40;
   }
 
-  /* Auth pages: hide decorative panel (! needed to override inline styles) */
-  .wf-auth-layout { grid-template-columns: 1fr !important; }
-  .wf-auth-panel { display: none !important; }
+  /* Auth pages: stack on mobile */
+  .wf-auth-layout { grid-template-columns: 1fr; }
+  .wf-auth-panel { }
 }

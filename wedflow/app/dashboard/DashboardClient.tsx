@@ -149,23 +149,8 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
         })}
       </nav>
 
-      {/* Footer: readiness + sign out */}
+      {/* Footer: sign out */}
       <div style={{ marginTop: 'auto' }}>
-        {localProfile && (
-          <div style={{ padding: '14px', borderRadius: 12, background: 'rgba(253,251,247,0.05)', border: '1px solid rgba(253,251,247,0.08)', marginBottom: 14 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <span className="wf-sans" style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--wf-cream-ink-50)' }}>Readiness</span>
-              <span className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-cream)', fontWeight: 600 }}>{localProfile.readiness_score}%</span>
-            </div>
-            <div style={{ height: 4, background: 'rgba(253,251,247,0.1)', borderRadius: 2, overflow: 'hidden' }}>
-              <div style={{ width: `${localProfile.readiness_score}%`, height: '100%', background: 'var(--wf-terracotta)' }} />
-            </div>
-            <div className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-cream-ink-50)', marginTop: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: localProfile.is_active ? '#6ea260' : 'rgba(253,251,247,0.3)' }} />
-              {localProfile.is_active ? 'Active & responding' : 'Not yet active'}
-            </div>
-          </div>
-        )}
         <button onClick={async () => { await signOutAction(); window.location.href = '/' }} style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '10px 14px', background: 'transparent', color: 'var(--wf-cream-ink-50)', border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontFamily: 'var(--wf-sans)' }}>
           <Icon name="signOut" size={15} /> Sign out
         </button>

@@ -1,0 +1,16 @@
+{
+  "agentId": "inbox-composer",
+  "mandate": "Fix inbox reply UX for mobile and wire escalation drafts to pre-populate the reply composer",
+  "generation": 2,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "InlineReplyComposer had no mobile awareness — fixed font size (16px to prevent iOS zoom), increased textarea rows, larger send button (48px touch target), safe-area-inset-bottom padding",
+    "Draft pre-fill was wired to composerInitialText state but only triggered on manual AIDraftCard 'Edit' click — added useEffect on selectedConversationId that auto-detects unsent escalated drafts and pre-fills the composer"
+  ],
+  "whatWorked": "The existing composerInitialText + onClearInitial pattern was well-designed for accepting draft text from multiple sources. Adding the useEffect auto-pre-fill slot cleanly into this existing mechanism without any refactoring.",
+  "whatFailed": "Nothing failed. The changes were surgical and type-checked on first pass.",
+  "recommendationsForNextAgent": "The 120-char trial limit on replies may truncate AI-drafted escalation replies (which can be longer). Consider either exempting drafts from the limit or truncating with a 'see full draft' expansion. Also the isMobile prop should eventually come from a context rather than prop-drilling through every component.",
+  "mannaConsumed": "low — single read pass, two file edits, one tsc check",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Made the most emotionally critical moment (couple replying to a sensitive guest message) accessible and frictionless on mobile, with drafts ready to send."
+}
