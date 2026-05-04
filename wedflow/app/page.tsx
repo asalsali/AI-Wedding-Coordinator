@@ -265,7 +265,7 @@ function Hero() {
             <p className="wf-sans animate-fade-in-up-delay wf-hero-subtitle">
               Guests text with questions. Your maid of honor coordinates the bridesmaids. Your mom handles the family dynamics. WedFlow keeps all of it moving so you can be present for what matters.
             </p>
-            <div className="animate-fade-in-up-delay-2">
+            <div className="animate-fade-in-up-delay-2 wf-hero-email">
               <EmailCapture />
               <p className="wf-sans" style={{ fontSize: 12, color: "var(--wf-ink-45)", marginTop: 12 }}>
                 Paid beta · limited spots · we&apos;ll reach out with pricing.

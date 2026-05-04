@@ -4,10 +4,10 @@ import SignInForm from './SignInForm'
 
 export default function SignInPage() {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', minHeight: '100vh', background: 'var(--wf-cream)' }}>
+    <div className="wf-auth-layout">
 
       {/* Left — forest panel */}
-      <div style={{
+      <div className="wf-auth-panel" style={{
         background: 'var(--wf-forest)',
         color: 'var(--wf-cream)',
         padding: '48px 56px',
@@ -61,7 +61,7 @@ export default function SignInPage() {
       </div>
 
       {/* Right — form */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '56px 48px' }}>
+      <div className="wf-auth-form-container">
         <SignInForm />
       </div>
 

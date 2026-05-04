@@ -272,6 +272,7 @@ export function InboxView({
       flexDirection: 'column',
       background: 'var(--wf-cream-warm)',
       height: '100%',
+      overflow: 'hidden',
     }}>
       {/* Thread header */}
       <div style={{ padding: isMobile ? '14px 16px' : '18px 28px', borderBottom: '1px solid var(--wf-line)', background: 'var(--wf-cream)', display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 14, flexShrink: 0 }}>
@@ -444,7 +445,7 @@ export function InboxView({
     <div style={{
       display: isMobile ? 'flex' : 'grid',
       gridTemplateColumns: isMobile ? undefined : '400px 1fr',
-      height: 'calc(100vh - 0px)',
+      height: isMobile ? 'calc(100vh - 50px)' : 'calc(100vh - 0px)',
       background: 'var(--wf-cream)',
     }}>
       {threadListPanel}

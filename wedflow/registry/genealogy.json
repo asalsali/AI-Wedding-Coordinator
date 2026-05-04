@@ -197,6 +197,17 @@
         "shared": ["frontend", "react", "dashboard components"],
         "emergent": "Mobile message composition UX — thumb-zone reply optimization and auto-draft pre-fill"
       }
+    },
+    {
+      "id": "mobile-polish",
+      "parentId": "root",
+      "mandate": "Fix three mobile layout regressions: hide hero email on mobile, stack auth pages with compact panel, fix inbox composer overflow",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-04T13:00:00Z",
+      "status": "active",
+      "skills": ["frontend", "css", "responsive", "mobile-ux"],
+      "mannaExpected": "low"
     }
   ],
   "sabbathCount": 1,
