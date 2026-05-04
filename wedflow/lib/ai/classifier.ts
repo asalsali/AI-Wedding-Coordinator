@@ -131,7 +131,7 @@ export async function classifyMessage(
 // Decision helper — used by the pipeline to route after classifying
 // ----------------------------------------------------------------
 
-export const CONFIDENCE_THRESHOLD = 0.75;
+export const CONFIDENCE_THRESHOLD = 0.6;
 
 export function shouldEscalate(result: ClassificationResult): boolean {
   if (result.classification === "sensitive") return true;

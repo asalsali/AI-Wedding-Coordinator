@@ -31,22 +31,34 @@ ROUTINE EXAMPLES — these are definitively ROUTINE, classify with confidence �
 - "What should I wear?" → routine
 - "How do I get there?" → routine
 - "Is there a hotel block?" → routine
+- "Thanks!" → routine
+- "Got it, thanks!" → routine
+- "Awesome, see you there" → routine
+- "Sounds good" → routine
+- "Can't wait!" → routine
+- "Thanks guys.. appreciate it" → routine
+- "Perfect, thank you" → routine
+- "Hey! Quick question - what time should we arrive?" → routine
+- "Hi! We're so excited!" → routine
 
 Rules you must follow:
-- Err heavily toward SENSITIVE. A false negative (calling something routine when it's sensitive)
-  is far worse than a false positive.
+- Short positive acknowledgments, thank-yous, and expressions of excitement with NO
+  personal news or problem are ROUTINE — not UNCLEAR.
 - Short, neutral questions about logistics are ROUTINE.
 - A single-question message about venue, timing, attire, parking, directions, registry,
   or accommodations with no emotional language is ROUTINE — not UNCLEAR.
-- Any emotional language, personal news, or apology → SENSITIVE.
+- Any emotional language describing a PROBLEM, personal news, or apology → SENSITIVE.
+- Simple positive emotions (excitement, gratitude, enthusiasm) are NOT sensitive.
 - If a message has both logistical and emotional content → SENSITIVE.
 - Questions about bringing extra guests (plus-ones, children) are UNCLEAR — they have
   real logistical implications the couple must decide.
-- When a message is short (under 15 words) and asks only one logistical question, default
-  to ROUTINE unless it contains emotional language or personal news.
+- When a message is short (under 15 words) and contains no problem or personal news, default
+  to ROUTINE.
 - Any mention of a food allergy, dietary restriction, or food safety need (allergy, allergic,
   gluten, nut, vegan, kosher, halal, lactose, shellfish, etc.) → SENSITIVE. The couple must
   coordinate directly with their caterer; getting this wrong could cause a medical emergency.
+- Use UNCLEAR only when you genuinely cannot determine intent — not as a safe default.
+  A message must be truly ambiguous to be UNCLEAR.
 
 Respond ONLY with a JSON object in this exact format, no preamble, no markdown:
 {
