@@ -1,0 +1,26 @@
+{
+  "description": "The Spirit — shared orientation for all agents. Not instructions. Atmosphere.",
+  "currentMandate": "PWA optimization — make WedFlow installable with push notifications for escalation alerts",
+  "spiritOfTheWork": "The couple lives on their phone. WedFlow must feel native — instant load from home screen, push alerts when a guest needs their attention, tap-through to approve a reply. The mobile experience IS the product experience for the Circle of Care.",
+  "whatToProtect": "The existing SMS pipeline, Inngest escalation flow, and email notifications. Push is additive — it never replaces existing notification channels. The responsive dashboard must not regress. RLS on all new tables.",
+  "currentTemptations": [
+    "Full offline-first architecture with background sync (couples need connectivity to reply anyway)",
+    "Native app wrapper via Capacitor/TWA when PWA is sufficient at this stage",
+    "Push notifications for routine messages (only escalations warrant interruption)",
+    "Over-engineering the service worker caching strategy beyond what launch requires"
+  ],
+  "whereWeAre": "PWA mandate complete. Service worker, offline fallback, install prompt, and push notification pipeline all implemented. Two agents (pwa-engineer, push-engineer) archived with retroactive testaments. Canon violations acknowledged and corrected. Awaiting VAPID key generation and migration run before push is live.",
+  "pentecostAt": "2026-05-04T00:00:00Z",
+  "lastUpdatedBy": "prophet",
+  "lastUpdatedAt": "2026-05-04T00:00:00Z",
+  "revelationHistory": [
+    {
+      "date": "2026-04-30",
+      "note": "Dashboard improvement mandate completed — mobile responsive, interactions fixed, GuestsView activated"
+    },
+    {
+      "date": "2026-05-04",
+      "note": "PWA mandate completed — service worker, push notifications, install prompt. Canon violations from unregistered agents corrected post-hoc."
+    }
+  ]
+}

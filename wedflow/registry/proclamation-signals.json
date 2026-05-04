@@ -1,0 +1,2576 @@
+[
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 42,
+    "timestamp": "2026-04-28T14:36:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 42,
+    "timestamp": "2026-04-28T14:36:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 42,
+    "timestamp": "2026-04-28T14:36:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 43,
+    "timestamp": "2026-04-28T14:36:53Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 44,
+    "timestamp": "2026-04-28T14:36:56Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 45,
+    "timestamp": "2026-04-28T14:37:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 46,
+    "timestamp": "2026-04-28T14:37:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 47,
+    "timestamp": "2026-04-28T14:37:20Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 48,
+    "timestamp": "2026-04-28T14:37:54Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 49,
+    "timestamp": "2026-04-28T14:37:56Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 50,
+    "timestamp": "2026-04-28T14:38:09Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 51,
+    "timestamp": "2026-04-28T14:38:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 52,
+    "timestamp": "2026-04-28T14:38:18Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 53,
+    "timestamp": "2026-04-28T14:38:18Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 54,
+    "timestamp": "2026-04-28T14:38:44Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 55,
+    "timestamp": "2026-04-28T14:38:57Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 56,
+    "timestamp": "2026-04-28T14:39:04Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 57,
+    "timestamp": "2026-04-28T14:39:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 58,
+    "timestamp": "2026-04-28T14:39:31Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 59,
+    "timestamp": "2026-04-28T14:39:35Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 61,
+    "timestamp": "2026-04-28T14:39:41Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 62,
+    "timestamp": "2026-04-28T14:39:52Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 63,
+    "timestamp": "2026-04-28T14:39:57Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 64,
+    "timestamp": "2026-04-28T14:40:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 65,
+    "timestamp": "2026-04-28T14:41:09Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 66,
+    "timestamp": "2026-04-28T14:41:15Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 67,
+    "timestamp": "2026-04-28T14:41:27Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 67,
+    "timestamp": "2026-04-28T14:42:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 69,
+    "timestamp": "2026-04-28T14:42:20Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 70,
+    "timestamp": "2026-04-28T14:42:24Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 71,
+    "timestamp": "2026-04-28T14:42:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 72,
+    "timestamp": "2026-04-28T14:42:41Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 73,
+    "timestamp": "2026-04-28T14:42:46Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 74,
+    "timestamp": "2026-04-28T14:42:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 75,
+    "timestamp": "2026-04-28T14:43:40Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 76,
+    "timestamp": "2026-04-28T14:43:58Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 77,
+    "timestamp": "2026-04-28T14:46:56Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 78,
+    "timestamp": "2026-04-28T14:47:09Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "a5b45533271a3ba3f",
+    "callCount": 16,
+    "timestamp": "2026-04-28T14:49:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "a5b45533271a3ba3f",
+    "callCount": 18,
+    "timestamp": "2026-04-28T14:49:18Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "a5b45533271a3ba3f",
+    "callCount": 18,
+    "timestamp": "2026-04-28T14:49:18Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "a5b45533271a3ba3f",
+    "callCount": 19,
+    "timestamp": "2026-04-28T14:49:19Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "a5b45533271a3ba3f",
+    "callCount": 21,
+    "timestamp": "2026-04-28T14:49:20Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "a5b45533271a3ba3f",
+    "callCount": 22,
+    "timestamp": "2026-04-28T14:49:20Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 79,
+    "timestamp": "2026-04-28T14:50:22Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 80,
+    "timestamp": "2026-04-28T14:51:26Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 81,
+    "timestamp": "2026-04-28T14:51:27Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 82,
+    "timestamp": "2026-04-28T14:51:28Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 83,
+    "timestamp": "2026-04-28T14:51:29Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 84,
+    "timestamp": "2026-04-28T14:51:30Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 85,
+    "timestamp": "2026-04-28T14:51:32Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 86,
+    "timestamp": "2026-04-28T14:51:32Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 87,
+    "timestamp": "2026-04-28T14:51:34Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 88,
+    "timestamp": "2026-04-28T14:51:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 89,
+    "timestamp": "2026-04-28T14:51:44Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 90,
+    "timestamp": "2026-04-28T14:52:11Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 91,
+    "timestamp": "2026-04-28T14:52:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 92,
+    "timestamp": "2026-04-28T14:52:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 93,
+    "timestamp": "2026-04-28T14:52:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 94,
+    "timestamp": "2026-04-28T14:52:56Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 95,
+    "timestamp": "2026-04-28T14:52:58Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 96,
+    "timestamp": "2026-04-28T14:53:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 97,
+    "timestamp": "2026-04-28T14:53:02Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 98,
+    "timestamp": "2026-04-28T14:53:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 99,
+    "timestamp": "2026-04-28T14:53:08Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 100,
+    "timestamp": "2026-04-28T14:53:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 102,
+    "timestamp": "2026-04-28T14:53:16Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 102,
+    "timestamp": "2026-04-28T14:53:16Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 103,
+    "timestamp": "2026-04-28T14:53:34Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 104,
+    "timestamp": "2026-04-28T14:53:49Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 105,
+    "timestamp": "2026-04-28T14:53:55Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 106,
+    "timestamp": "2026-04-28T14:54:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 107,
+    "timestamp": "2026-04-28T14:54:10Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 108,
+    "timestamp": "2026-04-28T14:54:24Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 109,
+    "timestamp": "2026-04-28T14:54:27Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 111,
+    "timestamp": "2026-04-28T14:54:32Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 114,
+    "timestamp": "2026-04-28T14:54:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 114,
+    "timestamp": "2026-04-28T14:54:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 115,
+    "timestamp": "2026-04-28T14:55:02Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 16,
+    "timestamp": "2026-04-28T14:57:01Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 17,
+    "timestamp": "2026-04-28T14:57:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 18,
+    "timestamp": "2026-04-28T14:57:19Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 19,
+    "timestamp": "2026-04-28T14:57:36Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 20,
+    "timestamp": "2026-04-28T14:57:42Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 21,
+    "timestamp": "2026-04-28T14:57:55Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 22,
+    "timestamp": "2026-04-28T14:58:08Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 23,
+    "timestamp": "2026-04-28T14:58:14Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 24,
+    "timestamp": "2026-04-28T14:59:54Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 25,
+    "timestamp": "2026-04-28T14:59:56Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 26,
+    "timestamp": "2026-04-28T14:59:57Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 27,
+    "timestamp": "2026-04-28T15:00:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 28,
+    "timestamp": "2026-04-28T15:00:01Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 29,
+    "timestamp": "2026-04-28T15:00:02Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 31,
+    "timestamp": "2026-04-28T15:00:08Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 32,
+    "timestamp": "2026-04-28T15:00:16Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 33,
+    "timestamp": "2026-04-28T15:00:18Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 34,
+    "timestamp": "2026-04-28T15:00:45Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 35,
+    "timestamp": "2026-04-28T15:00:54Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 36,
+    "timestamp": "2026-04-28T15:00:58Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 37,
+    "timestamp": "2026-04-28T15:00:59Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 38,
+    "timestamp": "2026-04-28T15:00:59Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 39,
+    "timestamp": "2026-04-28T15:01:04Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 40,
+    "timestamp": "2026-04-28T15:01:28Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 41,
+    "timestamp": "2026-04-28T15:02:08Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 42,
+    "timestamp": "2026-04-28T15:02:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 43,
+    "timestamp": "2026-04-28T15:02:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 44,
+    "timestamp": "2026-04-28T15:02:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 45,
+    "timestamp": "2026-04-28T15:02:19Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 46,
+    "timestamp": "2026-04-28T15:02:29Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 47,
+    "timestamp": "2026-04-28T15:02:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 48,
+    "timestamp": "2026-04-28T15:02:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 49,
+    "timestamp": "2026-04-28T15:02:49Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 50,
+    "timestamp": "2026-04-28T15:02:55Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 51,
+    "timestamp": "2026-04-28T15:03:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 52,
+    "timestamp": "2026-04-28T15:03:11Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 53,
+    "timestamp": "2026-04-28T15:03:27Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 54,
+    "timestamp": "2026-04-28T15:03:37Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 55,
+    "timestamp": "2026-04-28T15:03:49Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 56,
+    "timestamp": "2026-04-28T15:04:04Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 57,
+    "timestamp": "2026-04-28T15:04:11Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 58,
+    "timestamp": "2026-04-28T15:05:36Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 58,
+    "timestamp": "2026-04-28T15:06:42Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 60,
+    "timestamp": "2026-04-28T15:06:55Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 61,
+    "timestamp": "2026-04-28T15:10:27Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 62,
+    "timestamp": "2026-04-28T15:10:33Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 63,
+    "timestamp": "2026-04-28T15:11:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 64,
+    "timestamp": "2026-04-28T15:12:34Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 65,
+    "timestamp": "2026-04-28T15:13:21Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 66,
+    "timestamp": "2026-04-28T15:13:37Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 67,
+    "timestamp": "2026-04-28T15:13:49Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 68,
+    "timestamp": "2026-04-28T15:14:18Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 69,
+    "timestamp": "2026-04-28T15:15:14Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 70,
+    "timestamp": "2026-04-28T15:16:24Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 71,
+    "timestamp": "2026-04-28T15:16:31Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 72,
+    "timestamp": "2026-04-28T15:16:37Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 73,
+    "timestamp": "2026-04-28T15:18:31Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 74,
+    "timestamp": "2026-04-28T15:18:44Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 75,
+    "timestamp": "2026-04-28T15:21:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 76,
+    "timestamp": "2026-04-28T15:21:19Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 77,
+    "timestamp": "2026-04-28T15:21:26Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 78,
+    "timestamp": "2026-04-28T15:21:32Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 79,
+    "timestamp": "2026-04-28T15:21:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 80,
+    "timestamp": "2026-04-28T15:23:31Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 81,
+    "timestamp": "2026-04-28T15:30:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 82,
+    "timestamp": "2026-04-28T15:30:48Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 83,
+    "timestamp": "2026-04-28T15:30:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 84,
+    "timestamp": "2026-04-28T15:41:56Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 85,
+    "timestamp": "2026-04-28T15:58:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 86,
+    "timestamp": "2026-04-28T15:58:55Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 87,
+    "timestamp": "2026-04-28T15:59:03Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 88,
+    "timestamp": "2026-04-28T16:03:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 89,
+    "timestamp": "2026-04-28T19:23:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 90,
+    "timestamp": "2026-04-28T19:24:34Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 91,
+    "timestamp": "2026-04-28T19:24:35Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 92,
+    "timestamp": "2026-04-28T19:24:37Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 93,
+    "timestamp": "2026-04-28T19:24:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 94,
+    "timestamp": "2026-04-28T19:24:40Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 96,
+    "timestamp": "2026-04-28T19:24:49Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 97,
+    "timestamp": "2026-04-28T19:25:34Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 98,
+    "timestamp": "2026-04-28T19:25:59Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 99,
+    "timestamp": "2026-04-28T19:26:14Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 100,
+    "timestamp": "2026-04-28T19:26:22Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 101,
+    "timestamp": "2026-04-28T19:26:23Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 102,
+    "timestamp": "2026-04-28T19:26:23Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 103,
+    "timestamp": "2026-04-28T19:26:23Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 104,
+    "timestamp": "2026-04-28T19:26:33Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 105,
+    "timestamp": "2026-04-28T19:26:45Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 106,
+    "timestamp": "2026-04-28T19:26:54Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 107,
+    "timestamp": "2026-04-28T19:27:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 108,
+    "timestamp": "2026-04-28T19:27:36Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 109,
+    "timestamp": "2026-04-28T19:27:45Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 110,
+    "timestamp": "2026-04-28T19:27:57Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 111,
+    "timestamp": "2026-04-28T19:28:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 112,
+    "timestamp": "2026-04-28T19:28:16Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 113,
+    "timestamp": "2026-04-28T19:28:39Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 114,
+    "timestamp": "2026-04-28T19:28:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 115,
+    "timestamp": "2026-04-28T19:28:56Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 116,
+    "timestamp": "2026-04-28T19:29:11Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 117,
+    "timestamp": "2026-04-28T19:29:26Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 118,
+    "timestamp": "2026-04-28T19:29:39Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 119,
+    "timestamp": "2026-04-28T19:29:54Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 120,
+    "timestamp": "2026-04-28T19:30:03Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 121,
+    "timestamp": "2026-04-28T19:30:24Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 122,
+    "timestamp": "2026-04-28T19:30:32Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 123,
+    "timestamp": "2026-04-28T19:30:41Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 124,
+    "timestamp": "2026-04-28T19:30:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 125,
+    "timestamp": "2026-04-28T19:31:03Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 126,
+    "timestamp": "2026-04-28T19:31:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 127,
+    "timestamp": "2026-04-28T19:31:25Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 128,
+    "timestamp": "2026-04-28T19:31:51Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 129,
+    "timestamp": "2026-04-28T19:31:58Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 130,
+    "timestamp": "2026-04-28T19:36:35Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 131,
+    "timestamp": "2026-04-28T19:36:46Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 132,
+    "timestamp": "2026-04-28T19:36:46Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 133,
+    "timestamp": "2026-04-28T19:36:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 134,
+    "timestamp": "2026-04-28T19:36:49Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 135,
+    "timestamp": "2026-04-28T19:36:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 136,
+    "timestamp": "2026-04-28T19:36:52Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 137,
+    "timestamp": "2026-04-28T19:37:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 138,
+    "timestamp": "2026-04-28T19:37:28Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 139,
+    "timestamp": "2026-04-28T19:37:39Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 140,
+    "timestamp": "2026-04-28T19:37:57Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 141,
+    "timestamp": "2026-04-28T19:38:09Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 142,
+    "timestamp": "2026-04-28T19:38:16Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 143,
+    "timestamp": "2026-04-28T19:38:26Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 144,
+    "timestamp": "2026-04-28T19:38:26Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 145,
+    "timestamp": "2026-04-28T19:38:27Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 146,
+    "timestamp": "2026-04-28T19:38:27Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 147,
+    "timestamp": "2026-04-28T19:38:57Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 148,
+    "timestamp": "2026-04-28T19:39:17Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 149,
+    "timestamp": "2026-04-28T19:39:39Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 150,
+    "timestamp": "2026-04-28T19:40:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 151,
+    "timestamp": "2026-04-28T19:40:23Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 152,
+    "timestamp": "2026-04-28T19:40:31Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 153,
+    "timestamp": "2026-04-28T19:40:33Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 16,
+    "timestamp": "2026-04-28T19:44:54Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 16,
+    "timestamp": "2026-04-28T19:46:19Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 18,
+    "timestamp": "2026-04-28T19:46:36Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 19,
+    "timestamp": "2026-04-28T19:50:06Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 20,
+    "timestamp": "2026-04-28T19:50:07Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 21,
+    "timestamp": "2026-04-28T19:50:09Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 22,
+    "timestamp": "2026-04-28T19:50:11Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 23,
+    "timestamp": "2026-04-28T19:50:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 24,
+    "timestamp": "2026-04-28T19:50:23Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 25,
+    "timestamp": "2026-04-28T19:51:07Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 16,
+    "timestamp": "2026-04-28T19:54:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 17,
+    "timestamp": "2026-04-28T19:55:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 18,
+    "timestamp": "2026-04-28T19:56:01Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 19,
+    "timestamp": "2026-04-28T19:56:11Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 20,
+    "timestamp": "2026-04-28T19:56:36Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 21,
+    "timestamp": "2026-04-28T19:56:44Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 22,
+    "timestamp": "2026-04-28T19:59:16Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 24,
+    "timestamp": "2026-04-28T20:01:26Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 25,
+    "timestamp": "2026-04-29T12:26:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 25,
+    "timestamp": "2026-04-29T12:26:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 26,
+    "timestamp": "2026-04-29T12:27:21Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 28,
+    "timestamp": "2026-04-29T12:27:48Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 29,
+    "timestamp": "2026-04-29T12:27:58Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 30,
+    "timestamp": "2026-04-29T12:28:24Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 31,
+    "timestamp": "2026-04-29T12:30:34Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 32,
+    "timestamp": "2026-04-29T12:30:41Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 33,
+    "timestamp": "2026-04-29T12:30:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 34,
+    "timestamp": "2026-04-29T12:30:53Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 35,
+    "timestamp": "2026-04-29T12:30:59Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 36,
+    "timestamp": "2026-04-29T12:31:20Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 37,
+    "timestamp": "2026-04-29T12:31:33Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 38,
+    "timestamp": "2026-04-29T12:31:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 39,
+    "timestamp": "2026-04-29T12:31:58Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 40,
+    "timestamp": "2026-04-29T12:32:19Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 41,
+    "timestamp": "2026-04-29T12:32:32Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 41,
+    "timestamp": "2026-04-29T12:32:54Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 42,
+    "timestamp": "2026-04-29T12:33:10Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 44,
+    "timestamp": "2026-04-29T12:33:23Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 45,
+    "timestamp": "2026-04-29T12:33:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 45,
+    "timestamp": "2026-04-29T12:34:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 47,
+    "timestamp": "2026-04-29T12:34:08Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 48,
+    "timestamp": "2026-04-29T12:34:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 49,
+    "timestamp": "2026-04-29T12:34:25Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 50,
+    "timestamp": "2026-04-29T12:34:52Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 53,
+    "timestamp": "2026-04-29T12:36:48Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 54,
+    "timestamp": "2026-04-29T12:36:55Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 55,
+    "timestamp": "2026-04-29T12:37:09Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 56,
+    "timestamp": "2026-04-29T12:37:25Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 57,
+    "timestamp": "2026-04-29T12:38:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 58,
+    "timestamp": "2026-04-29T12:38:11Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 59,
+    "timestamp": "2026-04-29T12:38:17Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 61,
+    "timestamp": "2026-04-29T12:40:44Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 62,
+    "timestamp": "2026-04-29T12:44:48Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 62,
+    "timestamp": "2026-04-29T12:45:18Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 64,
+    "timestamp": "2026-04-29T12:45:30Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 65,
+    "timestamp": "2026-04-29T12:45:45Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 65,
+    "timestamp": "2026-04-29T12:46:03Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 66,
+    "timestamp": "2026-04-29T12:46:22Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 68,
+    "timestamp": "2026-04-29T12:46:51Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 69,
+    "timestamp": "2026-04-29T12:47:06Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 70,
+    "timestamp": "2026-04-29T12:47:19Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 72,
+    "timestamp": "2026-04-29T12:47:32Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 73,
+    "timestamp": "2026-04-29T12:47:44Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 74,
+    "timestamp": "2026-04-29T12:48:02Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 75,
+    "timestamp": "2026-04-29T12:48:10Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 76,
+    "timestamp": "2026-04-29T12:48:34Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 77,
+    "timestamp": "2026-04-29T12:53:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 78,
+    "timestamp": "2026-04-29T12:54:45Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 79,
+    "timestamp": "2026-04-29T12:54:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 80,
+    "timestamp": "2026-04-29T12:55:01Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 80,
+    "timestamp": "2026-04-29T12:56:01Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 82,
+    "timestamp": "2026-04-29T12:56:07Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 83,
+    "timestamp": "2026-04-29T12:56:28Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 84,
+    "timestamp": "2026-04-29T12:56:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 85,
+    "timestamp": "2026-04-29T12:57:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 87,
+    "timestamp": "2026-04-29T12:58:15Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 88,
+    "timestamp": "2026-04-29T12:58:37Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 88,
+    "timestamp": "2026-04-29T13:01:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 91,
+    "timestamp": "2026-04-29T13:03:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 92,
+    "timestamp": "2026-04-29T13:57:06Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 93,
+    "timestamp": "2026-04-29T13:57:27Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 94,
+    "timestamp": "2026-04-29T13:57:35Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 95,
+    "timestamp": "2026-04-29T13:57:44Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 96,
+    "timestamp": "2026-04-29T13:58:09Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 97,
+    "timestamp": "2026-04-29T13:58:26Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 98,
+    "timestamp": "2026-04-29T13:58:35Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 99,
+    "timestamp": "2026-04-29T13:58:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 100,
+    "timestamp": "2026-04-29T13:58:54Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 101,
+    "timestamp": "2026-04-29T13:59:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 102,
+    "timestamp": "2026-04-29T13:59:08Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 103,
+    "timestamp": "2026-04-29T13:59:21Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 104,
+    "timestamp": "2026-04-29T14:00:06Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 105,
+    "timestamp": "2026-04-29T14:10:07Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 106,
+    "timestamp": "2026-04-29T14:10:14Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 107,
+    "timestamp": "2026-04-29T14:10:16Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 108,
+    "timestamp": "2026-04-29T14:10:18Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 109,
+    "timestamp": "2026-04-29T14:10:20Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 110,
+    "timestamp": "2026-04-29T14:10:35Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 111,
+    "timestamp": "2026-04-29T14:10:42Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 111,
+    "timestamp": "2026-04-29T14:11:23Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 113,
+    "timestamp": "2026-04-29T14:11:35Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 114,
+    "timestamp": "2026-04-29T14:11:51Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 115,
+    "timestamp": "2026-04-29T14:16:31Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 116,
+    "timestamp": "2026-04-29T14:16:46Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 117,
+    "timestamp": "2026-04-29T14:16:48Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 118,
+    "timestamp": "2026-04-29T14:16:49Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 119,
+    "timestamp": "2026-04-29T14:16:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 120,
+    "timestamp": "2026-04-29T14:16:52Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 121,
+    "timestamp": "2026-04-29T14:16:53Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 122,
+    "timestamp": "2026-04-29T14:16:59Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 123,
+    "timestamp": "2026-04-29T14:17:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 124,
+    "timestamp": "2026-04-29T14:17:06Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 125,
+    "timestamp": "2026-04-29T14:17:41Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 126,
+    "timestamp": "2026-04-29T14:17:56Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 127,
+    "timestamp": "2026-04-29T14:18:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 128,
+    "timestamp": "2026-04-29T14:18:54Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 129,
+    "timestamp": "2026-04-29T14:18:58Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 130,
+    "timestamp": "2026-04-29T14:19:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 131,
+    "timestamp": "2026-04-29T14:19:11Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 132,
+    "timestamp": "2026-04-29T14:19:24Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 133,
+    "timestamp": "2026-04-29T14:19:33Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 133,
+    "timestamp": "2026-04-29T14:19:41Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 16,
+    "timestamp": "2026-04-29T14:22:51Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 17,
+    "timestamp": "2026-04-29T14:22:57Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 18,
+    "timestamp": "2026-04-29T14:25:28Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 19,
+    "timestamp": "2026-04-29T14:25:37Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 20,
+    "timestamp": "2026-04-29T14:25:46Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 21,
+    "timestamp": "2026-04-29T14:25:49Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 22,
+    "timestamp": "2026-04-29T14:25:53Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 23,
+    "timestamp": "2026-04-29T14:25:59Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 24,
+    "timestamp": "2026-04-29T14:26:06Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 25,
+    "timestamp": "2026-04-29T14:26:08Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 26,
+    "timestamp": "2026-04-29T14:26:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 27,
+    "timestamp": "2026-04-29T14:26:23Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 28,
+    "timestamp": "2026-04-29T14:26:32Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 29,
+    "timestamp": "2026-04-29T14:26:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 30,
+    "timestamp": "2026-04-29T14:26:45Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 31,
+    "timestamp": "2026-04-29T14:26:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 32,
+    "timestamp": "2026-04-29T14:26:49Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 33,
+    "timestamp": "2026-04-29T14:26:57Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 34,
+    "timestamp": "2026-04-29T14:27:04Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 35,
+    "timestamp": "2026-04-29T14:27:23Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 36,
+    "timestamp": "2026-04-29T14:27:30Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 37,
+    "timestamp": "2026-04-29T14:27:37Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 38,
+    "timestamp": "2026-04-29T14:27:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 39,
+    "timestamp": "2026-04-29T14:27:53Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 40,
+    "timestamp": "2026-04-29T14:28:01Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 41,
+    "timestamp": "2026-04-29T14:28:07Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 42,
+    "timestamp": "2026-04-29T14:28:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 43,
+    "timestamp": "2026-04-29T14:28:34Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 44,
+    "timestamp": "2026-04-29T14:28:36Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 45,
+    "timestamp": "2026-04-29T14:28:39Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 46,
+    "timestamp": "2026-04-29T14:29:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 47,
+    "timestamp": "2026-04-29T14:31:33Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 48,
+    "timestamp": "2026-04-29T14:31:42Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 49,
+    "timestamp": "2026-04-29T14:31:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 50,
+    "timestamp": "2026-04-29T14:31:45Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 51,
+    "timestamp": "2026-04-29T14:31:46Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 52,
+    "timestamp": "2026-04-29T14:31:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 53,
+    "timestamp": "2026-04-29T14:32:03Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 54,
+    "timestamp": "2026-04-29T14:32:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 55,
+    "timestamp": "2026-04-29T14:32:21Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 56,
+    "timestamp": "2026-04-29T14:32:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 57,
+    "timestamp": "2026-04-29T14:32:55Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 58,
+    "timestamp": "2026-04-29T14:33:09Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 59,
+    "timestamp": "2026-04-29T14:33:20Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 61,
+    "timestamp": "2026-04-29T14:33:27Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 62,
+    "timestamp": "2026-04-29T14:33:42Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 63,
+    "timestamp": "2026-04-29T14:33:51Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 64,
+    "timestamp": "2026-04-29T14:33:59Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 65,
+    "timestamp": "2026-04-29T14:34:20Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 66,
+    "timestamp": "2026-04-29T14:34:42Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 67,
+    "timestamp": "2026-04-29T14:34:54Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 69,
+    "timestamp": "2026-04-29T14:35:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 70,
+    "timestamp": "2026-04-29T14:35:25Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 71,
+    "timestamp": "2026-04-29T14:35:34Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 72,
+    "timestamp": "2026-04-29T14:35:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 16,
+    "timestamp": "2026-04-29T14:44:59Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 17,
+    "timestamp": "2026-04-29T14:45:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 18,
+    "timestamp": "2026-04-29T14:45:22Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 19,
+    "timestamp": "2026-04-29T14:45:35Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 20,
+    "timestamp": "2026-04-29T14:45:47Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 21,
+    "timestamp": "2026-04-29T14:46:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 23,
+    "timestamp": "2026-04-29T14:46:11Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 24,
+    "timestamp": "2026-04-29T14:46:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 25,
+    "timestamp": "2026-04-29T14:46:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 26,
+    "timestamp": "2026-04-29T14:46:13Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 27,
+    "timestamp": "2026-04-29T14:46:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 28,
+    "timestamp": "2026-04-29T14:47:24Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 29,
+    "timestamp": "2026-04-29T14:47:30Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 30,
+    "timestamp": "2026-04-29T14:49:29Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 31,
+    "timestamp": "2026-04-29T14:49:30Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 32,
+    "timestamp": "2026-04-29T14:49:32Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 33,
+    "timestamp": "2026-04-29T14:49:33Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 34,
+    "timestamp": "2026-04-29T14:49:40Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 35,
+    "timestamp": "2026-04-29T14:49:48Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 36,
+    "timestamp": "2026-04-29T14:49:56Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 37,
+    "timestamp": "2026-04-29T14:50:21Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 38,
+    "timestamp": "2026-04-29T14:50:36Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 39,
+    "timestamp": "2026-04-29T14:50:48Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 40,
+    "timestamp": "2026-04-29T14:50:57Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 41,
+    "timestamp": "2026-04-29T14:51:05Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 42,
+    "timestamp": "2026-04-29T14:51:07Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 43,
+    "timestamp": "2026-04-29T14:51:14Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 44,
+    "timestamp": "2026-04-29T14:51:16Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 45,
+    "timestamp": "2026-04-29T14:51:38Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 46,
+    "timestamp": "2026-04-29T14:51:50Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 47,
+    "timestamp": "2026-04-29T14:51:59Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 48,
+    "timestamp": "2026-04-29T14:52:12Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 49,
+    "timestamp": "2026-04-29T14:52:21Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 50,
+    "timestamp": "2026-04-29T14:52:32Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 51,
+    "timestamp": "2026-04-29T14:52:43Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 52,
+    "timestamp": "2026-04-29T14:53:00Z"
+  },
+  {
+    "signal": "gluttony",
+    "agentId": "root",
+    "callCount": 52,
+    "timestamp": "2026-04-29T14:53:07Z"
+  }
+]

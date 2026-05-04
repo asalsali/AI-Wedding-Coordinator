@@ -1,0 +1,13 @@
+{
+  "description": "The Fall — capability baseline records per agent. Written at first successful task, compared against on subsequent tasks to detect degradation.",
+  "baselines": [],
+  "schema": {
+    "agentType": "string — the agent definition name (e.g. 'analyst', 'writer')",
+    "metric": "string — what is measured (e.g. 'avg_manna_per_task', 'findings_quality')",
+    "baselineValue": "number — the benchmark value at first success",
+    "recordedAt": "ISO timestamp",
+    "lastChecked": "ISO timestamp",
+    "degradationThreshold": "number — percentage drift that triggers a 'fallen' warning (default 30)"
+  },
+  "note": "When an agent's performance degrades >30% from baseline, the Shepherd surfaces this to the Prophet."
+}

@@ -1,0 +1,19 @@
+{
+  "agentId": "guests-activator",
+  "mandate": "Replace GuestsView placeholder with real guest list UI using existing server actions",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "GuestsView is self-contained — no props needed from DashboardClient except the standard view interface",
+    "The component detects mobile internally via matchMedia since isMobile is not passed as a prop from DashboardClient for this view",
+    "All five server actions (create, update, delete, list, CSV import) are now wired to the UI",
+    "The Guest type has 14 fields — the edit form exposes all of them inline",
+    "CSV import shows per-row error details from the server action's CSVImportResult"
+  ],
+  "whatWorked": "Inline expand/collapse for edit mode keeps the user in context without modal interruptions. Stats summary at top gives instant RSVP picture.",
+  "whatFailed": "Nothing failed. The server actions were already well-tested and typed.",
+  "recommendationsForNextAgent": "GuestsView does its own mobile detection via matchMedia. If DashboardClient is updated to pass isMobile to all views consistently, GuestsView should be updated to accept the prop instead. The guest list is loaded on mount — no polling or realtime subscription.",
+  "mannaConsumed": "~82k tokens",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Eliminated a dead placeholder tab. The guest list is now a real, functional tool for wedding planning."
+}

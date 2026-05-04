@@ -1,0 +1,17 @@
+{
+  "agentId": "escalation-herald",
+  "mandate": "Build escalation email notifications via Resend when messages escalate",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "Resend integration pattern was already established in the codebase (waitlist + circle invites) — followed the same from address and HTML structure",
+    "The couples table has both email and partner_email columns — notifications go to both",
+    "NEXT_PUBLIC_APP_URL env var does not exist yet — the notification falls back to hardcoded vercel URL until it is added"
+  ],
+  "whatWorked": "Placing notification steps as the last Inngest step before return in each escalation path. Independent retry semantics mean a Resend failure never blocks the pipeline.",
+  "whatFailed": "Nothing failed. Clean single-pass implementation.",
+  "recommendationsForNextAgent": "When NEXT_PUBLIC_APP_URL is added to the environment, the hardcoded fallback in lib/notifications/escalation.ts will automatically be superseded. The dashboard inbox link in the email assumes /dashboard/inbox is the correct route — verify this matches the actual inbox route.",
+  "mannaConsumed": "~31k tokens",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Closed the trust gap. Escalated messages now actively reach the couple rather than waiting silently in the dashboard."
+}

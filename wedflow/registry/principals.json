@@ -1,0 +1,52 @@
+{
+  "description": "Samuel — multi-principal governance. Tracks who has authority over the Covenant Framework when multiple users share an instance. The monarchy: who is king, who are the judges, who are the elders.",
+  "governanceModel": "monarchy",
+  "principals": [
+    {
+      "id": "primary",
+      "name": null,
+      "role": "sovereign",
+      "authorities": [
+        "update-canon",
+        "approve-synthesis",
+        "invoke-flood",
+        "promote-citizen",
+        "appoint-principal",
+        "set-revelation",
+        "override-adversary"
+      ],
+      "addedAt": null,
+      "note": "The primary user. Has all authorities by default. In single-user mode, this is the only principal."
+    }
+  ],
+  "roles": {
+    "sovereign": {
+      "description": "Full authority. Can do everything. There is only one sovereign.",
+      "authorities": ["*"]
+    },
+    "steward": {
+      "description": "Delegated authority. Can spawn agents, approve plans, run commands. Cannot update Canon, invoke flood, or appoint other principals.",
+      "authorities": [
+        "approve-spawn-plan",
+        "invoke-trial",
+        "run-sabbath",
+        "set-revelation",
+        "approve-synthesis"
+      ]
+    },
+    "scribe": {
+      "description": "Read and document. Can run observation commands but cannot spawn agents or approve plans.",
+      "authorities": [
+        "run-observation-commands",
+        "write-documentation"
+      ]
+    },
+    "observer": {
+      "description": "Read-only. Can view genealogy, tithe, audit. Cannot modify anything.",
+      "authorities": [
+        "run-observation-commands"
+      ]
+    }
+  },
+  "note": "In single-user mode (the default), only the 'primary' sovereign exists and governance is implicit. Multi-principal mode activates when a second principal is added via /governance add."
+}

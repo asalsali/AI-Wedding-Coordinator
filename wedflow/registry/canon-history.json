@@ -1,0 +1,15 @@
+{
+  "description": "Moses — Canon versioning. Every Canon amendment is recorded with version, date, reason, and the finding that prompted it. The law was revealed progressively and updated as the community's situation changed.",
+  "currentVersion": "1.0.0",
+  "amendments": [],
+  "schema": {
+    "version": "string — semver (e.g. '1.1.0')",
+    "date": "ISO timestamp",
+    "sections": ["string — which Canon sections were affected"],
+    "change": "string — what was changed",
+    "reason": "string — why it was changed",
+    "promptedBy": "string — what trial finding, Ecclesiastes report, or user request prompted this",
+    "previousText": "string — what the Canon said before (for reversibility)"
+  },
+  "note": "The Canon is absolute but not immutable. It evolves through progressive revelation. Every change is recorded so the system can understand why the law is what it is — and what it used to be."
+}

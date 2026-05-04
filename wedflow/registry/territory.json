@@ -1,0 +1,16 @@
+{
+  "description": "Joshua — territorial/domain mapping. Records what has been explored, by whom, with what confidence. Future agents consult before exploring to avoid redundant coverage.",
+  "territories": [],
+  "schema": {
+    "domain": "string — what was explored (e.g. 'src/auth/', 'Stripe API', 'competitor landscape')",
+    "exploredBy": "string — agent ID that explored it",
+    "agentType": "string — agent type (e.g. 'analyst')",
+    "mandateId": "string — the mandate that prompted the exploration",
+    "confidence": "high | medium | low — how thoroughly it was covered",
+    "findings": "string — brief summary of what was found (distilled)",
+    "unexplored": "string — what in this domain was NOT covered and why",
+    "exploredAt": "ISO timestamp",
+    "staleAfter": "string — when this territory should be re-explored (e.g. '30 days', 'next major change')"
+  },
+  "note": "Agents check territory.json during Genesis Phase. If a domain is already explored with high confidence and is not stale, skip it. If medium/low, explore with awareness of prior findings. The Joseph phase (/remember) also queries territory for relevant prior exploration."
+}

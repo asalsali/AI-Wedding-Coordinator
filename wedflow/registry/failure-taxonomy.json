@@ -1,0 +1,61 @@
+{
+  "description": "Failure taxonomy — standardized categories for all failure records. Every testament, Ecclesiastes report, and flood post-mortem must tag itself with one or more categories. The Judges pattern matcher searches by category.",
+  "categories": [
+    {
+      "id": "canon-violation",
+      "name": "Canon Violation",
+      "description": "An agent broke a Canon rule. The fix is internal — follow the rule.",
+      "detectedBy": "Guardian"
+    },
+    {
+      "id": "systemic-futility",
+      "name": "Systemic Futility",
+      "description": "The system followed every rule and still failed. The mandate was wrong, the environment was hostile, or the output was correct and useless.",
+      "detectedBy": "Ecclesiastes"
+    },
+    {
+      "id": "mandate-ambiguity",
+      "name": "Mandate Ambiguity",
+      "description": "The mandate was unclear enough that agents interpreted it differently. The fix is better mandate definition.",
+      "detectedBy": "Prophet / Adversary"
+    },
+    {
+      "id": "environmental-change",
+      "name": "Environmental Change",
+      "description": "The context changed during execution — dependencies shifted, requirements evolved, external systems changed. Not agent error.",
+      "detectedBy": "Ecclesiastes"
+    },
+    {
+      "id": "capability-degradation",
+      "name": "Capability Degradation (The Fall)",
+      "description": "An agent that was previously reliable produced lower-quality output. Drift, not a sudden break.",
+      "detectedBy": "Shepherd (baselines.json)"
+    },
+    {
+      "id": "scope-creep",
+      "name": "Scope Creep (Babel)",
+      "description": "The mandate expanded beyond its original boundaries without authorization. Complexity grew for its own sake.",
+      "detectedBy": "Babel spawn gate / Guardian"
+    },
+    {
+      "id": "overlap-conflict",
+      "name": "Overlap Conflict (Cain & Abel)",
+      "description": "Two agents produced contradictory work on the same domain without coordination.",
+      "detectedBy": "Cain & Abel spawn gate / Council"
+    },
+    {
+      "id": "handoff-loss",
+      "name": "Handoff Loss",
+      "description": "Information was lost or degraded when passing between agents. The epistle was incomplete or the edge cases were not flagged.",
+      "detectedBy": "Writer / downstream agent"
+    },
+    {
+      "id": "wrong-goal",
+      "name": "Wrong Goal (Jeremiah)",
+      "description": "The mandate was technically executed but the goal itself was misguided. Jeremiah was right.",
+      "detectedBy": "Ecclesiastes / Jeremiah"
+    }
+  ],
+  "records": [],
+  "note": "Failure records are appended here by agents at sunset (in testaments) and by Ecclesiastes (in reports). The Judges pattern matcher searches records by category to detect recurring patterns."
+}

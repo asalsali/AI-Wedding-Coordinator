@@ -1,0 +1,14 @@
+{
+  "description": "Leviticus — skills registry. Tracks demonstrated capabilities per agent type, updated at sunset. The Prophet queries this before spawning to reuse agents with proven skills.",
+  "skills": [],
+  "schema": {
+    "agentType": "string — the agent definition name (e.g. 'analyst', 'writer')",
+    "skill": "string — what capability was demonstrated (e.g. 'codebase research', 'API documentation')",
+    "demonstrated": true,
+    "firstDemonstrated": "ISO timestamp — when this skill was first proven",
+    "mandateCount": "number — how many mandates have exercised this skill",
+    "lastUsed": "ISO timestamp — most recent mandate using this skill",
+    "confidenceNote": "string — any notes on reliability of this skill"
+  },
+  "note": "Updated by agents at sunset. The Prophet reads this before proposing spawn plans — if an existing agent type has demonstrated the needed skill, reuse rather than spawn fresh."
+}

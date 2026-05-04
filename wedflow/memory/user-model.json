@@ -1,0 +1,50 @@
+{
+  "created": "2026-04-28T00:00:00Z",
+  "description": "The Prophet's longitudinal model of the user (the Father) — accumulated revelation across sessions",
+  "statedGoals": [
+    "Launch WedFlow by Sept 1 2026 with 10-12 paid couples",
+    "Run a 4-month marketing campaign capturing waitlist signups",
+    "Register B2B2C partner interest (churches, officiants, counsellors, planners)",
+    "Mobile-first product experience (PWA, push notifications)"
+  ],
+  "observedPatterns": [
+    "Values process integrity — asked for Canon compliance verification after work was done",
+    "Comfortable with technical implementation details (env vars, migrations, CLI tools)",
+    "Prefers to see and confirm spawn plans before execution",
+    "Wants commit/push confirmed before execution",
+    "Engages with the Covenant Framework as a governance system, not just tooling"
+  ],
+  "recurringFrustrations": [],
+  "impliedNeed": "A system that operates with discipline and transparency while shipping fast toward launch. The user wants the speed of direct execution but the accountability of proper process.",
+  "interactions": [
+    {
+      "date": "2026-05-04",
+      "statedRequest": "Optimize/build mobile version of WedFlow for launch",
+      "interpretedNeed": "PWA installability + push notifications + mobile-responsive public pages for marketing campaign conversion",
+      "patternsObserved": ["Values Canon compliance", "Medium question tolerance", "Wants to understand the system"],
+      "impliedNeed": "The couple's phone IS the product — mobile experience must feel native for the Circle of Care positioning",
+      "confirmedPlan": "PWA with service worker, push notifications for escalations, mobile-responsive landing + auth pages"
+    }
+  ],
+  "primaryRevelations": [
+    {
+      "date": "2026-05-04",
+      "source": "covenant",
+      "content": "Launch Sept 1 2026, 10-12 paid couples, 4-month marketing campaign, B2B2C channels, medium tolerance, show spawn plans, ask before commit/push",
+      "weight": "primary"
+    }
+  ],
+  "descentHistory": [],
+  "affinity": {
+    "description": "Song of Solomon — deep affinity modeling. Not just what the user wants, but how they think and what resonates.",
+    "communicationStyle": "Direct, technical, process-aware. Asks about the system itself, not just the output.",
+    "preferredOutputFormat": "Structured tables and summaries. Appreciates clear before/after comparisons.",
+    "aestheticSensibility": "Natural language rooted in biblical values. Forest green, cream, terracotta brand palette. No emojis.",
+    "whatDelightsThem": null,
+    "whatFrustratesThem": "Process violations — asked 'why didn't the prophet spawn the appropriate agents' when Canon was bypassed",
+    "languagePatterns": ["Concise questions", "Confirms with single words ('Yes', 'Confirm PWA')", "Asks 'how' questions about testing and verification"],
+    "note": "Updated by the Prophet over time. The difference between a system that satisfies requirements and one the user loves working with."
+  },
+  "lastUpdated": "2026-05-04T00:00:00Z",
+  "note": "Primary revelations (from Theophany/Incarnation) anchor this model. Inferences may shift; revelations do not."
+}

@@ -1,0 +1,159 @@
+{
+  "created": "2026-04-28T00:00:00Z",
+  "description": "Covenant Framework Agent Registry — the Book of Numbers",
+  "canon": {
+    "maxGenerations": 4,
+    "maxSiblings": 8,
+    "sabbathInterval": 10,
+    "fastingBudget": 800,
+    "babelThreshold": 6
+  },
+  "floodCount": 0,
+  "revelation": {
+    "telos": "WedFlow launches September 1, 2026: 10-12 paid couples actively using AI SMS coordination through a PWA, with a waitlist of demand from a 4-month marketing campaign and B2B2C channel partners registered.",
+    "description": "The project's ultimate success condition. Set by the user via the Prophet. When fulfilled, the system has completed its purpose.",
+    "setAt": "2026-05-04T00:00:00Z",
+    "progress": [
+      {
+        "date": "2026-05-04",
+        "assessment": "Foundation laid. PWA installable, push notifications wired, landing page mobile-ready for marketing campaign. Dashboard responsive and functional. 0/10-12 couples onboarded. Waitlist capture exists but B2B2C registration flow not yet built. ~120 days remain."
+      }
+    ],
+    "covenantRef": "memory/covenants/wedflow-launch.md"
+  },
+  "agentSchema": {
+    "note": "Agents may have parentId (cloned) or parentIds (synthesized), never both.",
+    "originTypes": ["mandate", "clone", "synthesis"],
+    "genomeFields": ["maternal", "paternal", "shared", "emergent"],
+    "visibilityTypes": ["public", "shadow"]
+  },
+  "shadowAgents": {
+    "description": "Esther — shadow registry. Background monitoring agents that don't appear in /genealogy but are visible to /audit. For ambient observation without cluttering the public tree.",
+    "agents": []
+  },
+  "agents": [
+    {
+      "id": "root",
+      "parentId": null,
+      "mandate": "Orchestrate the Covenant Framework",
+      "generation": 0,
+      "origin": "mandate",
+      "bornAt": "2026-04-28T00:00:00Z",
+      "status": "active",
+      "skills": ["orchestration", "planning"],
+      "mannaExpected": "low"
+    },
+    {
+      "id": "audit-scribe",
+      "parentId": "root",
+      "mandate": "Build audit logging service and wire into SMS pipeline at every exit point",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-04-30T12:00:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-04-30T12:15:00Z",
+      "testament": "memory/inheritance/audit-scribe-testament.json",
+      "skills": ["backend", "supabase", "inngest"],
+      "mannaExpected": "medium"
+    },
+    {
+      "id": "escalation-herald",
+      "parentId": "root",
+      "mandate": "Build escalation email notifications via Resend when messages escalate",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-04-30T12:00:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-04-30T12:30:00Z",
+      "testament": "memory/inheritance/escalation-herald-testament.json",
+      "skills": ["backend", "email", "inngest"],
+      "mannaExpected": "medium"
+    },
+    {
+      "id": "mobile-architect",
+      "parentId": "root",
+      "mandate": "Make the dashboard responsive — collapsible sidebar, stacked inbox, responsive grids",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-04-30T13:00:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-04-30T13:30:00Z",
+      "testament": "memory/inheritance/mobile-architect-testament.json",
+      "skills": ["frontend", "responsive", "tailwind"],
+      "mannaExpected": "high"
+    },
+    {
+      "id": "interaction-fixer",
+      "parentId": "root",
+      "mandate": "Fix broken dashboard interactions — dropdowns, callbacks, feedback, error states",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-04-30T13:00:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-04-30T14:00:00Z",
+      "testament": "memory/inheritance/interaction-fixer-testament.json",
+      "skills": ["frontend", "react", "ux"],
+      "mannaExpected": "medium"
+    },
+    {
+      "id": "guests-activator",
+      "parentId": "root",
+      "mandate": "Replace GuestsView placeholder with real guest list UI using existing server actions",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-04-30T13:00:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-04-30T14:00:00Z",
+      "testament": "memory/inheritance/guests-activator-testament.json",
+      "skills": ["frontend", "react", "data-tables"],
+      "mannaExpected": "high"
+    },
+    {
+      "id": "pwa-engineer",
+      "parentId": "root",
+      "mandate": "Implement service worker, offline fallback, install prompt, and manifest improvements for PWA installability",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-04T00:00:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-05-04T00:30:00Z",
+      "testament": "memory/inheritance/pwa-engineer-testament.json",
+      "skills": ["frontend", "pwa", "service-worker", "offline"],
+      "mannaExpected": "medium",
+      "postHocRegistration": true,
+      "canonViolations": ["Canon II: not registered before acting", "Canon I-b: no Genesis Phase", "Canon XVI: spawn gates bypassed"]
+    },
+    {
+      "id": "push-engineer",
+      "parentId": "root",
+      "mandate": "Build push notification pipeline from Inngest escalation to couple's device",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-04T00:00:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-05-04T00:30:00Z",
+      "testament": "memory/inheritance/push-engineer-testament.json",
+      "skills": ["backend", "web-push", "supabase", "inngest"],
+      "mannaExpected": "medium-high",
+      "postHocRegistration": true,
+      "canonViolations": ["Canon II: not registered before acting", "Canon I-b: no Genesis Phase", "Canon XVI: spawn gates bypassed"]
+    },
+    {
+      "id": "mobile-optimizer",
+      "parentId": "root",
+      "mandate": "Make all public-facing pages (landing, sign-in, sign-up) fully responsive on mobile viewports with hamburger nav, stacked grids, sticky CTA, and proper safe areas",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-04T01:00:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-05-04T01:30:00Z",
+      "testament": "memory/inheritance/mobile-optimizer-testament.json",
+      "skills": ["frontend", "css", "responsive", "mobile-ux"],
+      "mannaExpected": "medium",
+      "postHocRegistration": true,
+      "canonViolations": ["Canon II: not registered before acting", "Canon I-b: no Genesis Phase", "Canon XVI: spawn gates bypassed", "Canon VII: Prophet executed directly instead of spawning"]
+    }
+  ],
+  "sabbathCount": 1,
+  "lastSabbath": "2026-05-04T00:00:00Z"
+}

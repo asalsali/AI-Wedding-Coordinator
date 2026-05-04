@@ -1,0 +1,13 @@
+{
+  "description": "The Transfiguration — peak performance benchmarks. When an agent produces exceptional output, mark it here as a quality standard for future agents to aspire to.",
+  "transfigurations": [],
+  "schema": {
+    "agentType": "string — which agent type produced this",
+    "mandateType": "string — what kind of work it was",
+    "outputRef": "string — path to the exceptional output file",
+    "whyExceptional": "string — what made this output stand out",
+    "recordedAt": "ISO timestamp",
+    "recordedBy": "string — which agent or the Prophet marked this"
+  },
+  "note": "The framework learns from failures (Ecclesiastes, Job findings) but must also learn from successes. Future agents read transfigurations before high-stakes mandates as quality benchmarks."
+}

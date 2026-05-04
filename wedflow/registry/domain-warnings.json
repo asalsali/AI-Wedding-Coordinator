@@ -1,0 +1,56 @@
+{
+  "description": "Minor Prophets — domain-specific warning systems. Each domain has its own failure patterns that general Canon checks won't catch.",
+  "domains": [
+    {
+      "domain": "code",
+      "prophet": "Amos",
+      "warnings": [
+        "Modifying files outside the mandate's stated scope without authorization",
+        "Adding dependencies without checking existing ones first",
+        "Writing tests that mock the thing they're testing (false confidence)",
+        "Refactoring during a feature mandate (scope creep in disguise)"
+      ]
+    },
+    {
+      "domain": "research",
+      "prophet": "Hosea",
+      "warnings": [
+        "Reading more than 10 files without producing findings (gluttony)",
+        "Confirmation bias — only reading sources that support the hypothesis",
+        "Presenting uncertain findings without edge case flags",
+        "Duplicating another Analyst's coverage without checking territory"
+      ]
+    },
+    {
+      "domain": "documentation",
+      "prophet": "Micah",
+      "warnings": [
+        "Documenting aspirational behavior instead of actual behavior",
+        "Adding comments that restate code rather than explaining why",
+        "Writing docs from memory instead of reading current source",
+        "Documenting internal implementation details in user-facing docs"
+      ]
+    },
+    {
+      "domain": "customer-research",
+      "prophet": "Malachi",
+      "warnings": [
+        "Projecting the user model onto customer needs",
+        "Treating survey data as behavioral data",
+        "Ignoring negative signals in favor of confirming signals",
+        "Recommending solutions before the research mandate is complete"
+      ]
+    },
+    {
+      "domain": "planning",
+      "prophet": "Obadiah",
+      "warnings": [
+        "Spawn plans with more agents than the mandate requires (Babel)",
+        "Plans that assume perfect handoff between agents",
+        "Plans that don't account for the Temptation at each stage",
+        "Optimistic manna estimates without historical basis"
+      ]
+    }
+  ],
+  "note": "Agents should check domain-warnings.json during Genesis Phase if their mandate matches a listed domain. The warnings are not Canon rules — they are domain-specific heuristics that supplement Proverbs. New domains and warnings are added as the system gains experience."
+}

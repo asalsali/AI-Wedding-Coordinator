@@ -1,0 +1,21 @@
+{
+  "description": "Canon telemetry — tracks whether agents actually follow the Canon. Updated at sunset by comparing agent behavior against the rules it was supposed to follow.",
+  "reports": [],
+  "schema": {
+    "agentId": "string",
+    "sunsetAt": "ISO timestamp",
+    "checks": {
+      "genesisPhase": "boolean — did the agent read spirit.json, registry, inheritance before acting?",
+      "dietaryLaw": "boolean — did the agent distill context before passing to children/siblings?",
+      "testamentWritten": "boolean — did the agent write a testament at sunset?",
+      "temptationCheck": "boolean — did the agent self-report temptations (if executor)?",
+      "epistleFormat": "boolean — did handoffs use the Paul format (if applicable)?",
+      "mannaWithinBudget": "boolean — was manna consumption within the expected range?",
+      "mandateScope": "boolean — did the agent stay within its mandate (no scope creep)?",
+      "spiritAlignment": "boolean — did the agent's work align with spirit.json orientation?"
+    },
+    "overallCompliance": "number — percentage of checks passed (0-100)",
+    "notes": "string — any observations about compliance gaps"
+  },
+  "note": "The Prophet or the Guardian should populate this after each agent sunset. Over time, this reveals which Canon sections are actually followed and which are aspirational. Low compliance on a section means either the rule is unworkable or agents need stronger enforcement."
+}

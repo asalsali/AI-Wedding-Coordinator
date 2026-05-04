@@ -1,0 +1,10 @@
+{
+  "description": "Ruth Protocol — trust levels for external tools and MCP servers",
+  "trustLevels": ["stranger", "sojourner", "resident", "citizen"],
+  "promotionCriteria": {
+    "stranger_to_sojourner": { "successfulUses": 3, "minSessions": 1, "maxViolations": 0 },
+    "sojourner_to_resident": { "successfulUses": 10, "minSessions": 2, "maxViolations": 0 },
+    "resident_to_citizen": { "successfulUses": 25, "minSessions": 5, "maxViolations": 0, "requiresUserApproval": true }
+  },
+  "tools": []
+}
