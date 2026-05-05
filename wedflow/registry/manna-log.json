@@ -873,5 +873,418 @@
     "tool": "Bash",
     "inputSize": 154,
     "timestamp": "2026-05-05T04:05:00Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Glob",
+    "inputSize": 127,
+    "timestamp": "2026-05-05T04:42:50Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Glob",
+    "inputSize": 121,
+    "timestamp": "2026-05-05T04:42:50Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 142,
+    "timestamp": "2026-05-05T04:42:56Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 157,
+    "timestamp": "2026-05-05T04:43:00Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 124,
+    "timestamp": "2026-05-05T04:43:05Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 124,
+    "timestamp": "2026-05-05T04:43:05Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 135,
+    "timestamp": "2026-05-05T04:43:06Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 120,
+    "timestamp": "2026-05-05T04:43:11Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 120,
+    "timestamp": "2026-05-05T04:43:11Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 119,
+    "timestamp": "2026-05-05T04:43:12Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 121,
+    "timestamp": "2026-05-05T04:43:17Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 143,
+    "timestamp": "2026-05-05T04:43:17Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 145,
+    "timestamp": "2026-05-05T04:43:24Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 153,
+    "timestamp": "2026-05-05T04:43:25Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 128,
+    "timestamp": "2026-05-05T04:43:30Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 127,
+    "timestamp": "2026-05-05T04:43:36Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 129,
+    "timestamp": "2026-05-05T04:43:42Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 145,
+    "timestamp": "2026-05-05T04:43:46Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 127,
+    "timestamp": "2026-05-05T04:43:47Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 138,
+    "timestamp": "2026-05-05T04:43:51Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 121,
+    "timestamp": "2026-05-05T04:43:56Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 125,
+    "timestamp": "2026-05-05T04:43:56Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 129,
+    "timestamp": "2026-05-05T04:44:02Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 124,
+    "timestamp": "2026-05-05T04:44:02Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 129,
+    "timestamp": "2026-05-05T04:44:08Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 117,
+    "timestamp": "2026-05-05T04:44:09Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 126,
+    "timestamp": "2026-05-05T04:44:26Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 151,
+    "timestamp": "2026-05-05T04:44:31Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 126,
+    "timestamp": "2026-05-05T04:44:35Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 166,
+    "timestamp": "2026-05-05T04:44:40Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 126,
+    "timestamp": "2026-05-05T04:44:40Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 155,
+    "timestamp": "2026-05-05T04:44:45Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Glob",
+    "inputSize": 119,
+    "timestamp": "2026-05-05T04:45:14Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Glob",
+    "inputSize": 122,
+    "timestamp": "2026-05-05T04:45:14Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 116,
+    "timestamp": "2026-05-05T04:45:19Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Glob",
+    "inputSize": 118,
+    "timestamp": "2026-05-05T04:45:19Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 130,
+    "timestamp": "2026-05-05T04:45:24Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Glob",
+    "inputSize": 131,
+    "timestamp": "2026-05-05T04:45:25Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 163,
+    "timestamp": "2026-05-05T04:45:30Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 146,
+    "timestamp": "2026-05-05T04:45:35Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 133,
+    "timestamp": "2026-05-05T04:49:40Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 123,
+    "timestamp": "2026-05-05T04:49:45Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 138,
+    "timestamp": "2026-05-05T04:49:45Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 139,
+    "timestamp": "2026-05-05T04:51:30Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 124,
+    "timestamp": "2026-05-05T05:07:26Z"
+  },
+  {
+    "agent": "root",
+    "session": "22dd63ee-8986-47a6-b33e-21529de12b71",
+    "tool": "Read",
+    "inputSize": 137,
+    "timestamp": "2026-05-05T05:07:26Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Glob",
+    "inputSize": 26,
+    "timestamp": "2026-05-05T11:03:55Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Grep",
+    "inputSize": 144,
+    "timestamp": "2026-05-05T11:04:03Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Glob",
+    "inputSize": 26,
+    "timestamp": "2026-05-05T11:04:03Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Glob",
+    "inputSize": 24,
+    "timestamp": "2026-05-05T11:04:04Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Glob",
+    "inputSize": 26,
+    "timestamp": "2026-05-05T11:04:23Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Glob",
+    "inputSize": 32,
+    "timestamp": "2026-05-05T11:04:25Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Read",
+    "inputSize": 139,
+    "timestamp": "2026-05-05T11:04:31Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Read",
+    "inputSize": 154,
+    "timestamp": "2026-05-05T11:04:36Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Read",
+    "inputSize": 140,
+    "timestamp": "2026-05-05T11:04:46Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Edit",
+    "inputSize": 784,
+    "timestamp": "2026-05-05T13:14:53Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Bash",
+    "inputSize": 154,
+    "timestamp": "2026-05-05T14:05:00Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Bash",
+    "inputSize": 160,
+    "timestamp": "2026-05-05T14:05:04Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Bash",
+    "inputSize": 159,
+    "timestamp": "2026-05-05T14:05:06Z"
   }
 ]

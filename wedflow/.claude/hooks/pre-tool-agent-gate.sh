@@ -71,10 +71,10 @@ babel_threshold = canon.get('babelThreshold', 6)
 agents = registry.get('agents', [])
 active_agents = [a for a in agents if a.get('status') == 'active']
 
-# Build parent->children map counting ALL children (including archived)
-# to prevent serial spawn pattern: spawn, archive, spawn, archive...
+# Build parent->children map counting only ACTIVE children.
+# Archived agents have completed their mandate — they don't occupy a slot.
 children_by_parent = {}
-for a in agents:
+for a in active_agents:
     pid = a.get('parentId')
     if pid:
         children_by_parent.setdefault(pid, []).append(a)
