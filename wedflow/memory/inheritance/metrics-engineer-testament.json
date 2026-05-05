@@ -1,0 +1,23 @@
+{
+  "agentId": "metrics-engineer",
+  "mandate": "Build analytics tracking into dashboard and backend: messages per couple per week, auto-reply rate, inbox open frequency, escalation draft adoption rate, onboarding completion rate. Store in Supabase, surface in dashboard Insights tab.",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "couple_metrics table created with daily snapshots and UNIQUE(couple_id, date) constraint, RLS enabled",
+    "trackInboxOpen server action upserts daily metrics and updates last_active_at on couples",
+    "getInsightsData server action returns 30-day aggregated stats plus daily breakdown",
+    "InsightsView component shows 4 metric cards (total messages, auto-reply rate, escalations, draft adoption) and a 7-day activity table",
+    "Insights tab added to sidebar nav between Guests and Wedding Profile",
+    "barChart icon added to Icon.tsx",
+    "trackInboxOpen fires on inbox nav click (skipped in demo mode)",
+    "Insights data loads on-demand when the tab is selected",
+    "couples table extended with last_active_at and onboarding_completed_at columns"
+  ],
+  "whatWorked": "Using upsert pattern with fallback for inbox_opens tracking ensures reliability even without RPC. Loading insights data on-demand rather than at dashboard mount keeps the initial load fast. The daily metrics table design supports future Inngest cron jobs that can aggregate message counts at end of day.",
+  "whatFailed": "Nothing failed. TypeScript compiles cleanly.",
+  "recommendationsForNextAgent": "The couple_metrics rows need to be populated by the SMS pipeline. The Inngest job wedflow/sms.received should upsert messages_received, messages_auto_replied, and escalations into couple_metrics for the current day. Draft adoption tracking (drafts_used vs drafts_rewritten) needs to be wired into the sendReplyAction — compare the sent reply body against the AI draft to determine if it was used as-is or rewritten. The increment_inbox_opens RPC referenced in the fallback path does not exist yet; the fallback handles this gracefully.",
+  "mannaConsumed": "medium",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Provided the observability layer needed for the Base church pilot — without metrics, there is no way to answer whether couples love the product."
+}

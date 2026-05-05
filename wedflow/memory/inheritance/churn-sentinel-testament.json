@@ -1,0 +1,18 @@
+{
+  "agentId": "churn-sentinel",
+  "mandate": "Build retention tracking: last-active timestamp per couple, weekly usage streak, churn flag (7 days inactive). Inngest weekly cron job to tag churned couples. Surface churn status in dashboard Insights tab.",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "Migration 013 already adds last_active_at — used ADD COLUMN IF NOT EXISTS defensively for churn columns only",
+    "Inngest cron syntax TZ=UTC 0 9 * * 1 schedules Monday 9am UTC runs",
+    "Churn check queries conversations then messages in two steps since messages don't directly reference couple_id",
+    "ChurnIndicator built as standalone component for conflict-free parallel work with metrics-engineer"
+  ],
+  "whatWorked": "Building the ChurnIndicator as a standalone component avoids merge conflicts with the parallel metrics-engineer agent building InsightsView. Following the exact sms-received.ts pattern for Inngest function registration kept the serve route clean.",
+  "whatFailed": "Nothing failed. The types.ts file was modified by the metrics-engineer agent between reads, requiring a re-read before edit.",
+  "recommendationsForNextAgent": "The churn-check function does N+1 queries (one per couple for conversation IDs, then messages). At scale beyond 50 couples, refactor to a single SQL query using joins or an RPC. For 12 couples this is fine. The ChurnIndicator is ready to import into InsightsView or HomeView.",
+  "mannaConsumed": "medium",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Added retention visibility for the church pilot — the founder can now see which of the 12 couples are engaged vs dropping off, directly answering Eric's question about churn."
+}

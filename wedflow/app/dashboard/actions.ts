@@ -508,6 +508,114 @@ function normalizePhoneNumber(phone: string): string | null {
 }
 
 // ----------------------------------------------------------------
+// Analytics: track inbox open
+// ----------------------------------------------------------------
+export async function trackInboxOpen(): Promise<void> {
+  const { supabase, coupleId } = await getAuthedContext()
+
+  const today = new Date().toISOString().slice(0, 10)
+
+  // Upsert couple_metrics for today, incrementing inbox_opens
+  const { error: metricsErr } = await supabase.rpc('increment_inbox_opens', {
+    p_couple_id: coupleId,
+    p_date: today,
+  })
+
+  // Fallback: if RPC doesn't exist yet, do upsert directly
+  if (metricsErr) {
+    const { data: existing } = await supabase
+      .from('couple_metrics')
+      .select('id, inbox_opens')
+      .eq('couple_id', coupleId)
+      .eq('date', today)
+      .maybeSingle()
+
+    if (existing) {
+      await supabase
+        .from('couple_metrics')
+        .update({ inbox_opens: (existing.inbox_opens as number) + 1 })
+        .eq('id', existing.id)
+    } else {
+      await supabase
+        .from('couple_metrics')
+        .insert({ couple_id: coupleId, date: today, inbox_opens: 1 })
+    }
+  }
+
+  // Update last_active_at on couples table
+  await supabase
+    .from('couples')
+    .update({ last_active_at: new Date().toISOString() })
+    .eq('id', coupleId)
+}
+
+// ----------------------------------------------------------------
+// Analytics: get insights data for last 30 days
+// ----------------------------------------------------------------
+export interface DailyMetrics {
+  date: string
+  messages_received: number
+  messages_auto_replied: number
+  escalations: number
+  drafts_used: number
+  drafts_rewritten: number
+  inbox_opens: number
+}
+
+export interface InsightsData {
+  totalMessages: number
+  autoReplyRate: number
+  totalEscalations: number
+  draftAdoptionRate: number
+  totalInboxOpens: number
+  dailyMetrics: DailyMetrics[]
+}
+
+export async function getInsightsData(): Promise<InsightsData> {
+  const { supabase, coupleId } = await getAuthedContext()
+
+  const thirtyDaysAgo = new Date()
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+  const since = thirtyDaysAgo.toISOString().slice(0, 10)
+
+  const { data, error } = await supabase
+    .from('couple_metrics')
+    .select('date, messages_received, messages_auto_replied, escalations, drafts_used, drafts_rewritten, inbox_opens')
+    .eq('couple_id', coupleId)
+    .gte('date', since)
+    .order('date', { ascending: false })
+
+  if (error) throw new Error(`Failed to fetch insights: ${error.message}`)
+
+  const rows = (data ?? []) as DailyMetrics[]
+
+  const totalMessages = rows.reduce((sum, r) => sum + r.messages_received, 0)
+  const totalAutoReplied = rows.reduce((sum, r) => sum + r.messages_auto_replied, 0)
+  const totalEscalations = rows.reduce((sum, r) => sum + r.escalations, 0)
+  const totalDraftsUsed = rows.reduce((sum, r) => sum + r.drafts_used, 0)
+  const totalDraftsRewritten = rows.reduce((sum, r) => sum + r.drafts_rewritten, 0)
+  const totalInboxOpens = rows.reduce((sum, r) => sum + r.inbox_opens, 0)
+
+  const autoReplyRate = totalMessages > 0
+    ? Math.round((totalAutoReplied / totalMessages) * 100)
+    : 0
+
+  const totalDrafts = totalDraftsUsed + totalDraftsRewritten
+  const draftAdoptionRate = totalDrafts > 0
+    ? Math.round((totalDraftsUsed / totalDrafts) * 100)
+    : 0
+
+  return {
+    totalMessages,
+    autoReplyRate,
+    totalEscalations,
+    draftAdoptionRate,
+    totalInboxOpens,
+    dailyMetrics: rows,
+  }
+}
+
+// ----------------------------------------------------------------
 // Sign out action — clears auth cookies server-side
 // ----------------------------------------------------------------
 export async function signOutAction(): Promise<void> {
@@ -541,7 +649,7 @@ export async function signOutAction(): Promise<void> {
 // Demo mode: Get demo couple data for Alex & Kirsten
 // ----------------------------------------------------------------
 export async function getDemoCoupleData(): Promise<{
-  couple: { id: string; email: string; your_name: string; partner_name: string; partner_email: string | null; plan: string | null }
+  couple: { id: string; email: string; your_name: string; partner_name: string; partner_email: string | null; plan: string | null; usage_streak_weeks: number; churn_status: string }
   profile: {
     id: string
     venue_name: string
@@ -567,7 +675,7 @@ export async function getDemoCoupleData(): Promise<{
   // Find the demo couple
   const { data: couple, error: coupleError } = await supabase
     .from('couples')
-    .select('id, email, your_name, partner_name, partner_email, plan')
+    .select('id, email, your_name, partner_name, partner_email, plan, usage_streak_weeks, churn_status')
     .eq('email', 'ak.salsali2025@gmail.com')
     .maybeSingle()
   
@@ -649,6 +757,8 @@ export async function getDemoCoupleData(): Promise<{
       partner_name: couple.partner_name || 'Kirsten',
       partner_email: couple.partner_email,
       plan: (couple as Record<string, unknown>).plan as string | null ?? null,
+      usage_streak_weeks: (couple as Record<string, unknown>).usage_streak_weeks as number ?? 0,
+      churn_status: (couple as Record<string, unknown>).churn_status as string ?? 'active',
     },
     profile: profile ? {
       id: profile.id,

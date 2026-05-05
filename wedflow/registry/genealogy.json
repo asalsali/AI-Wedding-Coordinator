@@ -261,6 +261,32 @@
       "skills": ["frontend", "pricing", "onboarding", "ux"],
       "mannaExpected": "low",
       "testament": "memory/inheritance/frontend-gating-testament.json"
+    },
+    {
+      "id": "metrics-engineer",
+      "parentId": "root",
+      "mandate": "Build analytics tracking into dashboard and backend: messages per couple per week, auto-reply rate, inbox open frequency, escalation draft adoption rate, onboarding completion rate. Store in Supabase, surface in dashboard Insights tab.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-05T14:15:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-05-05T15:00:00Z",
+      "testament": "memory/inheritance/metrics-engineer-testament.json",
+      "skills": ["backend", "frontend", "supabase", "analytics"],
+      "mannaExpected": "medium"
+    },
+    {
+      "id": "churn-sentinel",
+      "parentId": "root",
+      "mandate": "Build retention tracking: last-active timestamp per couple, weekly usage streak, churn flag (7 days inactive). Inngest weekly cron job to tag churned couples. Surface churn status in dashboard Insights tab.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-05T14:15:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-05-05T15:00:00Z",
+      "testament": "memory/inheritance/churn-sentinel-testament.json",
+      "skills": ["backend", "supabase", "inngest", "retention"],
+      "mannaExpected": "medium"
     }
   ],
   "sabbathCount": 2,

@@ -6,7 +6,10 @@ import {
   refreshInboxMessages,
   sendReplyAction,
   signOutAction,
+  trackInboxOpen,
+  getInsightsData,
 } from './actions'
+import type { InsightsData } from './actions'
 import { getCircleMembers } from '@/app/circle/actions'
 import type { CircleMember } from '@/types'
 import type { MessageRow } from './actions'
@@ -21,6 +24,7 @@ import { ProfileView } from './components/ProfileView'
 import { SettingsView } from './components/SettingsView'
 import { CircleView } from './components/CircleView'
 import { NotificationPrompt } from './components/NotificationPrompt'
+import { InsightsView } from './components/InsightsView'
 
 export default function DashboardClient({ couple, profile, phoneNumber, initialMessages, stats, isDemo = false }: DashboardProps) {
   const [view, setView] = useState<View>('home')
@@ -33,6 +37,8 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
   const [circleMembers, setCircleMembers] = useState<CircleMember[]>([])
   const [isMobile, setIsMobile] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [insightsData, setInsightsData] = useState<InsightsData | null>(null)
+  const [isLoadingInsights, setIsLoadingInsights] = useState(false)
 
   useEffect(() => {
     const mql = window.matchMedia('(max-width: 767px)')
@@ -97,6 +103,7 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
     { id: 'inbox', label: 'Inbox', icon: 'inbox' },
     { id: 'circle', label: 'Circle', icon: 'heart' },
     { id: 'guests', label: 'Guests', icon: 'users' },
+    { id: 'insights', label: 'Insights', icon: 'barChart' },
     { id: 'profile', label: 'Wedding Profile', icon: 'ring' },
     { id: 'settings', label: 'Settings', icon: 'settings' },
   ]
@@ -106,7 +113,21 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
   const handleNavClick = useCallback((id: View) => {
     setView(id)
     if (isMobile) setSidebarOpen(false)
-  }, [isMobile])
+
+    // Track inbox opens
+    if (id === 'inbox' && !isDemo) {
+      trackInboxOpen().catch(() => {})
+    }
+
+    // Load insights data on demand
+    if (id === 'insights' && !isDemo) {
+      setIsLoadingInsights(true)
+      getInsightsData()
+        .then(setInsightsData)
+        .catch(() => {})
+        .finally(() => setIsLoadingInsights(false))
+    }
+  }, [isMobile, isDemo])
 
   const sidebarContent = (
     <>
@@ -290,6 +311,13 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
           <div style={{ padding: isMobile ? '24px 16px' : '40px 48px', maxWidth: 800, margin: '0 auto' }}>
             <p className="wf-sans" style={{ color: 'var(--wf-ink-60)' }}>No wedding profile found. Please complete onboarding.</p>
           </div>
+        )}
+        {view === 'insights' && (
+          <InsightsView
+            data={insightsData}
+            isLoading={isLoadingInsights}
+            isMobile={isMobile}
+          />
         )}
         {view === 'settings' && (
           <SettingsView

@@ -2,7 +2,7 @@ import type { MessageRow, ProfileUpdateFields } from './actions'
 
 export type { MessageRow, ProfileUpdateFields }
 
-export type View = 'home' | 'inbox' | 'circle' | 'guests' | 'profile' | 'settings'
+export type View = 'home' | 'inbox' | 'circle' | 'guests' | 'profile' | 'settings' | 'insights'
 export type InboxTab = 'needs-reply' | 'all'
 export type ToneStyle = 'warm' | 'elegant' | 'playful'
 
@@ -28,6 +28,8 @@ export interface Couple {
   partner_name: string | null
   partner_email: string | null
   plan: string | null
+  usage_streak_weeks: number
+  churn_status: string
 }
 
 export interface Profile {
