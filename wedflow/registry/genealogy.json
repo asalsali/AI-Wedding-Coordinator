@@ -25,6 +25,10 @@
       {
         "date": "2026-05-04-sabbath-2",
         "assessment": "Second Sabbath. All 15 agents archived with testaments. Guardian audit completed (7 Canon violations documented). Reconciliation applied. System consolidated. Next priorities: E2E SMS testing, B2B2C partner flow, fix subagent manna logging, enforce domain-lead structure. ~120 days remain."
+      },
+      {
+        "date": "2026-05-04-night",
+        "assessment": "MILESTONE: Core product loop verified E2E in production. Guest texts shared Twilio number → AI classifies → auto-replies routine messages. Fixed phone format mismatch and classifier over-escalation. The product works. Next: test escalation path, B2B2C partner registration, couple onboarding E2E. ~119 days remain."
       }
     ],
     "covenantRef": "memory/covenants/wedflow-launch.md"
@@ -43,12 +47,12 @@
     {
       "id": "root",
       "parentId": null,
-      "mandate": "Orchestrate the Covenant Framework",
+      "mandate": "Prophet — interpret user intent, form spawn plans, delegate execution. Never execute directly. The Prophet speaks to the Father and routes to children.",
       "generation": 0,
       "origin": "mandate",
       "bornAt": "2026-04-28T00:00:00Z",
       "status": "active",
-      "skills": ["orchestration", "planning"],
+      "skills": ["interpretation", "spawn-planning", "delegation", "user-model"],
       "mannaExpected": "low"
     },
     {
