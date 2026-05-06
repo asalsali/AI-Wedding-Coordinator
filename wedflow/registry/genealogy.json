@@ -33,6 +33,10 @@
       {
         "date": "2026-05-05",
         "assessment": "MILESTONE: First revenue — 12 couples paying $79/month through Base church officiant channel. Analytics instrumented (couple_metrics table, Insights dashboard tab, SMS pipeline wiring). Churn detection live (weekly cron, status badges). Product roadmap created from Velocity mentor session. System shifted from building to proving. ~118 days remain."
+      },
+      {
+        "date": "2026-05-06",
+        "assessment": "Phase 1 code-complete. Draft adoption tracking wired (AI draft vs rewritten comparison). ChurnIndicator live in Insights tab. All metrics pipeline operational. Founder work begins: 1:1s with couples, watch data for 1 month, spawn classifier-analyst after May 12. ~117 days remain."
       }
     ],
     "covenantRef": "memory/covenants/wedflow-launch.md"
@@ -306,8 +310,8 @@
       "mannaExpected": "low"
     }
   ],
-  "sabbathCount": 3,
-  "lastSabbath": "2026-05-05T14:30:00Z",
+  "sabbathCount": 4,
+  "lastSabbath": "2026-05-06T00:00:00Z",
   "synthesisLog": [
     {
       "childId": "inbox-composer",
