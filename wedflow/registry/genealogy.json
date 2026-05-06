@@ -29,6 +29,10 @@
       {
         "date": "2026-05-04-night",
         "assessment": "MILESTONE: Core product loop verified E2E in production. Guest texts shared Twilio number → AI classifies → auto-replies routine messages. Fixed phone format mismatch and classifier over-escalation. The product works. Next: test escalation path, B2B2C partner registration, couple onboarding E2E. ~119 days remain."
+      },
+      {
+        "date": "2026-05-05",
+        "assessment": "MILESTONE: First revenue — 12 couples paying $79/month through Base church officiant channel. Analytics instrumented (couple_metrics table, Insights dashboard tab, SMS pipeline wiring). Churn detection live (weekly cron, status badges). Product roadmap created from Velocity mentor session. System shifted from building to proving. ~118 days remain."
       }
     ],
     "covenantRef": "memory/covenants/wedflow-launch.md"
@@ -289,8 +293,8 @@
       "mannaExpected": "medium"
     }
   ],
-  "sabbathCount": 2,
-  "lastSabbath": "2026-05-04T22:45:00Z",
+  "sabbathCount": 3,
+  "lastSabbath": "2026-05-05T14:30:00Z",
   "synthesisLog": [
     {
       "childId": "inbox-composer",

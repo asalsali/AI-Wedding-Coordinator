@@ -2105,5 +2105,103 @@
     "tool": "Bash",
     "inputSize": 718,
     "timestamp": "2026-05-06T00:19:25Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Bash",
+    "inputSize": 370,
+    "timestamp": "2026-05-06T00:20:01Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Glob",
+    "inputSize": 35,
+    "timestamp": "2026-05-06T00:20:21Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Glob",
+    "inputSize": 32,
+    "timestamp": "2026-05-06T00:20:21Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Glob",
+    "inputSize": 32,
+    "timestamp": "2026-05-06T00:20:21Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Read",
+    "inputSize": 154,
+    "timestamp": "2026-05-06T00:20:27Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Read",
+    "inputSize": 152,
+    "timestamp": "2026-05-06T00:20:28Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Read",
+    "inputSize": 138,
+    "timestamp": "2026-05-06T00:20:28Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Read",
+    "inputSize": 139,
+    "timestamp": "2026-05-06T00:20:33Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Write",
+    "inputSize": 4065,
+    "timestamp": "2026-05-06T00:21:10Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Write",
+    "inputSize": 3277,
+    "timestamp": "2026-05-06T00:21:35Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Edit",
+    "inputSize": 271,
+    "timestamp": "2026-05-06T00:21:47Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Edit",
+    "inputSize": 2299,
+    "timestamp": "2026-05-06T00:22:10Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Edit",
+    "inputSize": 1520,
+    "timestamp": "2026-05-06T00:22:23Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Edit",
+    "inputSize": 316,
+    "timestamp": "2026-05-06T00:22:28Z"
   }
 ]
