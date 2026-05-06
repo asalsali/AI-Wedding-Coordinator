@@ -210,6 +210,7 @@ export async function sendReplyAction(
   conversationId: string,
   replyBody: string,
   inboundMessageId: string,
+  originalDraft?: string,
 ): Promise<void> {
   const parsed = SendReplySchema.safeParse({ conversationId, replyBody, inboundMessageId })
   if (!parsed.success) throw new Error('Invalid reply parameters')
@@ -272,6 +273,18 @@ export async function sendReplyAction(
   })
 
   if (insertErr) throw new Error(`Failed to record sent message: ${insertErr.message}`)
+
+  // 5. Track draft adoption in couple_metrics
+  if (originalDraft) {
+    const draftUsed = parsed.data.replyBody.trim() === originalDraft.trim()
+    const adminSupabase = getSupabaseServerClient()
+    await adminSupabase.rpc('increment_couple_metrics', {
+      p_couple_id: coupleId,
+      p_date: new Date().toISOString().slice(0, 10),
+      p_drafts_used: draftUsed ? 1 : 0,
+      p_drafts_rewritten: draftUsed ? 0 : 1,
+    })
+  }
 }
 
 // ----------------------------------------------------------------

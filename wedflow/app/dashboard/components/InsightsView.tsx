@@ -1,11 +1,14 @@
 'use client'
 
 import type { InsightsData } from '../actions'
+import ChurnIndicator from './ChurnIndicator'
 
 interface InsightsViewProps {
   data: InsightsData | null
   isLoading: boolean
   isMobile: boolean
+  churnStatus: string
+  usageStreakWeeks: number
 }
 
 function MetricCard({ label, value, subtitle }: { label: string; value: string; subtitle?: string }) {
@@ -39,7 +42,7 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
-export function InsightsView({ data, isLoading, isMobile }: InsightsViewProps) {
+export function InsightsView({ data, isLoading, isMobile, churnStatus, usageStreakWeeks }: InsightsViewProps) {
   if (isLoading) {
     return (
       <div style={{ padding: isMobile ? '24px 16px' : '40px 48px', maxWidth: 900, margin: '0 auto' }}>
@@ -64,9 +67,12 @@ export function InsightsView({ data, isLoading, isMobile }: InsightsViewProps) {
   return (
     <div style={{ padding: isMobile ? '24px 16px' : '40px 48px', maxWidth: 900, margin: '0 auto' }}>
       <h1 className="wf-serif" style={{ fontSize: isMobile ? 22 : 28, color: 'var(--wf-forest)', marginBottom: 4 }}>Insights</h1>
-      <p className="wf-sans" style={{ color: 'var(--wf-ink-40)', fontSize: 14, marginBottom: 28 }}>
-        Last 30 days of activity
-      </p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 28 }}>
+        <p className="wf-sans" style={{ color: 'var(--wf-ink-40)', fontSize: 14, margin: 0 }}>
+          Last 30 days of activity
+        </p>
+        <ChurnIndicator churnStatus={churnStatus} usageStreakWeeks={usageStreakWeeks} />
+      </div>
 
       {/* Metric cards */}
       <div style={{

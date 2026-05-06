@@ -87,7 +87,7 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
 
     startSendReply(async () => {
       try {
-        await sendReplyAction(msg.conversation_id, replyText, msg.id)
+        await sendReplyAction(msg.conversation_id, replyText, msg.id, replyModal?.draftBody)
         setReplyModal(null)
         const fresh = await refreshInboxMessages()
         setMessages(fresh)
@@ -317,6 +317,8 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
             data={insightsData}
             isLoading={isLoadingInsights}
             isMobile={isMobile}
+            churnStatus={couple.churn_status ?? 'active'}
+            usageStreakWeeks={couple.usage_streak_weeks ?? 0}
           />
         )}
         {view === 'settings' && (

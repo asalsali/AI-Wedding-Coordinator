@@ -293,6 +293,19 @@
       "mannaExpected": "medium"
     }
   ],
+    {
+      "id": "metrics-wiring",
+      "parentId": "root",
+      "mandate": "Wire draft adoption tracking into sendReplyAction and import ChurnIndicator into InsightsView",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-06T00:00:00Z",
+      "sunsetAt": "2026-05-06T00:30:00Z",
+      "status": "archived",
+      "skills": ["frontend", "backend", "supabase"],
+      "mannaExpected": "low"
+    }
+  ],
   "sabbathCount": 3,
   "lastSabbath": "2026-05-05T14:30:00Z",
   "synthesisLog": [

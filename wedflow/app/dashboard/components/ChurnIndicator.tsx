@@ -41,7 +41,7 @@ export default function ChurnIndicator({ churnStatus, usageStreakWeeks }: ChurnI
         <span
           style={{
             fontSize: '13px',
-            color: 'rgba(255,255,255,0.6)',
+            color: 'var(--wf-ink-40)',
           }}
         >
           {usageStreakWeeks} week{usageStreakWeeks !== 1 ? 's' : ''} streak
