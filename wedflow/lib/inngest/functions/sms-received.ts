@@ -220,6 +220,18 @@ export const smsReceived = inngest.createFunction(
         }
       });
 
+      // Track metrics: inbound message + escalation
+      await step.run("metrics-escalation-classification", async () => {
+        const supabase = createServiceRoleClient();
+        const today = new Date().toISOString().slice(0, 10);
+        await supabase.rpc("increment_couple_metrics", {
+          p_couple_id: coupleId,
+          p_date: today,
+          p_messages_received: 1,
+          p_escalations: 1,
+        });
+      });
+
       return { escalated: true, reason: "classification" };
     }
 
@@ -298,6 +310,18 @@ export const smsReceived = inngest.createFunction(
         }
       });
 
+      // Track metrics: inbound message + escalation (safety)
+      await step.run("metrics-escalation-safety", async () => {
+        const supabase = createServiceRoleClient();
+        const today = new Date().toISOString().slice(0, 10);
+        await supabase.rpc("increment_couple_metrics", {
+          p_couple_id: coupleId,
+          p_date: today,
+          p_messages_received: 1,
+          p_escalations: 1,
+        });
+      });
+
       return { escalated: true, reason: "safety_check_failed" };
     }
 
@@ -365,6 +389,18 @@ export const smsReceived = inngest.createFunction(
         },
       })
     );
+
+    // Track metrics: inbound message + auto-reply
+    await step.run("metrics-auto-reply", async () => {
+      const supabase = createServiceRoleClient();
+      const today = new Date().toISOString().slice(0, 10);
+      await supabase.rpc("increment_couple_metrics", {
+        p_couple_id: coupleId,
+        p_date: today,
+        p_messages_received: 1,
+        p_messages_auto_replied: 1,
+      });
+    });
 
     return { sent: true };
   }
