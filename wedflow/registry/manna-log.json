@@ -2000,5 +2000,110 @@
     "tool": "Bash",
     "inputSize": 154,
     "timestamp": "2026-05-05T15:28:31Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Bash",
+    "inputSize": 351,
+    "timestamp": "2026-05-05T15:28:44Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "ToolSearch",
+    "inputSize": 84,
+    "timestamp": "2026-05-05T19:44:47Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Read",
+    "inputSize": 141,
+    "timestamp": "2026-05-05T19:44:48Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Read",
+    "inputSize": 146,
+    "timestamp": "2026-05-05T19:44:48Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "ToolSearch",
+    "inputSize": 82,
+    "timestamp": "2026-05-05T19:44:53Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "mcp__plugin_supabase_supabase__list_projects",
+    "inputSize": 0,
+    "timestamp": "2026-05-05T19:47:34Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "mcp__plugin_supabase_supabase__apply_migration",
+    "inputSize": 1084,
+    "timestamp": "2026-05-05T19:47:46Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "mcp__plugin_supabase_supabase__apply_migration",
+    "inputSize": 662,
+    "timestamp": "2026-05-05T19:47:53Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Read",
+    "inputSize": 142,
+    "timestamp": "2026-05-06T00:08:54Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Edit",
+    "inputSize": 790,
+    "timestamp": "2026-05-06T00:09:04Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Edit",
+    "inputSize": 801,
+    "timestamp": "2026-05-06T00:09:16Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Edit",
+    "inputSize": 689,
+    "timestamp": "2026-05-06T00:09:22Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "mcp__plugin_supabase_supabase__apply_migration",
+    "inputSize": 1290,
+    "timestamp": "2026-05-06T00:09:39Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Write",
+    "inputSize": 1494,
+    "timestamp": "2026-05-06T00:09:47Z"
+  },
+  {
+    "agent": "root",
+    "session": "6bd00756-e9ed-41a2-bbb8-3c032c3ec7ff",
+    "tool": "Bash",
+    "inputSize": 718,
+    "timestamp": "2026-05-06T00:19:25Z"
   }
 ]
