@@ -662,7 +662,7 @@ export async function signOutAction(): Promise<void> {
 // Demo mode: Get demo couple data for Alex & Kirsten
 // ----------------------------------------------------------------
 export async function getDemoCoupleData(): Promise<{
-  couple: { id: string; email: string; your_name: string; partner_name: string; partner_email: string | null; plan: string | null; usage_streak_weeks: number; churn_status: string }
+  couple: { id: string; email: string; your_name: string; partner_name: string; partner_email: string | null; plan: string | null; subscription_status: string | null; usage_streak_weeks: number; churn_status: string }
   profile: {
     id: string
     venue_name: string
@@ -688,7 +688,7 @@ export async function getDemoCoupleData(): Promise<{
   // Find the demo couple
   const { data: couple, error: coupleError } = await supabase
     .from('couples')
-    .select('id, email, your_name, partner_name, partner_email, plan, usage_streak_weeks, churn_status')
+    .select('id, email, your_name, partner_name, partner_email, plan, subscription_status, usage_streak_weeks, churn_status')
     .eq('email', 'ak.salsali2025@gmail.com')
     .maybeSingle()
   
@@ -770,6 +770,7 @@ export async function getDemoCoupleData(): Promise<{
       partner_name: couple.partner_name || 'Kirsten',
       partner_email: couple.partner_email,
       plan: (couple as Record<string, unknown>).plan as string | null ?? null,
+      subscription_status: (couple as Record<string, unknown>).subscription_status as string | null ?? null,
       usage_streak_weeks: (couple as Record<string, unknown>).usage_streak_weeks as number ?? 0,
       churn_status: (couple as Record<string, unknown>).churn_status as string ?? 'active',
     },

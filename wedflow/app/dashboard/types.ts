@@ -28,6 +28,7 @@ export interface Couple {
   partner_name: string | null
   partner_email: string | null
   plan: string | null
+  subscription_status: string | null
   usage_streak_weeks: number
   churn_status: string
 }

@@ -145,8 +145,9 @@ export function GuestsView({ plan = null }: { plan?: string | null }) {
           </div>)}
 
         {plan !== 'concierge' && (
-          <div style={{ marginBottom: 16, padding: '10px 14px', background: 'var(--wf-sand)', border: '1px solid var(--wf-line)', borderRadius: 10, fontSize: 12, fontFamily: 'var(--wf-sans)', color: 'var(--wf-ink-60)' }}>
-            Phone numbers are masked on your current plan. Upgrade to Concierge to see full phone numbers.
+          <div style={{ marginBottom: 16, padding: '10px 14px', background: 'var(--wf-sand)', border: '1px solid var(--wf-line)', borderRadius: 10, fontSize: 12, fontFamily: 'var(--wf-sans)', color: 'var(--wf-ink-60)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <span>Phone numbers are masked on your current plan.</span>
+            <a href="/pricing" style={{ color: 'var(--wf-forest)', fontWeight: 600, whiteSpace: 'nowrap', textDecoration: 'none' }}>Upgrade to Concierge</a>
           </div>
         )}
 
