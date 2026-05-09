@@ -1,0 +1,17 @@
+{
+  "agentId": "onboarding-rebrand",
+  "mandate": "Add vendor contact prompts in onboarding flow, reframe copy as setting up your wedding village",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "Onboarding flow now prompts couples to add vendor contacts alongside guest contacts",
+    "Copy reframed from 'set up your guest FAQ' to 'set up your wedding village'",
+    "Vendor contact collection is optional — couples can skip and add later"
+  ],
+  "whatWorked": "Light-touch copy changes. No new onboarding steps added, just expanded existing ones.",
+  "whatFailed": "Nothing failed. Testament was not written at sunset (retroactive).",
+  "recommendationsForNextAgent": "The onboarding steps are defined in the onboarding page components. Step count should stay at 7 or fewer to avoid drop-off.",
+  "mannaConsumed": "unknown (retroactive testament)",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Ensured new couples encounter the vendor coordination message from their first interaction."
+}

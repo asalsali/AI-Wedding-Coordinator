@@ -307,8 +307,7 @@
       "testament": "memory/inheritance/churn-sentinel-testament.json",
       "skills": ["backend", "supabase", "inngest", "retention"],
       "mannaExpected": "medium"
-    }
-  ],
+    },
     {
       "id": "metrics-wiring",
       "parentId": "root",
@@ -319,7 +318,8 @@
       "sunsetAt": "2026-05-06T00:30:00Z",
       "status": "archived",
       "skills": ["frontend", "backend", "supabase"],
-      "mannaExpected": "low"
+      "mannaExpected": "low",
+      "testament": "memory/inheritance/metrics-wiring-testament.json"
     },
     {
       "id": "landing-rebrand",
@@ -331,7 +331,8 @@
       "sunsetAt": "2026-05-08T00:30:00Z",
       "status": "archived",
       "skills": ["frontend", "copy", "svg"],
-      "mannaExpected": "low"
+      "mannaExpected": "low",
+      "testament": "memory/inheritance/landing-rebrand-testament.json"
     },
     {
       "id": "dashboard-rebrand",
@@ -343,7 +344,8 @@
       "sunsetAt": "2026-05-08T00:30:00Z",
       "status": "archived",
       "skills": ["frontend", "types", "dashboard"],
-      "mannaExpected": "medium"
+      "mannaExpected": "medium",
+      "testament": "memory/inheritance/dashboard-rebrand-testament.json"
     },
     {
       "id": "onboarding-rebrand",
@@ -355,7 +357,8 @@
       "sunsetAt": "2026-05-08T00:30:00Z",
       "status": "archived",
       "skills": ["frontend", "onboarding", "copy"],
-      "mannaExpected": "low"
+      "mannaExpected": "low",
+      "testament": "memory/inheritance/onboarding-rebrand-testament.json"
     },
     {
       "id": "partner-backend",

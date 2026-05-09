@@ -1,0 +1,16 @@
+{
+  "agentId": "metrics-wiring",
+  "mandate": "Wire draft adoption tracking into sendReplyAction and import ChurnIndicator into InsightsView",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "Draft adoption tracking compares AI-generated draft text against the actually-sent reply to measure edit distance",
+    "ChurnIndicator component was built by churn-sentinel but needed explicit import into InsightsView"
+  ],
+  "whatWorked": "Small, focused mandate. Two wiring tasks completed cleanly.",
+  "whatFailed": "Nothing failed. Testament was not written at sunset (retroactive).",
+  "recommendationsForNextAgent": "Draft adoption data accumulates in couple_metrics. Useful for classifier tuning later.",
+  "mannaConsumed": "unknown (retroactive testament)",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Completed the analytics wiring that metrics-engineer and churn-sentinel left unfinished."
+}
