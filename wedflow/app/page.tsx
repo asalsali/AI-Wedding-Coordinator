@@ -131,6 +131,7 @@ function Nav() {
             <Link href="/dashboard" className="wf-btn wf-btn-forest">Go to Dashboard →</Link>
           ) : (
             <>
+              <Link href="/partner" className="wf-sans" style={{ color: "var(--wf-ink-45)", textDecoration: "none", fontSize: 13 }}>Partner Login</Link>
               <Link href="/sign-in" className="wf-sans" style={{ color: "var(--wf-ink-60)", textDecoration: "none" }}>Sign in</Link>
               <Link href="/sign-up" className="wf-btn wf-btn-primary">Begin Your Journey →</Link>
             </>
@@ -158,6 +159,7 @@ function Nav() {
             <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>Go to Dashboard →</Link>
           ) : (
             <>
+              <Link href="/partner" style={{ color: "var(--wf-ink-45)", fontSize: 13 }} onClick={() => setMobileMenuOpen(false)}>Partner Login</Link>
               <Link href="/sign-in" onClick={() => setMobileMenuOpen(false)}>Sign in</Link>
               <Link href="/sign-up" className="wf-btn wf-btn-primary" style={{ textAlign: "center" }} onClick={() => setMobileMenuOpen(false)}>Begin Your Journey →</Link>
             </>
