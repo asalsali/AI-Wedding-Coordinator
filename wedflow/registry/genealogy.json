@@ -426,8 +426,8 @@
       "testament": "memory/inheritance/partner-analytics-testament.json"
     }
   ],
-  "sabbathCount": 5,
-  "lastSabbath": "2026-05-08T00:00:00Z",
+  "sabbathCount": 6,
+  "lastSabbath": "2026-05-10T00:00:00Z",
   "synthesisLog": [
     {
       "childId": "inbox-composer",
