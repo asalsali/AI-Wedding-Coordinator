@@ -308,6 +308,42 @@
       "status": "archived",
       "skills": ["frontend", "backend", "supabase"],
       "mannaExpected": "low"
+    },
+    {
+      "id": "landing-rebrand",
+      "parentId": "root",
+      "mandate": "Update landing page copy and circle diagram to surface vendor coordination alongside guest FAQ. Add vendor nodes to CircleDiagram, widen hero/HowItWorks/Features.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-08T00:00:00Z",
+      "sunsetAt": "2026-05-08T00:30:00Z",
+      "status": "archived",
+      "skills": ["frontend", "copy", "svg"],
+      "mannaExpected": "low"
+    },
+    {
+      "id": "dashboard-rebrand",
+      "parentId": "root",
+      "mandate": "Rename Guests to Contacts, add vendor group types to GuestGroup, update filters/labels/forms in GuestsView and GuestListClient.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-08T00:00:00Z",
+      "sunsetAt": "2026-05-08T00:30:00Z",
+      "status": "archived",
+      "skills": ["frontend", "types", "dashboard"],
+      "mannaExpected": "medium"
+    },
+    {
+      "id": "onboarding-rebrand",
+      "parentId": "root",
+      "mandate": "Add vendor contact prompts in onboarding flow, reframe copy as setting up your wedding village.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-08T00:00:00Z",
+      "sunsetAt": "2026-05-08T00:30:00Z",
+      "status": "archived",
+      "skills": ["frontend", "onboarding", "copy"],
+      "mannaExpected": "low"
     }
   ],
   "sabbathCount": 4,
