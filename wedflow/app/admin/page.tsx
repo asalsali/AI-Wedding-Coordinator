@@ -6,7 +6,7 @@ import AdminDashboard from './AdminDashboard'
 import type { PartnerType, PartnerStatus } from '@/types'
 
 // Hardcoded admin email — only the founder gets access
-const ADMIN_EMAILS = ['ak.salsali2025@gmail.com']
+const ADMIN_EMAILS = ['ak.salsali2025@gmail.com', 'officialalexsalsali@gmail.com']
 
 async function getUser() {
   const cookieStore = await cookies()

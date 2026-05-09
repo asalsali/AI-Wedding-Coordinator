@@ -9,7 +9,7 @@ import type { Partner, PartnerReferral, PartnerType, PartnerStatus } from '@/typ
 // Admin auth — hardcoded email check (same pattern as /admin/page.tsx)
 // ----------------------------------------------------------------
 
-const ADMIN_EMAILS = ['ak.salsali2025@gmail.com']
+const ADMIN_EMAILS = ['ak.salsali2025@gmail.com', 'officialalexsalsali@gmail.com']
 
 async function requireAdmin(): Promise<string> {
   const cookieStore = await cookies()
