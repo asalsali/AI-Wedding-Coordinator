@@ -33,9 +33,42 @@ export async function GET(request: Request) {
       }
     )
     
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    
+    const { data: sessionData, error } = await supabase.auth.exchangeCodeForSession(code)
+
     if (!error) {
+      // If the authenticated user has a pending partner invite, claim it
+      const userEmail = sessionData.user?.email
+      if (userEmail) {
+        try {
+          const { createClient: createSupabaseAdmin } = await import('@supabase/supabase-js')
+          const svc = createSupabaseAdmin(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!,
+            { auth: { autoRefreshToken: false, persistSession: false } }
+          )
+          const PLACEHOLDER = '00000000-0000-0000-0000-000000000000'
+          const { data: partner } = await svc
+            .from('partners')
+            .select('id, user_id')
+            .eq('contact_email', userEmail)
+            .maybeSingle()
+
+          if (
+            partner &&
+            (!partner.user_id || (partner.user_id as string) === PLACEHOLDER)
+          ) {
+            await svc
+              .from('partners')
+              .update({ user_id: sessionData.user.id })
+              .eq('id', partner.id)
+            // Redirect to partner dashboard instead of default
+            return NextResponse.redirect(new URL('/partner', request.url))
+          }
+        } catch {
+          // Partner claim failed silently — user still gets redirected normally
+        }
+      }
+
       return NextResponse.redirect(new URL(next, request.url))
     }
     

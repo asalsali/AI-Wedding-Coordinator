@@ -14,6 +14,7 @@ const isPublicRoute = [
   '/api/stripe/checkout',
   '/api/waitlist',
   '/auth/callback',
+  '/partner-join',
 ]
 
 export async function middleware(request: NextRequest) {

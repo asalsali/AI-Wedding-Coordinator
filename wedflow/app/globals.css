@@ -291,6 +291,12 @@ html, body {
 
 ::selection { background: var(--wf-terracotta); color: var(--wf-cream); }
 
+/* ── Spinner ───────────────────────────────────────────────────────────────── */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* ── Landing Page Responsive Layout ───────────────────────────────────────── */
 
 .wf-nav-inner {

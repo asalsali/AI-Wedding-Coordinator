@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 import AdminDashboard from './AdminDashboard'
+import type { PartnerType, PartnerStatus } from '@/types'
 
 // Hardcoded admin email — only the founder gets access
 const ADMIN_EMAILS = ['ak.salsali2025@gmail.com']
@@ -159,6 +160,72 @@ export default async function AdminPage() {
     .filter((c) => c.subscriptionStatus === 'active' || c.subscriptionStatus === 'trialing')
     .reduce((s, c) => s + (planPrices[c.plan] ?? 0), 0)
 
+  // ── Partner data ──────────────────────────────────────────────
+  const { data: partners } = await svc
+    .from('partners')
+    .select('id, partner_type, organization_name, contact_name, contact_email, referral_code, status, created_at')
+    .order('created_at', { ascending: false })
+
+  const allPartners = partners ?? []
+  const partnerIds = allPartners.map((p) => p.id as string)
+
+  let partnerReferralsByPartner = new Map<string, { total: number; active: number; nonPending: number }>()
+  let totalPartnerReferrals = 0
+
+  if (partnerIds.length > 0) {
+    const { data: partnerRefs } = await svc
+      .from('partner_referrals')
+      .select('partner_id, status')
+      .in('partner_id', partnerIds)
+
+    for (const ref of partnerRefs ?? []) {
+      totalPartnerReferrals++
+      const pid = ref.partner_id as string
+      const entry = partnerReferralsByPartner.get(pid) ?? { total: 0, active: 0, nonPending: 0 }
+      entry.total++
+      if (ref.status === 'active') entry.active++
+      if (ref.status !== 'pending') entry.nonPending++
+      partnerReferralsByPartner.set(pid, entry)
+    }
+  }
+
+  const partnerRows = allPartners.map((p) => {
+    const stats = partnerReferralsByPartner.get(p.id as string) ?? { total: 0, active: 0, nonPending: 0 }
+    return {
+      id: p.id as string,
+      organization_name: p.organization_name as string,
+      contact_name: p.contact_name as string,
+      contact_email: p.contact_email as string,
+      partner_type: p.partner_type as PartnerType,
+      status: p.status as PartnerStatus,
+      referral_code: p.referral_code as string,
+      referral_count: stats.total,
+      active_referrals: stats.active,
+      conversionRate: stats.total > 0 ? stats.active / stats.total : 0,
+      retentionRate: stats.nonPending > 0 ? stats.active / stats.nonPending : 0,
+      created_at: p.created_at as string,
+    }
+  })
+
+  // Top referrer
+  let topReferrerName: string | null = null
+  let topReferrerCount = 0
+  for (const row of partnerRows) {
+    if (row.active_referrals > topReferrerCount) {
+      topReferrerCount = row.active_referrals
+      topReferrerName = row.organization_name
+    }
+  }
+
+  const partnerSummary = {
+    totalPartners: allPartners.length,
+    pendingCount: allPartners.filter((p) => p.status === 'pending').length,
+    approvedCount: allPartners.filter((p) => p.status === 'approved').length,
+    suspendedCount: allPartners.filter((p) => p.status === 'suspended').length,
+    totalReferrals: totalPartnerReferrals,
+    topReferrer: topReferrerName ? { name: topReferrerName, count: topReferrerCount } : null,
+  }
+
   return (
     <AdminDashboard
       data={{
@@ -182,6 +249,8 @@ export default async function AdminPage() {
           : 0,
         dailyData,
         couples: couplesList,
+        partners: partnerRows,
+        partnerSummary,
       }}
     />
   )

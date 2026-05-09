@@ -1,0 +1,17 @@
+{
+  "agentId": "partner-backend",
+  "mandate": "Build partner database schema, RLS policies, server actions for partner CRUD, referral link generation",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "One partner model with role-based views is the right architecture — partner_type enum differentiates without separate tables",
+    "parent_partner_id enables church hierarchy (church has multiple officiants) without a separate join table",
+    "RLS uses a SECURITY DEFINER helper function get_partner_id_for_user() for the referrals policy — cleaner than inline subqueries"
+  ],
+  "whatWorked": "Following the circle_of_care migration pattern for RLS. Referral code generation using crypto.getRandomValues with ambiguous character exclusion (0/O/1/I/L) produces human-readable codes.",
+  "whatFailed": "Nothing failed.",
+  "recommendationsForNextAgent": "The partner-auth agent should use the placeholder user_id (all zeros) set by invitePartner to detect unclaimed invites. The referral code is generated at invite time, not at claim time.",
+  "mannaConsumed": "~38k tokens",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Laid the data foundation for the entire B2B2C channel. Every other partner agent depends on this schema."
+}

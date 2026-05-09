@@ -41,6 +41,14 @@
       {
         "date": "2026-05-08",
         "assessment": "Vendor visibility rebrand shipped. Landing page, dashboard, and onboarding now surface vendor coordination. Guests renamed to Contacts with 6 vendor group types. No backend changes or migrations — purely surfacing existing SMS capability. Next: QA the landing page on mobile, wait for Base pilot data on vendor contact adoption. ~116 days remain."
+      },
+      {
+        "date": "2026-05-09",
+        "assessment": "Stripe billing lifecycle complete. Customer Portal for self-serve upgrade/downgrade/cancel. Full plan-based feature gating enforced across SMS pipeline, dashboard, and profile editor. Admin analytics dashboard live at /admin with MRR, churn, classification stats, per-couple metrics. Stripe env vars and Customer Portal config remain on founder's side. Next: B2B2C partner dashboard design (office-hours), resolve Starter tier status, verify live payments. ~115 days remain."
+      },
+      {
+        "date": "2026-05-10",
+        "assessment": "MILESTONE: B2B2C partner infrastructure complete. 5 agents (3 gen-1, 2 gen-2) shipped: partner database schema with RLS, partner dashboard at /partner with role-based views (officiant/church/counsellor/vendor), admin partner management with approval workflow, partner invite-to-onboarding flow with email OTP, and deep analytics (conversion funnels, revenue attribution, performance badges). Church multi-officiant hierarchy supported. The largest remaining gap on the critical path is now closed. Next: QA the partner flow E2E, onboard James Toonk as first partner, resolve Starter tier status. ~114 days remain."
       }
     ],
     "covenantRef": "memory/covenants/wedflow-launch.md"
@@ -348,6 +356,71 @@
       "status": "archived",
       "skills": ["frontend", "onboarding", "copy"],
       "mannaExpected": "low"
+    },
+    {
+      "id": "partner-backend",
+      "parentId": "root",
+      "mandate": "Build partner database schema (partners table, partner_referrals table, partner types enum), RLS policies, server actions for partner CRUD, referral link generation.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-10T00:00:00Z",
+      "sunsetAt": "2026-05-10T00:15:00Z",
+      "status": "archived",
+      "skills": ["backend", "supabase", "rls", "server-actions"],
+      "mannaExpected": "high",
+      "testament": "memory/inheritance/partner-backend-testament.json"
+    },
+    {
+      "id": "partner-frontend",
+      "parentId": "root",
+      "mandate": "Build partner dashboard UI at /partner. Couple list with status/usage metrics, referral link sharing, aggregate stats. Role-based views for officiant, church, counsellor, vendor.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-10T00:00:00Z",
+      "sunsetAt": "2026-05-10T00:20:00Z",
+      "status": "archived",
+      "skills": ["frontend", "react", "dashboard", "role-based-ui"],
+      "mannaExpected": "high",
+      "testament": "memory/inheritance/partner-frontend-testament.json"
+    },
+    {
+      "id": "admin-partner-mgmt",
+      "parentId": "root",
+      "mandate": "Extend existing /admin dashboard with partner management: partner list, approval workflow, partner status, referral metrics per partner.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-10T00:00:00Z",
+      "sunsetAt": "2026-05-10T00:25:00Z",
+      "status": "archived",
+      "skills": ["frontend", "admin", "dashboard"],
+      "mannaExpected": "medium",
+      "testament": "memory/inheritance/admin-partner-mgmt-testament.json"
+    },
+    {
+      "id": "partner-auth",
+      "parentId": "partner-backend",
+      "mandate": "Partner authentication and onboarding flow. Invite acceptance page, email OTP via Supabase Auth, partner record claiming.",
+      "generation": 2,
+      "origin": "clone",
+      "bornAt": "2026-05-10T00:15:00Z",
+      "sunsetAt": "2026-05-10T00:30:00Z",
+      "status": "archived",
+      "skills": ["auth", "supabase-auth", "onboarding", "email-otp"],
+      "mannaExpected": "medium",
+      "testament": "memory/inheritance/partner-auth-testament.json"
+    },
+    {
+      "id": "partner-analytics",
+      "parentId": "partner-frontend",
+      "mandate": "Per-partner analytics: conversion funnels, retention metrics, message volume, revenue attribution, performance badges, admin leaderboard.",
+      "generation": 2,
+      "origin": "clone",
+      "bornAt": "2026-05-10T00:15:00Z",
+      "sunsetAt": "2026-05-10T00:30:00Z",
+      "status": "archived",
+      "skills": ["analytics", "frontend", "metrics", "data-aggregation"],
+      "mannaExpected": "medium",
+      "testament": "memory/inheritance/partner-analytics-testament.json"
     }
   ],
   "sabbathCount": 5,

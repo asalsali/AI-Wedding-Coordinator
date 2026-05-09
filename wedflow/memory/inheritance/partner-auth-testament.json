@@ -1,0 +1,18 @@
+{
+  "agentId": "partner-auth",
+  "mandate": "Partner authentication and onboarding flow. Invite acceptance page, email OTP via Supabase Auth, partner record claiming.",
+  "generation": 2,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "The join page lives at /partner-join (not /partner/join) to avoid inheriting the /partner layout's auth gate",
+    "Email OTP is the auth method — partners enter the pre-filled invite email, receive a 6-digit code, verify, and the partner record is claimed",
+    "The placeholder user_id of all-zeros UUID detects unclaimed invites",
+    "Auth callback enhanced to auto-detect partner claims and redirect to /partner instead of /dashboard"
+  ],
+  "whatWorked": "Keeping the auth flow separate from the couple flow. Multi-step UI (initial → OTP sent → verifying → claiming → done) with clear state management. Pre-filling the email prevents partners from using a different address than invited.",
+  "whatFailed": "Initial placement at /partner/join caused it to inherit the auth-gated layout — moved to /partner-join.",
+  "recommendationsForNextAgent": "The invite link format is /partner-join?email=partner@email.com. For v2, consider adding a signed token to prevent email enumeration. The auth callback partner detection should be monitored — it adds a query to every auth callback.",
+  "mannaConsumed": "~76k tokens",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Closed the gap between admin invite and partner access. Without this, partners had no way to actually use the dashboard."
+}

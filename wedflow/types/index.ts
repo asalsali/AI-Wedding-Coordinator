@@ -114,3 +114,39 @@ export interface WeddingProfile {
   readiness_score: number;
   faqs: Faq[];
 }
+
+// ----------------------------------------------------------------
+// Partner / B2B2C types
+// ----------------------------------------------------------------
+
+export type PartnerType = 'officiant' | 'church' | 'counsellor' | 'vendor';
+export type PartnerStatus = 'pending' | 'approved' | 'suspended';
+export type ReferralStatus = 'pending' | 'active' | 'churned' | 'cancelled';
+
+export interface Partner {
+  id: string;
+  user_id: string;
+  partner_type: PartnerType;
+  organization_name: string;
+  contact_name: string;
+  contact_email: string;
+  phone: string | null;
+  website: string | null;
+  referral_code: string;
+  parent_partner_id: string | null;
+  status: PartnerStatus;
+  approved_at: string | null;
+  approved_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PartnerReferral {
+  id: string;
+  partner_id: string;
+  couple_id: string;
+  referral_code_used: string;
+  status: ReferralStatus;
+  converted_at: string | null;
+  created_at: string;
+}

@@ -1,7 +1,34 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import Link from 'next/link'
+import { approvePartner, suspendPartner, invitePartner, getPartnerDetail } from '@/app/actions/admin-partner-actions'
+import { PartnerPerformanceBadge } from '@/app/partner/components/PartnerPerformanceBadge'
+import type { PartnerType, PartnerStatus, PartnerReferral } from '@/types'
+
+interface PartnerRow {
+  id: string
+  organization_name: string
+  contact_name: string
+  contact_email: string
+  partner_type: PartnerType
+  status: PartnerStatus
+  referral_code: string
+  referral_count: number
+  active_referrals: number
+  conversionRate: number
+  retentionRate: number
+  created_at: string
+}
+
+interface PartnerSummary {
+  totalPartners: number
+  pendingCount: number
+  approvedCount: number
+  suspendedCount: number
+  totalReferrals: number
+  topReferrer: { name: string; count: number } | null
+}
 
 interface CoupleRow {
   id: string
@@ -46,6 +73,8 @@ interface AdminData {
   draftAdoptionRate: number
   dailyData: DailyDataPoint[]
   couples: CoupleRow[]
+  partners: PartnerRow[]
+  partnerSummary: PartnerSummary
 }
 
 function StatCard({ label, value, sub, color }: { label: string; value: string; sub?: string; color?: string }) {
@@ -111,6 +140,51 @@ function ChurnBadge({ status }: { status: string }) {
   )
 }
 
+function PartnerStatusBadge({ status }: { status: PartnerStatus }) {
+  const colors: Record<PartnerStatus, { bg: string; text: string }> = {
+    pending: { bg: '#fef3c7', text: '#92400e' },
+    approved: { bg: '#dcfce7', text: '#166534' },
+    suspended: { bg: '#fee2e2', text: '#991b1b' },
+  }
+  const c = colors[status]
+  return (
+    <span style={{
+      fontSize: 11,
+      fontWeight: 600,
+      padding: '2px 8px',
+      borderRadius: 6,
+      background: c.bg,
+      color: c.text,
+      textTransform: 'capitalize',
+    }}>
+      {status}
+    </span>
+  )
+}
+
+function PartnerTypeBadge({ type }: { type: PartnerType }) {
+  const colors: Record<PartnerType, { bg: string; text: string }> = {
+    officiant: { bg: '#1C3B2B', text: '#fff' },
+    church: { bg: '#C4714A', text: '#fff' },
+    counsellor: { bg: '#4338ca', text: '#fff' },
+    vendor: { bg: '#9ca3af', text: '#fff' },
+  }
+  const c = colors[type]
+  return (
+    <span style={{
+      fontSize: 11,
+      fontWeight: 600,
+      padding: '2px 8px',
+      borderRadius: 6,
+      background: c.bg,
+      color: c.text,
+      textTransform: 'capitalize',
+    }}>
+      {type}
+    </span>
+  )
+}
+
 function MiniBar({ value, max, color }: { value: number; max: number; color: string }) {
   const pct = max > 0 ? Math.min(100, (value / max) * 100) : 0
   return (
@@ -140,10 +214,24 @@ function timeAgo(dateStr: string | null): string {
 
 type SortKey = 'name' | 'plan' | 'messages30d' | 'churnStatus' | 'lastActiveAt' | 'createdAt'
 
+type AdminTab = 'overview' | 'partners'
+
 export default function AdminDashboard({ data }: { data: AdminData }) {
+  const [activeTab, setActiveTab] = useState<AdminTab>('overview')
   const [sortBy, setSortBy] = useState<SortKey>('messages30d')
   const [sortAsc, setSortAsc] = useState(false)
   const [filter, setFilter] = useState<string>('all')
+
+  // Partner state
+  const [partnerFilter, setPartnerFilter] = useState<string>('all')
+  const [partnerTypeFilter, setPartnerTypeFilter] = useState<string>('all')
+  const [expandedPartnerId, setExpandedPartnerId] = useState<string | null>(null)
+  const [partnerDetail, setPartnerDetail] = useState<{ referrals: PartnerReferral[]; conversionRate: number } | null>(null)
+  const [showInviteForm, setShowInviteForm] = useState(false)
+  const [inviteForm, setInviteForm] = useState({ email: '', partnerType: 'officiant' as PartnerType, organizationName: '', contactName: '' })
+  const [isPending, startTransition] = useTransition()
+  const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [partnersList, setPartnersList] = useState(data.partners)
 
   const maxMessages = Math.max(...data.couples.map((c) => c.messages30d), 1)
 
@@ -178,11 +266,94 @@ export default function AdminDashboard({ data }: { data: AdminData }) {
   // Daily chart max for scaling
   const chartMax = Math.max(...data.dailyData.map((d) => d.messages), 1)
 
+  // Partner filtering
+  const filteredPartners = partnersList.filter((p) => {
+    if (partnerFilter !== 'all' && p.status !== partnerFilter) return false
+    if (partnerTypeFilter !== 'all' && p.partner_type !== partnerTypeFilter) return false
+    return true
+  })
+
+  function handleApprove(partnerId: string) {
+    startTransition(async () => {
+      try {
+        await approvePartner(partnerId)
+        setPartnersList((prev) => prev.map((p) =>
+          p.id === partnerId ? { ...p, status: 'approved' as PartnerStatus } : p
+        ))
+        setActionMessage({ type: 'success', text: 'Partner approved' })
+        setTimeout(() => setActionMessage(null), 3000)
+      } catch (err) {
+        setActionMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to approve partner' })
+      }
+    })
+  }
+
+  function handleSuspend(partnerId: string) {
+    startTransition(async () => {
+      try {
+        await suspendPartner(partnerId)
+        setPartnersList((prev) => prev.map((p) =>
+          p.id === partnerId ? { ...p, status: 'suspended' as PartnerStatus } : p
+        ))
+        setActionMessage({ type: 'success', text: 'Partner suspended' })
+        setTimeout(() => setActionMessage(null), 3000)
+      } catch (err) {
+        setActionMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to suspend partner' })
+      }
+    })
+  }
+
+  function handleExpandPartner(partnerId: string) {
+    if (expandedPartnerId === partnerId) {
+      setExpandedPartnerId(null)
+      setPartnerDetail(null)
+      return
+    }
+    setExpandedPartnerId(partnerId)
+    startTransition(async () => {
+      try {
+        const detail = await getPartnerDetail(partnerId)
+        setPartnerDetail({ referrals: detail.referrals, conversionRate: detail.conversionRate })
+      } catch {
+        setPartnerDetail(null)
+      }
+    })
+  }
+
+  function handleInviteSubmit() {
+    if (!inviteForm.email || !inviteForm.organizationName || !inviteForm.contactName) return
+    startTransition(async () => {
+      try {
+        const result = await invitePartner(inviteForm)
+        setPartnersList((prev) => [{
+          id: result.id,
+          organization_name: inviteForm.organizationName,
+          contact_name: inviteForm.contactName,
+          contact_email: inviteForm.email,
+          partner_type: inviteForm.partnerType,
+          status: 'pending' as PartnerStatus,
+          referral_code: result.referral_code,
+          referral_count: 0,
+          active_referrals: 0,
+          conversionRate: 0,
+          retentionRate: 0,
+          created_at: new Date().toISOString(),
+        }, ...prev])
+        setShowInviteForm(false)
+        setInviteForm({ email: '', partnerType: 'officiant', organizationName: '', contactName: '' })
+        setActionMessage({ type: 'success', text: 'Partner invited' })
+        setTimeout(() => setActionMessage(null), 3000)
+      } catch (err) {
+        setActionMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to invite partner' })
+      }
+    })
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#f9fafb', padding: '32px 24px 80px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
           <div>
             <h1 style={{ fontSize: 28, fontWeight: 700, color: '#1C3B2B', margin: '0 0 4px', fontFamily: 'Georgia, serif' }}>
               Wedflow Admin
@@ -196,6 +367,62 @@ export default function AdminDashboard({ data }: { data: AdminData }) {
             Back to dashboard
           </Link>
         </div>
+
+        {/* Tab navigation */}
+        <div style={{ display: 'flex', gap: 0, marginBottom: 28, borderBottom: '1px solid #e5e7eb' }}>
+          {(['overview', 'partners'] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                fontSize: 13,
+                fontWeight: 600,
+                color: activeTab === tab ? '#1C3B2B' : '#9ca3af',
+                background: 'none',
+                border: 'none',
+                borderBottom: activeTab === tab ? '2px solid #1C3B2B' : '2px solid transparent',
+                padding: '10px 20px',
+                cursor: 'pointer',
+                textTransform: 'capitalize',
+                transition: 'color 0.15s, border-color 0.15s',
+              }}
+            >
+              {tab}
+              {tab === 'partners' && data.partnerSummary.pendingCount > 0 && (
+                <span style={{
+                  marginLeft: 8,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  background: '#C4714A',
+                  color: '#fff',
+                  borderRadius: 10,
+                  padding: '1px 7px',
+                  verticalAlign: 'middle',
+                }}>
+                  {data.partnerSummary.pendingCount}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Action message toast */}
+        {actionMessage && (
+          <div style={{
+            padding: '10px 16px',
+            marginBottom: 16,
+            borderRadius: 8,
+            fontSize: 13,
+            fontWeight: 500,
+            background: actionMessage.type === 'success' ? '#dcfce7' : '#fee2e2',
+            color: actionMessage.type === 'success' ? '#166534' : '#991b1b',
+            border: `1px solid ${actionMessage.type === 'success' ? '#bbf7d0' : '#fecaca'}`,
+          }}>
+            {actionMessage.text}
+          </div>
+        )}
+
+        {activeTab === 'overview' && (<>
 
         {/* Business metrics */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 28 }}>
@@ -211,6 +438,31 @@ export default function AdminDashboard({ data }: { data: AdminData }) {
           <StatCard label="Escalations" value={String(data.totalEscalations)} sub={`${data.safetyEscalations} from safety checks`} />
           <StatCard label="Draft Adoption" value={`${data.draftAdoptionRate}%`} sub={`${data.totalDraftsUsed} used, ${data.totalDraftsRewritten} edited`} />
           <StatCard label="Churn" value={`${data.churnCounts.at_risk + data.churnCounts.churned}`} sub={`${data.churnCounts.active} active, ${data.churnCounts.at_risk} at risk, ${data.churnCounts.churned} churned`} color={data.churnCounts.churned > 0 ? '#991b1b' : '#1C3B2B'} />
+        </div>
+
+        {/* Partner summary card */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14, marginBottom: 28 }}>
+          <StatCard
+            label="Partners"
+            value={String(data.partnerSummary.totalPartners)}
+            sub={`${data.partnerSummary.approvedCount} approved, ${data.partnerSummary.suspendedCount} suspended`}
+          />
+          <StatCard
+            label="Pending Approvals"
+            value={String(data.partnerSummary.pendingCount)}
+            color={data.partnerSummary.pendingCount > 0 ? '#C4714A' : '#1C3B2B'}
+            sub={data.partnerSummary.pendingCount > 0 ? 'Needs attention' : 'All clear'}
+          />
+          <StatCard
+            label="Partner Referrals"
+            value={String(data.partnerSummary.totalReferrals)}
+            sub="Total across all partners"
+          />
+          <StatCard
+            label="Top Referrer"
+            value={data.partnerSummary.topReferrer?.name ?? '--'}
+            sub={data.partnerSummary.topReferrer ? `${data.partnerSummary.topReferrer.count} active couples` : 'No referrals yet'}
+          />
         </div>
 
         {/* Classification breakdown */}
@@ -364,9 +616,357 @@ export default function AdminDashboard({ data }: { data: AdminData }) {
             </table>
           </div>
         </div>
+
+        </>)}
+
+        {activeTab === 'partners' && (<>
+
+        {/* Partner list */}
+        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 14, overflow: 'hidden' }}>
+          <div style={{ padding: '16px 24px', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#1C3B2B' }}>
+              All Partners ({filteredPartners.length})
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+              <select
+                value={partnerFilter}
+                onChange={(e) => setPartnerFilter(e.target.value)}
+                style={{ fontSize: 12, border: '1px solid #e5e7eb', borderRadius: 6, padding: '4px 8px', color: '#374151', background: '#fff' }}
+              >
+                <option value="all">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="suspended">Suspended</option>
+              </select>
+              <select
+                value={partnerTypeFilter}
+                onChange={(e) => setPartnerTypeFilter(e.target.value)}
+                style={{ fontSize: 12, border: '1px solid #e5e7eb', borderRadius: 6, padding: '4px 8px', color: '#374151', background: '#fff' }}
+              >
+                <option value="all">All types</option>
+                <option value="officiant">Officiant</option>
+                <option value="church">Church</option>
+                <option value="counsellor">Counsellor</option>
+                <option value="vendor">Vendor</option>
+              </select>
+              <button
+                onClick={() => setShowInviteForm(!showInviteForm)}
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  padding: '6px 14px',
+                  borderRadius: 6,
+                  border: 'none',
+                  background: '#1C3B2B',
+                  color: '#fff',
+                  cursor: 'pointer',
+                }}
+              >
+                + Invite Partner
+              </button>
+            </div>
+          </div>
+
+          {/* Invite form */}
+          {showInviteForm && (
+            <div style={{ padding: '16px 24px', borderBottom: '1px solid #e5e7eb', background: '#fafafa' }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#1C3B2B', marginBottom: 12 }}>Invite New Partner</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10, marginBottom: 12 }}>
+                <input
+                  type="text"
+                  placeholder="Contact name"
+                  value={inviteForm.contactName}
+                  onChange={(e) => setInviteForm({ ...inviteForm, contactName: e.target.value })}
+                  style={inputStyle}
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={inviteForm.email}
+                  onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
+                  style={inputStyle}
+                />
+                <input
+                  type="text"
+                  placeholder="Organization name"
+                  value={inviteForm.organizationName}
+                  onChange={(e) => setInviteForm({ ...inviteForm, organizationName: e.target.value })}
+                  style={inputStyle}
+                />
+                <select
+                  value={inviteForm.partnerType}
+                  onChange={(e) => setInviteForm({ ...inviteForm, partnerType: e.target.value as PartnerType })}
+                  style={inputStyle}
+                >
+                  <option value="officiant">Officiant</option>
+                  <option value="church">Church</option>
+                  <option value="counsellor">Counsellor</option>
+                  <option value="vendor">Vendor</option>
+                </select>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  onClick={handleInviteSubmit}
+                  disabled={isPending || !inviteForm.email || !inviteForm.organizationName || !inviteForm.contactName}
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    padding: '6px 16px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: '#1C3B2B',
+                    color: '#fff',
+                    cursor: isPending ? 'wait' : 'pointer',
+                    opacity: isPending ? 0.6 : 1,
+                  }}
+                >
+                  {isPending ? 'Inviting...' : 'Send Invite'}
+                </button>
+                <button
+                  onClick={() => setShowInviteForm(false)}
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 500,
+                    padding: '6px 16px',
+                    borderRadius: 6,
+                    border: '1px solid #e5e7eb',
+                    background: '#fff',
+                    color: '#374151',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid #e5e7eb', background: '#fafafa' }}>
+                  <th style={thStyle}>Organization</th>
+                  <th style={thStyle}>Contact</th>
+                  <th style={thStyle}>Type</th>
+                  <th style={thStyle}>Status</th>
+                  <th style={thStyle}>Health</th>
+                  <th style={{ ...thStyle, textAlign: 'right' }}>Referrals</th>
+                  <th style={thStyle}>Joined</th>
+                  <th style={thStyle}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredPartners.map((p) => (
+                  <>
+                    <tr
+                      key={p.id}
+                      style={{
+                        borderBottom: '1px solid #f3f4f6',
+                        background: p.status === 'pending' ? '#fffbeb' : 'transparent',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => handleExpandPartner(p.id)}
+                    >
+                      <td style={tdStyle}>
+                        <div style={{ fontWeight: 500, color: '#1C3B2B' }}>{p.organization_name}</div>
+                        <div style={{ fontSize: 11, color: '#9ca3af' }}>{p.referral_code}</div>
+                      </td>
+                      <td style={tdStyle}>
+                        <div style={{ fontWeight: 500, color: '#374151' }}>{p.contact_name}</div>
+                        <div style={{ fontSize: 11, color: '#9ca3af' }}>{p.contact_email}</div>
+                      </td>
+                      <td style={tdStyle}><PartnerTypeBadge type={p.partner_type} /></td>
+                      <td style={tdStyle}><PartnerStatusBadge status={p.status} /></td>
+                      <td style={tdStyle}>
+                        {p.referral_count > 0 ? (
+                          <PartnerPerformanceBadge conversionRate={p.conversionRate} retentionRate={p.retentionRate} />
+                        ) : (
+                          <span style={{ fontSize: 10, color: '#9ca3af' }}>--</span>
+                        )}
+                      </td>
+                      <td style={{ ...tdStyle, textAlign: 'right' }}>
+                        <span style={{ fontWeight: 600, color: '#1C3B2B' }}>{p.referral_count}</span>
+                        {p.active_referrals > 0 && (
+                          <span style={{ fontSize: 11, color: '#6b7280', marginLeft: 4 }}>
+                            ({p.active_referrals} active)
+                          </span>
+                        )}
+                      </td>
+                      <td style={{ ...tdStyle, color: '#9ca3af', fontSize: 12 }}>
+                        {new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </td>
+                      <td style={tdStyle} onClick={(e) => e.stopPropagation()}>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          {p.status === 'pending' && (
+                            <button
+                              onClick={() => handleApprove(p.id)}
+                              disabled={isPending}
+                              style={{
+                                fontSize: 11,
+                                fontWeight: 600,
+                                padding: '3px 10px',
+                                borderRadius: 5,
+                                border: 'none',
+                                background: '#166534',
+                                color: '#fff',
+                                cursor: isPending ? 'wait' : 'pointer',
+                              }}
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {p.status === 'approved' && (
+                            <button
+                              onClick={() => handleSuspend(p.id)}
+                              disabled={isPending}
+                              style={{
+                                fontSize: 11,
+                                fontWeight: 600,
+                                padding: '3px 10px',
+                                borderRadius: 5,
+                                border: '1px solid #fecaca',
+                                background: '#fff',
+                                color: '#991b1b',
+                                cursor: isPending ? 'wait' : 'pointer',
+                              }}
+                            >
+                              Suspend
+                            </button>
+                          )}
+                          {p.status === 'suspended' && (
+                            <button
+                              onClick={() => handleApprove(p.id)}
+                              disabled={isPending}
+                              style={{
+                                fontSize: 11,
+                                fontWeight: 600,
+                                padding: '3px 10px',
+                                borderRadius: 5,
+                                border: '1px solid #bbf7d0',
+                                background: '#fff',
+                                color: '#166534',
+                                cursor: isPending ? 'wait' : 'pointer',
+                              }}
+                            >
+                              Reactivate
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                    {expandedPartnerId === p.id && (
+                      <tr key={`${p.id}-detail`} style={{ background: '#fafafa' }}>
+                        <td colSpan={8} style={{ padding: '16px 24px' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 24 }}>
+                            {/* Partner info */}
+                            <div>
+                              <div style={{ fontSize: 12, fontWeight: 600, color: '#1C3B2B', marginBottom: 10 }}>Partner Details</div>
+                              <div style={{ fontSize: 12, color: '#374151', lineHeight: 1.8 }}>
+                                <div><strong>Organization:</strong> {p.organization_name}</div>
+                                <div><strong>Contact:</strong> {p.contact_name}</div>
+                                <div><strong>Email:</strong> {p.contact_email}</div>
+                                <div><strong>Type:</strong> {p.partner_type}</div>
+                                <div><strong>Referral Code:</strong> <code style={{ background: '#f3f4f6', padding: '1px 6px', borderRadius: 4, fontSize: 11 }}>{p.referral_code}</code></div>
+                                <div><strong>Status:</strong> {p.status}</div>
+                                {partnerDetail && (
+                                  <div><strong>Conversion Rate:</strong> {partnerDetail.conversionRate}%</div>
+                                )}
+                              </div>
+                            </div>
+                            {/* Referral list */}
+                            <div>
+                              <div style={{ fontSize: 12, fontWeight: 600, color: '#1C3B2B', marginBottom: 10 }}>
+                                Referrals ({partnerDetail?.referrals.length ?? '...'})
+                              </div>
+                              {isPending && !partnerDetail && (
+                                <div style={{ fontSize: 12, color: '#9ca3af' }}>Loading referrals...</div>
+                              )}
+                              {partnerDetail && partnerDetail.referrals.length === 0 && (
+                                <div style={{ fontSize: 12, color: '#9ca3af' }}>No referrals yet</div>
+                              )}
+                              {partnerDetail && partnerDetail.referrals.length > 0 && (
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+                                  <thead>
+                                    <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                                      <th style={{ ...thStyle, fontSize: 10, padding: '6px 8px' }}>Couple ID</th>
+                                      <th style={{ ...thStyle, fontSize: 10, padding: '6px 8px' }}>Status</th>
+                                      <th style={{ ...thStyle, fontSize: 10, padding: '6px 8px' }}>Code Used</th>
+                                      <th style={{ ...thStyle, fontSize: 10, padding: '6px 8px' }}>Date</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {partnerDetail.referrals.map((ref) => (
+                                      <tr key={ref.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                                        <td style={{ padding: '6px 8px', color: '#6b7280', fontFamily: 'monospace', fontSize: 10 }}>
+                                          {ref.couple_id.slice(0, 8)}...
+                                        </td>
+                                        <td style={{ padding: '6px 8px' }}>
+                                          <ReferralStatusBadge status={ref.status} />
+                                        </td>
+                                        <td style={{ padding: '6px 8px', color: '#6b7280' }}>{ref.referral_code_used}</td>
+                                        <td style={{ padding: '6px 8px', color: '#9ca3af' }}>
+                                          {new Date(ref.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                ))}
+                {filteredPartners.length === 0 && (
+                  <tr>
+                    <td colSpan={8} style={{ padding: 24, textAlign: 'center', color: '#9ca3af' }}>No partners match this filter</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        </>)}
+
       </div>
     </div>
   )
+}
+
+function ReferralStatusBadge({ status }: { status: string }) {
+  const colors: Record<string, { bg: string; text: string }> = {
+    pending: { bg: '#fef3c7', text: '#92400e' },
+    active: { bg: '#dcfce7', text: '#166534' },
+    churned: { bg: '#fee2e2', text: '#991b1b' },
+    cancelled: { bg: '#f3f4f6', text: '#6b7280' },
+  }
+  const c = colors[status] ?? { bg: '#f3f4f6', text: '#6b7280' }
+  return (
+    <span style={{
+      fontSize: 10,
+      fontWeight: 600,
+      padding: '1px 6px',
+      borderRadius: 5,
+      background: c.bg,
+      color: c.text,
+      textTransform: 'capitalize',
+    }}>
+      {status}
+    </span>
+  )
+}
+
+const inputStyle: React.CSSProperties = {
+  fontSize: 13,
+  padding: '8px 12px',
+  border: '1px solid #e5e7eb',
+  borderRadius: 6,
+  color: '#374151',
+  background: '#fff',
+  outline: 'none',
 }
 
 const thStyle: React.CSSProperties = {
