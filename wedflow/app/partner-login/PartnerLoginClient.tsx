@@ -27,6 +27,7 @@ export default function PartnerLoginClient() {
         email: email.trim(),
         options: {
           shouldCreateUser: false,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/partner`,
         },
       })
 
@@ -125,9 +126,10 @@ export default function PartnerLoginClient() {
             marginBottom: 20,
           }}
         >
-          We sent a 6-digit code to{' '}
-          <strong style={{ color: 'var(--wf-ink)' }}>{email}</strong>. Enter it
-          below to sign in.
+          We sent a sign-in link to{' '}
+          <strong style={{ color: 'var(--wf-ink)' }}>{email}</strong>. Click the
+          link in your email, or enter the 6-digit code below if one was
+          included.
         </p>
 
         <form
@@ -194,7 +196,7 @@ export default function PartnerLoginClient() {
             color: 'var(--wf-ink-45)',
           }}
         >
-          Did not receive a code?{' '}
+          Did not receive an email?{' '}
           <button
             type="button"
             onClick={() => {

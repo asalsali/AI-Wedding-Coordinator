@@ -437,6 +437,17 @@
       "skills": ["frontend", "auth", "routing"],
       "mannaExpected": "low",
       "testament": "memory/inheritance/partner-login-page-testament.json"
+    },
+    {
+      "id": "partner-auth-fix",
+      "parentId": "root",
+      "mandate": "Fix two partner-login auth issues: (1) Supabase sends magic link instead of 6-digit OTP code, (2) Auth callback redirects to home page instead of /partner dashboard.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-09T15:00:00Z",
+      "status": "active",
+      "skills": [],
+      "mannaExpected": "medium"
     }
   ],
   "sabbathCount": 6,

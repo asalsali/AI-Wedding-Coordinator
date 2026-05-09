@@ -19,7 +19,7 @@ export async function GET(request: Request) {
           getAll() {
             return cookieStore.getAll()
           },
-          setAll(cookiesToSet: { name: string; value: string; options: any }[]) {
+          setAll(cookiesToSet: { name: string; value: string; options: Record<string, unknown> }[]) {
             try {
               cookiesToSet.forEach(({ name, value, options }) => {
                 cookieStore.set(name, value, options)
@@ -53,15 +53,14 @@ export async function GET(request: Request) {
             .eq('contact_email', userEmail)
             .maybeSingle()
 
-          if (
-            partner &&
-            (!partner.user_id || (partner.user_id as string) === PLACEHOLDER)
-          ) {
-            await svc
-              .from('partners')
-              .update({ user_id: sessionData.user.id })
-              .eq('id', partner.id)
-            // Redirect to partner dashboard instead of default
+          if (partner) {
+            if (!partner.user_id || (partner.user_id as string) === PLACEHOLDER) {
+              await svc
+                .from('partners')
+                .update({ user_id: sessionData.user.id })
+                .eq('id', partner.id)
+            }
+            // Redirect to partner dashboard for both new and returning partners
             return NextResponse.redirect(new URL('/partner', request.url))
           }
         } catch {
