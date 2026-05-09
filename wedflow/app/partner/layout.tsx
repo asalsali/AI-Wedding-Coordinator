@@ -10,14 +10,14 @@ export default async function PartnerLayout({
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/sign-in')
+  if (!user) redirect('/partner-login')
 
   let partner: Partner | null = null
   try {
     partner = await getPartnerProfile()
   } catch {
     // Not authenticated or fetch failed — redirect
-    redirect('/sign-in')
+    redirect('/partner-login')
   }
 
   if (!partner) {

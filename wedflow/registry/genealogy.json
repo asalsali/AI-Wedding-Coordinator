@@ -424,6 +424,19 @@
       "skills": ["analytics", "frontend", "metrics", "data-aggregation"],
       "mannaExpected": "medium",
       "testament": "memory/inheritance/partner-analytics-testament.json"
+    },
+    {
+      "id": "partner-login-page",
+      "parentId": "root",
+      "mandate": "Create a dedicated partner login page at /partner-login with vendor-appropriate branding and auth flow. Update nav link and /partner layout redirect to point to /partner-login instead of /sign-in.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-09T12:00:00Z",
+      "sunsetAt": "2026-05-09T12:15:00Z",
+      "status": "archived",
+      "skills": ["frontend", "auth", "routing"],
+      "mannaExpected": "low",
+      "testament": "memory/inheritance/partner-login-page-testament.json"
     }
   ],
   "sabbathCount": 6,
