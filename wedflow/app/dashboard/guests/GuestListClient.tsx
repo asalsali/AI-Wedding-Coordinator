@@ -17,6 +17,12 @@ const GROUP_LABELS: Record<GuestGroup, string> = {
   bridal_party: 'Bridal Party',
   friends: 'Friends',
   other: 'Other',
+  vendor_photo: 'Photographer',
+  vendor_music: 'DJ / Band',
+  vendor_floral: 'Florist',
+  vendor_catering: 'Caterer',
+  vendor_venue: 'Venue',
+  vendor_other: 'Other Vendor',
 }
 
 const RSVP_LABELS: Record<RsvpStatus, string> = {
@@ -128,7 +134,7 @@ export default function GuestListClient({ coupleName, initialGuests }: Props) {
       }}>
         <div>
           <h1 style={{ fontSize: '24px', fontWeight: 600, margin: 0 }}>{coupleName}</h1>
-          <p style={{ opacity: 0.8, margin: '4px 0 0 0' }}>Guest List</p>
+          <p style={{ opacity: 0.8, margin: '4px 0 0 0' }}>Contacts</p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
           <button
@@ -157,7 +163,7 @@ export default function GuestListClient({ coupleName, initialGuests }: Props) {
               fontSize: '14px',
             }}
           >
-            + Add Guest
+            + Add Contact
           </button>
         </div>
       </header>
@@ -195,10 +201,17 @@ export default function GuestListClient({ coupleName, initialGuests }: Props) {
           <option value="bridal_party">Bridal Party</option>
           <option value="friends">Friends</option>
           <option value="other">Other</option>
+          <option disabled>---</option>
+          <option value="vendor_photo">Photographer</option>
+          <option value="vendor_music">DJ / Band</option>
+          <option value="vendor_floral">Florist</option>
+          <option value="vendor_catering">Caterer</option>
+          <option value="vendor_venue">Venue</option>
+          <option value="vendor_other">Other Vendor</option>
         </select>
         <input
           type="text"
-          placeholder="Search guests..."
+          placeholder="Search contacts..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{
@@ -340,7 +353,7 @@ export default function GuestListClient({ coupleName, initialGuests }: Props) {
             {filteredGuests.length === 0 && (
               <tr>
                 <td colSpan={7} style={{ padding: '48px', textAlign: 'center', color: '#6B7280' }}>
-                  No guests found. Add your first guest above.
+                  No contacts found. Add your first contact above.
                 </td>
               </tr>
             )}
@@ -350,7 +363,7 @@ export default function GuestListClient({ coupleName, initialGuests }: Props) {
 
       {/* Add Guest Modal */}
       {showAddForm && (
-        <Modal onClose={() => setShowAddForm(false)} title="Add Guest">
+        <Modal onClose={() => setShowAddForm(false)} title="Add Contact">
           <form action={handleAddGuest}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <input type="text" name="name" placeholder="Guest name *" required style={inputStyle} />
@@ -387,7 +400,7 @@ export default function GuestListClient({ coupleName, initialGuests }: Props) {
                     opacity: isPending ? 0.7 : 1,
                   }}
                 >
-                  {isPending ? 'Saving...' : 'Add Guest'}
+                  {isPending ? 'Saving...' : 'Add Contact'}
                 </button>
               </div>
             </div>
@@ -397,7 +410,7 @@ export default function GuestListClient({ coupleName, initialGuests }: Props) {
 
       {/* Import CSV Modal */}
       {showImport && (
-        <Modal onClose={() => setShowImport(false)} title="Import Guests from CSV">
+        <Modal onClose={() => setShowImport(false)} title="Import Contacts from CSV">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <p style={{ fontSize: '14px', color: '#6B7280', margin: 0 }}>
               Paste CSV data with headers: name, email, phone, group_tag, dietary_restrictions

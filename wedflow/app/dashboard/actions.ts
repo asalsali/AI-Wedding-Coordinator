@@ -295,7 +295,7 @@ const GuestCreateSchema = z.object({
   name: z.string().min(1).max(200),
   phone: z.string().max(20).nullable().optional(),
   email: z.string().email().max(200).nullable().optional(),
-  group_tag: z.enum(['bride_family', 'groom_family', 'bridal_party', 'friends', 'other']).default('other'),
+  group_tag: z.enum(['bride_family', 'groom_family', 'bridal_party', 'friends', 'other', 'vendor_photo', 'vendor_music', 'vendor_floral', 'vendor_catering', 'vendor_venue', 'vendor_other']).default('other'),
   notes: z.string().max(1000).nullable().optional(),
 })
 
@@ -334,7 +334,7 @@ const GuestUpdateSchema = z.object({
   dietary_restrictions: z.string().max(500).nullable().optional(),
   plus_one: z.boolean().optional(),
   plus_one_name: z.string().max(200).nullable().optional(),
-  group_tag: z.enum(['bride_family', 'groom_family', 'bridal_party', 'friends', 'other']).optional(),
+  group_tag: z.enum(['bride_family', 'groom_family', 'bridal_party', 'friends', 'other', 'vendor_photo', 'vendor_music', 'vendor_floral', 'vendor_catering', 'vendor_venue', 'vendor_other']).optional(),
   notes: z.string().max(1000).nullable().optional(),
 })
 
@@ -400,7 +400,7 @@ const CSVRowSchema = z.object({
   name: z.string().min(1),
   phone: z.string().max(20).nullable().optional(),
   email: z.string().email().nullable().optional(),
-  group: z.enum(['bride_family', 'groom_family', 'bridal_party', 'friends', 'other']).default('other'),
+  group: z.enum(['bride_family', 'groom_family', 'bridal_party', 'friends', 'other', 'vendor_photo', 'vendor_music', 'vendor_floral', 'vendor_catering', 'vendor_venue', 'vendor_other']).default('other'),
 })
 
 export interface CSVImportResult {

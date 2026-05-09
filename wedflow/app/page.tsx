@@ -186,17 +186,26 @@ function CircleDiagram() {
   const guests = [
     { text: "Dress code?", angle: -40 },
     { text: "Parking?", angle: 50 },
-    { text: "Registry?", angle: 140 },
+    { text: "Registry?", angle: 160 },
     { text: "Hotel?", angle: -150 },
+  ];
+
+  // Vendor message bubbles on the outer ring (distinct color)
+  const vendors = [
+    { text: "Timeline?", angle: 95 },
+    { text: "Setup time?", angle: -95 },
+    { text: "Delivery addr?", angle: -10 },
+    { text: "Song list?", angle: 200 },
   ];
 
   return (
     <div style={{ position: "relative", width: "100%", maxWidth: 400, aspectRatio: "1", margin: "0 auto" }}>
       <svg viewBox="0 0 400 400" width="100%" height="100%" style={{ position: "absolute", inset: 0 }}>
-        {/* Outer ring: guests */}
+        {/* Outer ring: guests + vendors */}
         <circle cx={cx} cy={cy} r={185} fill="none" stroke="var(--wf-line-strong)" strokeWidth="1.5" strokeDasharray="6 4" opacity={0.6} />
-        {/* Ring label */}
-        <text x={cx} y={24} textAnchor="middle" fill="var(--wf-ink-25)" fontSize="9" fontFamily="var(--wf-sans)" letterSpacing="0.12em" style={{ textTransform: "uppercase" } as React.CSSProperties}>GUESTS</text>
+        {/* Ring labels */}
+        <text x={cx - 60} y={24} textAnchor="middle" fill="var(--wf-ink-25)" fontSize="9" fontFamily="var(--wf-sans)" letterSpacing="0.12em" style={{ textTransform: "uppercase" } as React.CSSProperties}>GUESTS</text>
+        <text x={cx + 60} y={24} textAnchor="middle" fill="#C4714A" fontSize="9" fontFamily="var(--wf-sans)" letterSpacing="0.12em" opacity={0.7} style={{ textTransform: "uppercase" } as React.CSSProperties}>VENDORS</text>
 
         {/* Middle ring: inner circle */}
         <circle cx={cx} cy={cy} r={120} fill="rgba(123,145,116,0.04)" stroke="rgba(123,145,116,0.3)" strokeWidth="1.5" />
@@ -243,6 +252,21 @@ function CircleDiagram() {
             </g>
           );
         })}
+
+        {/* Vendor message bubbles (terracotta) */}
+        {vendors.map((vendor, i) => {
+          const rad = (vendor.angle * Math.PI) / 180;
+          const vx = cx + Math.cos(rad) * 178;
+          const vy = cy + Math.sin(rad) * 178;
+          const textWidth = vendor.text.length * 5.5 + 20;
+          const rectWidth = Math.max(64, textWidth);
+          return (
+            <g key={`vendor-${i}`}>
+              <rect x={vx - rectWidth / 2} y={vy - 11} width={rectWidth} height={22} rx={11} fill="rgba(196,113,74,0.1)" />
+              <text x={vx} y={vy + 3.5} textAnchor="middle" fill="#C4714A" fontSize="9.5" fontFamily="var(--wf-sans)" fontStyle="italic">{vendor.text}</text>
+            </g>
+          );
+        })}
       </svg>
     </div>
   );
@@ -263,7 +287,7 @@ function Hero() {
               We help you tend it.
             </h1>
             <p className="wf-sans animate-fade-in-up-delay wf-hero-subtitle">
-              Guests text with questions. Your maid of honor coordinates the bridesmaids. Your mom handles the family dynamics. WedFlow keeps all of it moving so you can be present for what matters.
+              Guests text with questions. Vendors confirm timelines. Your maid of honor coordinates the bridesmaids. Your mom handles the family dynamics. WedFlow keeps all of it moving so you can be present for what matters.
             </p>
             <div className="animate-fade-in-up-delay-2 wf-hero-email">
               <EmailCapture />
@@ -287,7 +311,7 @@ function SocialProofBar() {
   return (
     <div style={{ background: "var(--wf-cream)", borderTop: "1px solid var(--wf-line)", borderBottom: "1px solid var(--wf-line)", padding: "22px 0", textAlign: "center" }}>
       <p className="wf-serif" style={{ fontSize: 15, color: "var(--wf-ink-45)", fontStyle: "italic", letterSpacing: "0.01em" }}>
-        The emotional buffer between you and the people who love you most. Trusted by couples across Canada.
+        The coordination layer between you, your people, and your vendors. Trusted by couples across Canada.
       </p>
     </div>
   );
@@ -299,13 +323,13 @@ function HowItWorks() {
   const steps = [
     {
       num: "01",
-      title: "Guests text, WedFlow answers",
-      body: "Dress code, parking, venue, registry. Guests text one number and get an instant reply in your voice. No app to download.",
+      title: "Everyone texts, WedFlow coordinates",
+      body: "Guests ask about dress code, parking, and registry. Your photographer confirms the timeline. Your DJ sends the song list. One number handles all of it, in your voice. No app to download.",
     },
     {
       num: "02",
       title: "Your circle coordinates",
-      body: "Your maid of honor, best man, and family get their own dashboard. They see their tasks, handle their people, and keep you out of the weeds.",
+      body: "Your maid of honor, best man, and family get their own dashboard. Vendors stay in the loop on timelines and logistics. Everyone sees what belongs to them and stays out of what does not.",
     },
     {
       num: "03",
@@ -368,6 +392,11 @@ function Features() {
       title: "Hard things, held with care",
       body: "When a guest shares something emotional, WedFlow recognizes it. It pauses, drafts something thoughtful, and holds it for you, or passes it to someone you trust.",
       accent: "Care, not automation.",
+    },
+    {
+      title: "Your vendors stay in sync",
+      body: "Your photographer, DJ, florist, and caterer text the same number for timeline updates, delivery addresses, and setup times. No separate group chats. No lost details.",
+      accent: "One number for everyone.",
     },
     {
       title: "Ten minutes to set up. That is it.",

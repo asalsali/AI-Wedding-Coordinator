@@ -11,7 +11,7 @@ export interface Faq {
 
 export type ToneStyle = "warm" | "elegant" | "playful";
 
-export type GuestGroup = "bride_family" | "groom_family" | "bridal_party" | "friends" | "other";
+export type GuestGroup = "bride_family" | "groom_family" | "bridal_party" | "friends" | "other" | "vendor_photo" | "vendor_music" | "vendor_floral" | "vendor_catering" | "vendor_venue" | "vendor_other";
 export type RsvpStatus = "pending" | "yes" | "no" | "maybe";
 
 export interface Guest {

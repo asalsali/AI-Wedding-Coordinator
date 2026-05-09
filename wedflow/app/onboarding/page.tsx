@@ -37,6 +37,8 @@ const DEFAULT_FAQS: LocalFaq[] = [
   { question: 'Is there parking at the venue?', answer: '' },
   { question: 'Where are you registered?', answer: '' },
   { question: 'Is there a hotel block for guests?', answer: '' },
+  { question: 'What time can vendors arrive for setup?', answer: '' },
+  { question: 'Where should deliveries be made?', answer: '' },
 ]
 
 // ----------------------------------------------------------------
@@ -497,7 +499,7 @@ export default function OnboardingPage() {
             <div className="mb-8">
               <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>Wedding details</h1>
               <p className="mt-2 text-sm text-stone-500">
-                Guests will ask about this — let&apos;s get it right.
+                Everyone from your photographer to your guests will need this.
               </p>
             </div>
 
@@ -775,6 +777,7 @@ export default function OnboardingPage() {
               <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>Custom FAQs</h1>
               <p className="mt-2 text-sm text-stone-500">
                 Fill in your answers — your AI will use these word for word.
+                You can also add vendor-specific questions, like setup times or delivery instructions.
               </p>
             </div>
 
@@ -982,10 +985,10 @@ export default function OnboardingPage() {
                     {provisionedNumber}
                   </p>
                   <p className="text-xs mt-4" style={{ color: C.cream, opacity: 0.6 }}>
-                    Share this number with your guests so they can text your wedding coordinator.
+                    Share this number with your guests and vendors — everyone texts the same number.
                   </p>
                   <p className="text-xs mt-3" style={{ color: C.cream, opacity: 0.5 }}>
-                    Add your guests&apos; phone numbers so they can text your wedding number.
+                    Add your guests&apos; and vendors&apos; phone numbers so they can text your wedding number.
                     Guests without a phone number on file won&apos;t be able to use SMS.
                   </p>
                 </div>
@@ -1049,6 +1052,7 @@ export default function OnboardingPage() {
               </h1>
               <p className="mt-2 text-sm text-stone-500">
                 Your maid of honor, best man, or family leads can help tend your guests.
+                Your vendors will coordinate through the same number.
                 They will see tasks you assign and conversations relevant to their role.
               </p>
             </div>

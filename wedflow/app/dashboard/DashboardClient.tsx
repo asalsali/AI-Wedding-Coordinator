@@ -102,7 +102,7 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
     { id: 'home', label: 'Home', icon: 'home' },
     { id: 'inbox', label: 'Inbox', icon: 'inbox' },
     { id: 'circle', label: 'Circle', icon: 'heart' },
-    { id: 'guests', label: 'Guests', icon: 'users' },
+    { id: 'guests', label: 'Contacts', icon: 'users' },
     { id: 'insights', label: 'Insights', icon: 'barChart' },
     { id: 'profile', label: 'Wedding Profile', icon: 'ring' },
     { id: 'settings', label: 'Settings', icon: 'settings' },

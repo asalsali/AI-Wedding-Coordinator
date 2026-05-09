@@ -4,10 +4,10 @@ import { listGuestsAction, createGuestAction, updateGuestAction, deleteGuestActi
 import type { CSVImportResult } from '../actions'
 import type { Guest, GuestGroup, RsvpStatus } from '@/types'
 
-const GL: Record<GuestGroup, string> = { bride_family: "Bride's Family", groom_family: "Groom's Family", bridal_party: 'Bridal Party', friends: 'Friends', other: 'Other' }
+const GL: Record<GuestGroup, string> = { bride_family: "Bride's Family", groom_family: "Groom's Family", bridal_party: 'Bridal Party', friends: 'Friends', other: 'Other', vendor_photo: 'Photographer', vendor_music: 'DJ / Band', vendor_floral: 'Florist', vendor_catering: 'Caterer', vendor_venue: 'Venue', vendor_other: 'Other Vendor' }
 const RL: Record<RsvpStatus, string> = { pending: 'Pending', yes: 'Attending', no: 'Declined', maybe: 'Maybe' }
 const RC: Record<RsvpStatus, string> = { yes: '#2D6A4F', no: '#C1292E', maybe: '#E59500', pending: '#8a8580' }
-const AG: GuestGroup[] = ['bride_family', 'groom_family', 'bridal_party', 'friends', 'other']
+const AG: GuestGroup[] = ['bride_family', 'groom_family', 'bridal_party', 'friends', 'other', 'vendor_photo', 'vendor_music', 'vendor_floral', 'vendor_catering', 'vendor_venue', 'vendor_other']
 const AR: RsvpStatus[] = ['pending', 'yes', 'no', 'maybe']
 type FG = { name: string; phone: string; email: string; group_tag: GuestGroup; notes: string; rsvp_status: RsvpStatus; rsvp_guest_count: number; dietary_restrictions: string; plus_one: boolean; plus_one_name: string }
 const EF: FG = { name: '', phone: '', email: '', group_tag: 'other', notes: '', rsvp_status: 'pending', rsvp_guest_count: 1, dietary_restrictions: '', plus_one: false, plus_one_name: '' }
@@ -26,7 +26,7 @@ function Ff({ form, set, edit, m }: { form: FG; set: (f: FG) => void; edit: bool
       <div style={{ gridColumn: m ? '1' : '1 / -1' }}><label style={L}>Name *</label><input style={I} value={form.name} onChange={(e) => set({ ...form, name: e.target.value })} placeholder="Full name" /></div>
       <div><label style={L}>Phone</label><input style={I} value={form.phone} onChange={(e) => set({ ...form, phone: e.target.value })} placeholder="+1 (555) 123-4567" /></div>
       <div><label style={L}>Email</label><input style={I} value={form.email} onChange={(e) => set({ ...form, email: e.target.value })} placeholder="guest@example.com" /></div>
-      <div><label style={L}>Group</label><select style={S} value={form.group_tag} onChange={(e) => set({ ...form, group_tag: e.target.value as GuestGroup })}>{AG.map((g) => <option key={g} value={g}>{GL[g]}</option>)}</select></div>
+      <div><label style={L}>Group</label><select style={S} value={form.group_tag} onChange={(e) => set({ ...form, group_tag: e.target.value as GuestGroup })}>{AG.slice(0, 5).map((g) => <option key={g} value={g}>{GL[g]}</option>)}<option disabled>---</option>{AG.slice(5).map((g) => <option key={g} value={g}>{GL[g]}</option>)}</select></div>
       {edit && (<>
         <div><label style={L}>RSVP Status</label><select style={S} value={form.rsvp_status} onChange={(e) => set({ ...form, rsvp_status: e.target.value as RsvpStatus })}>{AR.map((s) => <option key={s} value={s}>{RL[s]}</option>)}</select></div>
         <div><label style={L}>Guest Count</label><input style={I} type="number" min={0} max={20} value={form.rsvp_guest_count} onChange={(e) => set({ ...form, rsvp_guest_count: Math.max(0, Math.min(20, parseInt(e.target.value) || 0)) })} /></div>
@@ -94,7 +94,7 @@ export function GuestsView({ plan = null }: { plan?: string | null }) {
 
   const doCreate = useCallback(() => {
     if (!af.name.trim()) return
-    startCreate(async () => { try { const ng = await createGuestAction({ name: af.name.trim(), phone: af.phone.trim() || null, email: af.email.trim() || null, group_tag: af.group_tag, notes: af.notes.trim() || null }); setGuests((p) => [...p, ng].sort((a, b) => a.name.localeCompare(b.name))); setAf({ ...EF }); setShowAdd(false); setToast({ type: 'success', text: `${ng.name} added to guest list.` }) } catch (e) { setToast({ type: 'error', text: e instanceof Error ? e.message : 'Failed to add guest.' }) } })
+    startCreate(async () => { try { const ng = await createGuestAction({ name: af.name.trim(), phone: af.phone.trim() || null, email: af.email.trim() || null, group_tag: af.group_tag, notes: af.notes.trim() || null }); setGuests((p) => [...p, ng].sort((a, b) => a.name.localeCompare(b.name))); setAf({ ...EF }); setShowAdd(false); setToast({ type: 'success', text: `${ng.name} added.` }) } catch (e) { setToast({ type: 'error', text: e instanceof Error ? e.message : 'Failed to add guest.' }) } })
   }, [af])
 
   const doEdit = useCallback((g: Guest) => { setEid(g.id); setEf({ name: g.name, phone: g.phone || '', email: g.email || '', group_tag: g.group_tag, notes: g.notes || '', rsvp_status: g.rsvp_status, rsvp_guest_count: g.rsvp_guest_count, dietary_restrictions: g.dietary_restrictions || '', plus_one: g.plus_one, plus_one_name: g.plus_one_name || '' }) }, [])
@@ -118,7 +118,7 @@ export function GuestsView({ plan = null }: { plan?: string | null }) {
 
   const dc = (gid: string, gn: string) => (
     <div style={{ marginTop: 14, padding: '14px 18px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-      <span style={{ fontSize: 13, color: '#991b1b' }}>Remove {gn} from guest list?</span>
+      <span style={{ fontSize: 13, color: '#991b1b' }}>Remove {gn}?</span>
       <div style={{ display: 'flex', gap: 8 }}>
         <button style={{ ...B, padding: '6px 14px', fontSize: 12 }} onClick={() => setCdi(null)}>Keep</button>
         <button style={{ ...P, padding: '6px 14px', fontSize: 12, background: '#C1292E', opacity: deleting ? 0.5 : 1 }} onClick={() => doDel(gid)} disabled={deleting}>{deleting ? 'Removing...' : 'Remove'}</button>
@@ -128,10 +128,10 @@ export function GuestsView({ plan = null }: { plan?: string | null }) {
 
   return (
     <div style={{ padding: m ? '24px 16px 80px' : '40px 48px 80px', maxWidth: 960, margin: '0 auto' }}>
-      <span className="wf-eyebrow">Guest list</span>
-      <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 28px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>Everyone you&apos;ll <em style={{ fontWeight: 500 }}>celebrate with.</em></h1>
+      <span className="wf-eyebrow">Contacts</span>
+      <h1 className="wf-serif" style={{ fontSize: 'clamp(28px, 3.4vw, 42px)', color: 'var(--wf-forest)', fontWeight: 600, margin: '14px 0 28px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>Everyone in your <em style={{ fontWeight: 500 }}>wedding.</em></h1>
 
-      {loading && <div style={{ textAlign: 'center', padding: 48, color: 'var(--wf-ink-60)', fontFamily: 'var(--wf-sans)', fontSize: 14 }}>Loading guest list...</div>}
+      {loading && <div style={{ textAlign: 'center', padding: 48, color: 'var(--wf-ink-60)', fontFamily: 'var(--wf-sans)', fontSize: 14 }}>Loading contacts...</div>}
       {err && !loading && <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 12, padding: '16px 20px', color: '#991b1b', fontFamily: 'var(--wf-sans)', fontSize: 13, marginBottom: 20 }}>{err}</div>}
 
       {!loading && !err && (<>
@@ -146,20 +146,20 @@ export function GuestsView({ plan = null }: { plan?: string | null }) {
 
         {plan !== 'concierge' && (
           <div style={{ marginBottom: 16, padding: '10px 14px', background: 'var(--wf-sand)', border: '1px solid var(--wf-line)', borderRadius: 10, fontSize: 12, fontFamily: 'var(--wf-sans)', color: 'var(--wf-ink-60)' }}>
-            Guest phone numbers are masked on your current plan. Upgrade to Concierge to see full phone numbers.
+            Phone numbers are masked on your current plan. Upgrade to Concierge to see full phone numbers.
           </div>
         )}
 
         <div style={{ display: 'flex', flexDirection: m ? 'column' : 'row', flexWrap: 'wrap', gap: 10, marginBottom: 20, alignItems: m ? 'stretch' : 'center' }}>
           <input style={{ ...I, maxWidth: m ? '100%' : 240, flex: m ? '1 1 auto' : undefined, minHeight: m ? 44 : undefined }} placeholder="Search by name, phone, or email" value={search} onChange={(e) => setSearch(e.target.value)} />
           <div style={{ display: 'flex', gap: 10 }}>
-            <select style={{ ...S, flex: 1, maxWidth: m ? '100%' : 180, minHeight: m ? 44 : undefined }} value={gf} onChange={(e) => setGf(e.target.value as GuestGroup | 'all')}><option value="all">All groups</option>{AG.map((g) => <option key={g} value={g}>{GL[g]}</option>)}</select>
+            <select style={{ ...S, flex: 1, maxWidth: m ? '100%' : 180, minHeight: m ? 44 : undefined }} value={gf} onChange={(e) => setGf(e.target.value as GuestGroup | 'all')}><option value="all">All groups</option>{AG.slice(0, 5).map((g) => <option key={g} value={g}>{GL[g]}</option>)}<option disabled>---</option>{AG.slice(5).map((g) => <option key={g} value={g}>{GL[g]}</option>)}</select>
             <select style={{ ...S, flex: 1, maxWidth: m ? '100%' : 160, minHeight: m ? 44 : undefined }} value={rf} onChange={(e) => setRf(e.target.value as RsvpStatus | 'all')}><option value="all">All RSVP</option>{AR.map((s) => <option key={s} value={s}>{RL[s]}</option>)}</select>
           </div>
           {!m && <div style={{ flex: 1 }} />}
           <div style={{ display: 'flex', gap: 10 }}>
             <button style={{ ...B, flex: m ? 1 : undefined, minHeight: m ? 44 : undefined }} onClick={() => { setShowCsv(true); setCsvRes(null) }}>Import CSV</button>
-            <button style={{ ...P, flex: m ? 1 : undefined, minHeight: m ? 44 : undefined }} onClick={() => { setShowAdd(true); setAf({ ...EF }) }}>Add guest</button>
+            <button style={{ ...P, flex: m ? 1 : undefined, minHeight: m ? 44 : undefined }} onClick={() => { setShowAdd(true); setAf({ ...EF }) }}>Add contact</button>
           </div>
         </div>
 
@@ -178,25 +178,25 @@ export function GuestsView({ plan = null }: { plan?: string | null }) {
         {showAdd && (
           <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 14, padding: m ? '20px 16px' : '24px 28px', marginBottom: 20 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
-              <h3 className="wf-serif" style={{ fontSize: 16, fontWeight: 600, color: 'var(--wf-forest)', margin: 0 }}>Add a guest</h3>
+              <h3 className="wf-serif" style={{ fontSize: 16, fontWeight: 600, color: 'var(--wf-forest)', margin: 0 }}>Add a contact</h3>
               <button onClick={() => setShowAdd(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: 'var(--wf-ink-60)', lineHeight: 1 }}>x</button>
             </div>
             <Ff form={af} set={setAf} edit={false} m={m} />
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 18 }}>
               <button style={B} onClick={() => setShowAdd(false)}>Cancel</button>
-              <button style={{ ...P, opacity: creating || !af.name.trim() ? 0.5 : 1 }} onClick={doCreate} disabled={creating || !af.name.trim()}>{creating ? 'Adding...' : 'Add guest'}</button>
+              <button style={{ ...P, opacity: creating || !af.name.trim() ? 0.5 : 1 }} onClick={doCreate} disabled={creating || !af.name.trim()}>{creating ? 'Adding...' : 'Add contact'}</button>
             </div>
           </div>)}
 
         {guests.length === 0 && (
           <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 20, padding: '48px 32px', textAlign: 'center' }}>
             <div style={{ marginBottom: 16, opacity: 0.3 }}><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--wf-forest)' }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg></div>
-            <h3 className="wf-serif" style={{ fontSize: 20, fontWeight: 600, color: 'var(--wf-forest)', margin: '0 0 8px' }}>No guests added yet</h3>
-            <p className="wf-sans" style={{ fontSize: 14, color: 'var(--wf-ink-60)', margin: '0 0 20px' }}>Add your first guest or import a CSV to get started.</p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 10 }}><button style={B} onClick={() => { setShowCsv(true); setCsvRes(null) }}>Import CSV</button><button style={P} onClick={() => { setShowAdd(true); setAf({ ...EF }) }}>Add guest</button></div>
+            <h3 className="wf-serif" style={{ fontSize: 20, fontWeight: 600, color: 'var(--wf-forest)', margin: '0 0 8px' }}>No contacts added yet</h3>
+            <p className="wf-sans" style={{ fontSize: 14, color: 'var(--wf-ink-60)', margin: '0 0 20px' }}>Add your first guest or vendor, or import a CSV to get started.</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 10 }}><button style={B} onClick={() => { setShowCsv(true); setCsvRes(null) }}>Import CSV</button><button style={P} onClick={() => { setShowAdd(true); setAf({ ...EF }) }}>Add contact</button></div>
           </div>)}
 
-        {guests.length > 0 && fl.length === 0 && <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 14, padding: '32px 24px', textAlign: 'center', fontFamily: 'var(--wf-sans)', fontSize: 14, color: 'var(--wf-ink-60)' }}>No guests match your current filters.</div>}
+        {guests.length > 0 && fl.length === 0 && <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 14, padding: '32px 24px', textAlign: 'center', fontFamily: 'var(--wf-sans)', fontSize: 14, color: 'var(--wf-ink-60)' }}>No contacts match your current filters.</div>}
 
         {fl.length > 0 && !m && (
           <div style={{ background: 'var(--wf-paper)', border: '1px solid var(--wf-line)', borderRadius: 14, overflow: 'hidden' }}>
@@ -258,7 +258,7 @@ export function GuestsView({ plan = null }: { plan?: string | null }) {
             })}
           </div>)}
 
-        {guests.length > 0 && <div style={{ marginTop: 16, fontSize: 12, fontFamily: 'var(--wf-sans)', color: 'var(--wf-ink-60)', textAlign: 'center' }}>Showing {fl.length} of {guests.length} guest{guests.length !== 1 ? 's' : ''}</div>}
+        {guests.length > 0 && <div style={{ marginTop: 16, fontSize: 12, fontFamily: 'var(--wf-sans)', color: 'var(--wf-ink-60)', textAlign: 'center' }}>Showing {fl.length} of {guests.length} contact{guests.length !== 1 ? 's' : ''}</div>}
       </>)}
 
       {toast && <div style={{ position: 'fixed', bottom: 24, right: 24, padding: '12px 16px', borderRadius: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.15)', fontSize: 13, fontWeight: 500, color: 'var(--wf-cream)', background: toast.type === 'success' ? '#4a6141' : '#C1292E', zIndex: 50, fontFamily: 'var(--wf-sans)' }}>{toast.text}</div>}
