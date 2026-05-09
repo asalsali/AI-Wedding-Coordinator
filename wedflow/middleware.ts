@@ -15,6 +15,7 @@ const isPublicRoute = [
   '/api/waitlist',
   '/auth/callback',
   '/partner-join',
+  '/partner-login',
 ]
 
 export async function middleware(request: NextRequest) {
