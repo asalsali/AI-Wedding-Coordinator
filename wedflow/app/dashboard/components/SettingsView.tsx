@@ -62,6 +62,7 @@ export function SettingsView({ couple, onPartnerEmailUpdate }: SettingsViewProps
   const currentPlan = couple.plan && PLAN_DETAILS[couple.plan] ? PLAN_DETAILS[couple.plan] : null
   const hasSubscription = couple.subscription_status === 'active' || couple.subscription_status === 'trialing'
   const isCanceled = couple.subscription_status === 'canceled'
+  const hasPartnerAccess = couple.plan === 'essential' || couple.plan === 'concierge'
 
   return (
     <div style={{ padding: isMobile ? '24px 16px 80px' : '40px 48px 80px', maxWidth: 900, margin: '0 auto' }}>
@@ -204,23 +205,29 @@ export function SettingsView({ couple, onPartnerEmailUpdate }: SettingsViewProps
               <div className="wf-sans" style={{ fontSize: 11.5, color: 'var(--wf-ink-45)', marginTop: 3 }}>For notifications and shared access</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              {editingEmail ? (
-                <>
-                  <input type="email" value={emailDraft} onChange={(e) => setEmailDraft(e.target.value)} placeholder="partner@example.com" className="wf-sans" style={{ fontSize: 13, border: '1px solid var(--wf-line-strong)', borderRadius: 8, padding: '8px 12px', outline: 'none', fontFamily: 'var(--wf-sans)' }} />
-                  <button onClick={handleSaveEmail} disabled={isSavingEmail} className="wf-btn wf-btn-forest wf-btn-sm">
-                    {isSavingEmail ? 'Saving...' : 'Save'}
-                  </button>
-                  <button onClick={() => { setEmailDraft(localPartnerEmail); setEditingEmail(false) }} disabled={isSavingEmail} className="wf-btn wf-btn-ghost wf-btn-sm">Cancel</button>
-                </>
+              {hasPartnerAccess ? (
+                editingEmail ? (
+                  <>
+                    <input type="email" value={emailDraft} onChange={(e) => setEmailDraft(e.target.value)} placeholder="partner@example.com" className="wf-sans" style={{ fontSize: 13, border: '1px solid var(--wf-line-strong)', borderRadius: 8, padding: '8px 12px', outline: 'none', fontFamily: 'var(--wf-sans)' }} />
+                    <button onClick={handleSaveEmail} disabled={isSavingEmail} className="wf-btn wf-btn-forest wf-btn-sm">
+                      {isSavingEmail ? 'Saving...' : 'Save'}
+                    </button>
+                    <button onClick={() => { setEmailDraft(localPartnerEmail); setEditingEmail(false) }} disabled={isSavingEmail} className="wf-btn wf-btn-ghost wf-btn-sm">Cancel</button>
+                  </>
+                ) : (
+                  <>
+                    <span className="wf-sans" style={{ fontSize: 13, color: 'var(--wf-ink-60)', fontStyle: localPartnerEmail ? 'normal' : 'italic' }}>
+                      {localPartnerEmail || 'Not set'}
+                    </span>
+                    <button onClick={() => { setEmailDraft(localPartnerEmail); setEditingEmail(true) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', padding: 4 }}>
+                      <Icon name="edit" size={13} />
+                    </button>
+                  </>
+                )
               ) : (
-                <>
-                  <span className="wf-sans" style={{ fontSize: 13, color: 'var(--wf-ink-60)', fontStyle: localPartnerEmail ? 'normal' : 'italic' }}>
-                    {localPartnerEmail || 'Not set'}
-                  </span>
-                  <button onClick={() => { setEmailDraft(localPartnerEmail); setEditingEmail(true) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--wf-ink-45)', padding: 4 }}>
-                    <Icon name="edit" size={13} />
-                  </button>
-                </>
+                <span className="wf-sans" style={{ fontSize: 12, color: 'var(--wf-ink-45)', fontStyle: 'italic' }}>
+                  Available on Essential and above
+                </span>
               )}
             </div>
           </div>

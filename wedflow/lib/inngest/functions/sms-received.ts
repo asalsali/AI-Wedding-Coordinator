@@ -11,6 +11,7 @@ import { WeddingProfile, Faq, ToneStyle } from "@/types";
 import { writeAuditLog } from "@/lib/audit/service";
 import { notifyEscalation } from "@/lib/notifications/escalation";
 import { sendPushToCouple } from "@/lib/push/send";
+import { getPlanPermissions } from "@/lib/stripe/permissions";
 
 // requires: ANTHROPIC_API_KEY, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 // requires: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
@@ -132,6 +133,71 @@ export const smsReceived = inngest.createFunction(
       return { skipped: true, reason: "no_profile" };
     }
 
+    // Step 1b: Check plan permissions and message cap
+    const planCheck = await step.run("check-plan-limits", async () => {
+      const supabase = createServiceRoleClient();
+      const { data: couple } = await supabase
+        .from("couples")
+        .select("plan, subscription_status")
+        .eq("id", coupleId)
+        .maybeSingle();
+
+      const plan = (couple?.plan as string | null) ?? null;
+      const subscriptionStatus = (couple?.subscription_status as string | null) ?? null;
+      const permissions = getPlanPermissions(plan);
+
+      // No active subscription = no AI replies
+      if (subscriptionStatus !== "active" && subscriptionStatus !== "trialing") {
+        return { allowed: false, reason: "no_subscription" as const, plan, escalationDrafts: false };
+      }
+
+      // Check monthly message cap (Starter = 200/mo)
+      if (permissions.monthlyMessageLimit !== null) {
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const { count } = await supabase
+          .from("messages")
+          .select("id", { count: "exact", head: true })
+          .eq("direction", "inbound")
+          .gte("created_at", startOfMonth.toISOString())
+          .in(
+            "conversation_id",
+            (
+              await supabase
+                .from("conversations")
+                .select("id")
+                .eq("couple_id", coupleId)
+            ).data?.map((c) => c.id) ?? []
+          );
+
+        if ((count ?? 0) >= permissions.monthlyMessageLimit) {
+          return { allowed: false, reason: "message_limit_reached" as const, plan, escalationDrafts: false };
+        }
+      }
+
+      return {
+        allowed: true,
+        reason: "ok" as const,
+        plan,
+        escalationDrafts: permissions.escalationDrafts,
+      };
+    });
+
+    if (!planCheck.allowed) {
+      await step.run("audit-plan-blocked", () =>
+        writeAuditLog({
+          coupleId,
+          eventType: "message_failed",
+          resourceType: "message",
+          resourceId: messageId,
+          metadata: { reason: planCheck.reason, plan: planCheck.plan },
+        })
+      );
+      return { skipped: true, reason: planCheck.reason };
+    }
+
     // Step 2: Classify the message
     const classification = await step.run("classify", () => {
       const client = new Anthropic();
@@ -156,10 +222,13 @@ export const smsReceived = inngest.createFunction(
 
     // Step 3a: Escalation path (sensitive or low-confidence unclear)
     if (escalate) {
-      const draft = await step.run("draft-escalation", () => {
-        const client = new Anthropic();
-        return draftEscalationReply(body, profile, client);
-      });
+      // Starter plan: no AI-drafted replies — just notify with empty draft
+      const draft = planCheck.escalationDrafts
+        ? await step.run("draft-escalation", () => {
+            const client = new Anthropic();
+            return draftEscalationReply(body, profile, client);
+          })
+        : "";
 
       await step.run("persist-escalation", async () => {
         const supabase = createServiceRoleClient();
@@ -248,10 +317,12 @@ export const smsReceived = inngest.createFunction(
 
     if (!isSafe) {
       // Safety check failed — escalate with a draft rather than sending wrong info
-      const draft = await step.run("draft-safety-escalation", () => {
-        const client = new Anthropic();
-        return draftEscalationReply(body, profile, client);
-      });
+      const draft = planCheck.escalationDrafts
+        ? await step.run("draft-safety-escalation", () => {
+            const client = new Anthropic();
+            return draftEscalationReply(body, profile, client);
+          })
+        : "";
 
       await step.run("persist-safety-escalation", async () => {
         const supabase = createServiceRoleClient();

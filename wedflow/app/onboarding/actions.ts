@@ -194,6 +194,15 @@ export async function saveOnboardingStep5(data: {
 
   const supabase = await getServiceClient()
 
+  // Enforce FAQ limit based on plan
+  const { getPlanPermissions } = await import('@/lib/stripe/permissions')
+  const { data: couple } = await supabase
+    .from('couples')
+    .select('plan')
+    .eq('id', data.coupleId)
+    .maybeSingle()
+  const permissions = getPlanPermissions((couple?.plan as string | null) ?? null)
+
   const { error: deleteError } = await supabase
     .from('faqs')
     .delete()
@@ -201,7 +210,10 @@ export async function saveOnboardingStep5(data: {
 
   if (deleteError) throw new Error(`Failed to clear FAQs: ${deleteError.message}`)
 
-  const valid = data.faqs.filter((f) => f.question.trim())
+  let valid = data.faqs.filter((f) => f.question.trim())
+  if (permissions.maxCustomFaqs !== null) {
+    valid = valid.slice(0, permissions.maxCustomFaqs)
+  }
   if (!valid.length) return
 
   const { error } = await supabase.from('faqs').insert(

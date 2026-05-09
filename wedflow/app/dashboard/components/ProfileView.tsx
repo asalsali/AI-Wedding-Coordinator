@@ -11,9 +11,10 @@ interface ProfileViewProps {
   phoneNumber: string | null
   onProfileUpdate: (updater: (prev: Profile) => Profile) => void
   isMobile?: boolean
+  plan?: string | null
 }
 
-export function ProfileView({ profile, phoneNumber, onProfileUpdate, isMobile = false }: ProfileViewProps) {
+export function ProfileView({ profile, phoneNumber, onProfileUpdate, isMobile = false, plan = null }: ProfileViewProps) {
   const [editField, setEditField] = useState<string | null>(null)
   const [draftValue, setDraftValue] = useState<string>('')
   const [isSaving, startSave] = useTransition()
@@ -107,13 +108,27 @@ export function ProfileView({ profile, phoneNumber, onProfileUpdate, isMobile = 
 
       {/* Tone & Voice */}
       <ProfileSectionHeader icon="sparkle" title="Tone & voice" />
-      <div style={{ display: 'grid', gridTemplateColumns: gridColumns, gap: 12 }}>
-        <ProfileField label="Tone style" field="tone" {...fieldProps} />
-        <ProfileField label="Vibe word" field="vibe_word" {...fieldProps} />
-        <div style={{ gridColumn: isMobile ? 'span 1' : 'span 3' }}>
-          <ProfileField label="Sample message (for AI calibration)" field="sample_message" {...fieldProps} />
+      {plan === 'concierge' ? (
+        <div style={{ display: 'grid', gridTemplateColumns: gridColumns, gap: 12 }}>
+          <ProfileField label="Tone style" field="tone" {...fieldProps} />
+          <ProfileField label="Vibe word" field="vibe_word" {...fieldProps} />
+          <div style={{ gridColumn: isMobile ? 'span 1' : 'span 3' }}>
+            <ProfileField label="Sample message (for AI calibration)" field="sample_message" {...fieldProps} />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div style={{ padding: '16px 20px', background: 'var(--wf-sand)', border: '1px solid var(--wf-line)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <div>
+            <div className="wf-sans" style={{ fontSize: 13, fontWeight: 500, color: 'var(--wf-forest)' }}>
+              Custom tone tuning is a Concierge feature
+            </div>
+            <div className="wf-sans" style={{ fontSize: 12, color: 'var(--wf-ink-45)', marginTop: 2 }}>
+              Your AI uses the default {profile.tone ?? 'warm'} tone. Upgrade to fine-tune your voice with vibe words and sample messages.
+            </div>
+          </div>
+          <a href="/pricing" className="wf-btn wf-btn-forest wf-btn-sm" style={{ whiteSpace: 'nowrap', textDecoration: 'none', flexShrink: 0 }}>Upgrade</a>
+        </div>
+      )}
     </div>
   )
 }

@@ -305,6 +305,7 @@ export default function DashboardClient({ couple, profile, phoneNumber, initialM
             phoneNumber={phoneNumber}
             onProfileUpdate={(updater) => setLocalProfile((prev) => prev ? updater(prev) : prev)}
             isMobile={isMobile}
+            plan={localCouple.plan}
           />
         )}
         {view === 'profile' && !localProfile && (
