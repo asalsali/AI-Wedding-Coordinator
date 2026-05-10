@@ -49,6 +49,10 @@
       {
         "date": "2026-05-10",
         "assessment": "MILESTONE: B2B2C partner infrastructure complete. 5 agents (3 gen-1, 2 gen-2) shipped: partner database schema with RLS, partner dashboard at /partner with role-based views (officiant/church/counsellor/vendor), admin partner management with approval workflow, partner invite-to-onboarding flow with email OTP, and deep analytics (conversion funnels, revenue attribution, performance badges). Church multi-officiant hierarchy supported. The largest remaining gap on the critical path is now closed. Next: QA the partner flow E2E, onboard James Toonk as first partner, resolve Starter tier status. ~114 days remain."
+      },
+      {
+        "date": "2026-05-09-sabbath-7",
+        "assessment": "Partner login flow shipped but NOT fully working E2E. 5 commits: dedicated /partner-login page, middleware public route, auth callback cookie fix, OTP removal. Magic link flow now sends correctly but redirect loop and admin invite error remain unresolved. Partner journey doc written (docs/partner-journey.md). Key insight: partners refer through conversation not software. SHEPRD rebrand under consideration. BLOCKING: admin invite throws server error, partner login redirect may still loop. Must debug locally next session. ~113 days remain."
       }
     ],
     "covenantRef": "memory/covenants/wedflow-launch.md"
@@ -457,8 +461,9 @@
       "generation": 1,
       "origin": "clone",
       "bornAt": "2026-05-09T16:00:00Z",
-      "status": "active",
-      "skills": [],
+      "sunsetAt": "2026-05-09T17:00:00Z",
+      "status": "archived",
+      "skills": ["auth", "supabase-ssr", "cookie-propagation", "nextjs-routing"],
       "mannaExpected": "medium"
     },
     {
@@ -475,8 +480,8 @@
       "testament": "memory/inheritance/partner-journey-planner-testament.json"
     }
   ],
-  "sabbathCount": 6,
-  "lastSabbath": "2026-05-10T00:00:00Z",
+  "sabbathCount": 7,
+  "lastSabbath": "2026-05-09T18:00:00Z",
   "synthesisLog": [
     {
       "childId": "inbox-composer",
