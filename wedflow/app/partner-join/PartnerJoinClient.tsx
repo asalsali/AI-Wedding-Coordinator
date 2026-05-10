@@ -19,10 +19,9 @@ export default function PartnerJoinClient({
   authEmail,
 }: PartnerJoinClientProps) {
   const router = useRouter()
-  const [step, setStep] = useState<'initial' | 'otp-sent' | 'verifying' | 'claiming' | 'done'>(
+  const [step, setStep] = useState<'initial' | 'link-sent' | 'claiming' | 'done'>(
     isAuthenticated ? 'claiming' : 'initial'
   )
-  const [otpToken, setOtpToken] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -55,7 +54,7 @@ export default function PartnerJoinClient({
     }
   }
 
-  async function handleSendOtp() {
+  async function handleSendLink() {
     setError('')
     setLoading(true)
     try {
@@ -68,42 +67,15 @@ export default function PartnerJoinClient({
       })
 
       if (otpError) {
-        setError(friendlyOtpError(otpError.message))
+        setError(friendlyError(otpError.message))
         return
       }
 
-      setStep('otp-sent')
+      setStep('link-sent')
     } catch {
-      setError('Failed to send verification code. Please try again.')
+      setError('Failed to send sign-in link. Please try again.')
     } finally {
       setLoading(false)
-    }
-  }
-
-  async function handleVerifyOtp(e: React.FormEvent) {
-    e.preventDefault()
-    if (!otpToken.trim()) return
-
-    setError('')
-    setStep('verifying')
-    try {
-      const { error: verifyError } = await supabase.auth.verifyOtp({
-        email,
-        token: otpToken.trim(),
-        type: 'email',
-      })
-
-      if (verifyError) {
-        setError(friendlyOtpError(verifyError.message))
-        setStep('otp-sent')
-        return
-      }
-
-      // OTP verified, user is now authenticated. Claim the invite.
-      await handleClaim()
-    } catch {
-      setError('Verification failed. Please try again.')
-      setStep('otp-sent')
     }
   }
 
@@ -195,8 +167,8 @@ export default function PartnerJoinClient({
     )
   }
 
-  // OTP sent — show verification input
-  if (step === 'otp-sent' || step === 'verifying') {
+  // Link sent confirmation
+  if (step === 'link-sent') {
     return (
       <div>
         <p
@@ -210,65 +182,18 @@ export default function PartnerJoinClient({
           }}
         >
           We sent a sign-in link to{' '}
-          <strong style={{ color: 'var(--wf-ink)' }}>{email}</strong>. Click the
-          link in your email, or enter the 6-digit code below if one was
-          included.
+          <strong style={{ color: 'var(--wf-ink)' }}>{email}</strong>. Check your
+          inbox and click the link to continue.
         </p>
 
-        <form
-          onSubmit={handleVerifyOtp}
-          style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
-        >
-          <div>
-            <label
-              htmlFor="otp-code"
-              className="wf-sans"
-              style={{
-                display: 'block',
-                fontSize: 12,
-                fontWeight: 600,
-                color: 'var(--wf-forest)',
-                marginBottom: 6,
-                letterSpacing: '0.02em',
-              }}
-            >
-              Verification code
-            </label>
-            <input
-              id="otp-code"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={6}
-              value={otpToken}
-              onChange={(e) => setOtpToken(e.target.value.replace(/\D/g, ''))}
-              required
-              autoComplete="one-time-code"
-              autoFocus
-              className="wf-sans"
-              style={fieldInputStyle}
-              placeholder="000000"
-            />
-          </div>
-
-          {error && (
-            <p
-              className="wf-sans"
-              style={{ color: 'var(--wf-rose)', fontSize: 13, margin: 0 }}
-            >
-              {error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={otpToken.length < 6}
-            className="wf-btn wf-btn-primary wf-btn-lg"
-            style={{ width: '100%', justifyContent: 'center' }}
+        {error && (
+          <p
+            className="wf-sans"
+            style={{ color: 'var(--wf-rose)', fontSize: 13, margin: '0 0 16px', textAlign: 'center' }}
           >
-            {step === 'verifying' ? 'Verifying...' : 'Verify and continue'}
-          </button>
-        </form>
+            {error}
+          </p>
+        )}
 
         <p
           className="wf-sans"
@@ -282,7 +207,7 @@ export default function PartnerJoinClient({
           Did not receive an email?{' '}
           <button
             type="button"
-            onClick={handleSendOtp}
+            onClick={handleSendLink}
             style={{
               background: 'none',
               border: 'none',
@@ -314,7 +239,7 @@ export default function PartnerJoinClient({
           marginBottom: 20,
         }}
       >
-        We will send a verification code to{' '}
+        We will send a sign-in link to{' '}
         <strong style={{ color: 'var(--wf-ink)' }}>{email}</strong> to confirm
         your identity.
       </p>
@@ -335,7 +260,7 @@ export default function PartnerJoinClient({
 
       <button
         type="button"
-        onClick={handleSendOtp}
+        onClick={handleSendLink}
         disabled={loading}
         className="wf-btn wf-btn-primary wf-btn-lg"
         style={{ width: '100%', justifyContent: 'center' }}
@@ -346,29 +271,10 @@ export default function PartnerJoinClient({
   )
 }
 
-function friendlyOtpError(msg: string): string {
-  if (msg.includes('Token has expired')) return 'Code has expired. Please request a new one.'
-  if (msg.includes('Invalid token') || msg.includes('invalid'))
-    return 'Invalid code. Please check and try again.'
+function friendlyError(msg: string): string {
   if (msg.includes('Too many requests') || msg.includes('rate'))
     return 'Too many attempts. Please wait a moment and try again.'
   return msg
-}
-
-const fieldInputStyle: React.CSSProperties = {
-  width: '100%',
-  padding: '12px 16px',
-  border: '1px solid var(--wf-line-strong)',
-  borderRadius: 10,
-  background: 'var(--wf-paper)',
-  fontFamily: 'var(--wf-sans)',
-  fontSize: 20,
-  color: 'var(--wf-ink)',
-  outline: 'none',
-  transition: 'border-color 0.15s, box-shadow 0.15s',
-  boxSizing: 'border-box',
-  textAlign: 'center',
-  letterSpacing: '0.3em',
 }
 
 const spinnerContainerStyle: React.CSSProperties = {

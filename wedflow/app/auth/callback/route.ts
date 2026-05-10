@@ -10,7 +10,18 @@ export async function GET(request: Request) {
 
   if (code) {
     const cookieStore = await cookies()
-    
+
+    // Determine redirect destination before exchanging code so we can
+    // build a NextResponse.redirect and set cookies directly on it.
+    // This avoids the SSR cookie-timing bug where cookieStore.set() in
+    // a Route Handler does not propagate to subsequent server-side
+    // getUser() calls on the redirected page.
+    let redirectTo = next
+
+    // We need to collect cookies during exchange, then apply them to
+    // the final redirect response. Use an intermediate array.
+    const pendingCookies: { name: string; value: string; options: Record<string, unknown> }[] = []
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -20,19 +31,14 @@ export async function GET(request: Request) {
             return cookieStore.getAll()
           },
           setAll(cookiesToSet: { name: string; value: string; options: Record<string, unknown> }[]) {
-            try {
-              cookiesToSet.forEach(({ name, value, options }) => {
-                cookieStore.set(name, value, options)
-              })
-            } catch {
-              // The `setAll` method was called from a Server Component.
-              // This can be ignored if you have middleware refreshing sessions.
-            }
+            cookiesToSet.forEach((cookie) => {
+              pendingCookies.push(cookie)
+            })
           },
         },
       }
     )
-    
+
     const { data: sessionData, error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
@@ -61,16 +67,21 @@ export async function GET(request: Request) {
                 .eq('id', partner.id)
             }
             // Redirect to partner dashboard for both new and returning partners
-            return NextResponse.redirect(new URL('/partner', request.url))
+            redirectTo = '/partner'
           }
         } catch {
           // Partner claim failed silently — user still gets redirected normally
         }
       }
 
-      return NextResponse.redirect(new URL(next, request.url))
+      // Build the redirect response and attach all session cookies to it
+      const response = NextResponse.redirect(new URL(redirectTo, request.url))
+      for (const { name, value, options } of pendingCookies) {
+        response.cookies.set(name, value, options)
+      }
+      return response
     }
-    
+
     console.error('auth/callback exchange failed', { code: error.code ?? 'unknown' })
   }
 

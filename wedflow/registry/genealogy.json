@@ -445,9 +445,34 @@
       "generation": 1,
       "origin": "clone",
       "bornAt": "2026-05-09T15:00:00Z",
+      "sunsetAt": "2026-05-09T15:30:00Z",
+      "status": "archived",
+      "skills": ["auth", "supabase", "routing"],
+      "mannaExpected": "medium"
+    },
+    {
+      "id": "auth-debugger",
+      "parentId": "root",
+      "mandate": "Trace and fix the complete partner login auth flow end-to-end: remove dead OTP input, fix cookie propagation redirect loop between callback and /partner layout, verify full chain.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-09T16:00:00Z",
       "status": "active",
       "skills": [],
       "mannaExpected": "medium"
+    },
+    {
+      "id": "partner-journey-planner",
+      "parentId": "root",
+      "mandate": "Define how each partner type (officiant, church, counsellor, vendor) uses WedFlow. Lifecycle, value prop, day-to-day usage. Output to docs/partner-journey.md.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-09T16:00:00Z",
+      "sunsetAt": "2026-05-09T17:00:00Z",
+      "status": "archived",
+      "skills": ["product-strategy", "partner-analysis", "documentation"],
+      "mannaExpected": "low",
+      "testament": "memory/inheritance/partner-journey-planner-testament.json"
     }
   ],
   "sabbathCount": 6,
