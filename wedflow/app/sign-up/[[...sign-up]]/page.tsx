@@ -33,12 +33,12 @@ export default function SignUpPage() {
           <div style={{ background: 'rgba(253,251,247,0.06)', border: '1px solid rgba(253,251,247,0.12)', borderRadius: 28, padding: 20, marginBottom: 32 }}>
             <Image src="/Couple2.png" alt="Couple" width={300} height={220} style={{ width: 300, height: 220, objectFit: 'cover', borderRadius: 16, display: 'block' }} />
           </div>
-          <span className="wf-eyebrow wf-eyebrow-centered wf-eyebrow-forest">For the month before</span>
+          <span className="wf-eyebrow wf-eyebrow-centered wf-eyebrow-forest">Your AI wedding secretary</span>
           <h2 className="wf-serif" style={{ fontSize: 36, lineHeight: 1.2, color: 'var(--wf-cream)', fontWeight: 400, fontStyle: 'italic', margin: '20px 0 12px', letterSpacing: '-0.01em', textAlign: 'center' }}>
-            Your wedding,<br />beautifully coordinated.
+            Every guest answered.<br />Every detail handled.
           </h2>
           <p className="wf-sans" style={{ color: 'var(--wf-cream-ink)', fontSize: 14, maxWidth: 320, lineHeight: 1.6, textAlign: 'center', margin: 0 }}>
-            One number for all your guests. One calm inbox for you.
+            One number for all your guests and vendors. One calm inbox for you.
           </p>
         </div>
 
@@ -47,7 +47,7 @@ export default function SignUpPage() {
           <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'var(--wf-terracotta)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--wf-serif)', fontWeight: 600, fontSize: 16, color: 'var(--wf-cream)', flexShrink: 0 }}>AK</div>
           <div>
             <p className="wf-serif" style={{ fontSize: 13, color: 'var(--wf-cream)', margin: 0, lineHeight: 1.5, fontStyle: 'italic' }}>
-              &ldquo;It felt like having a thoughtful friend in our pocket.&rdquo;
+              &ldquo;It felt like having a thoughtful friend handling everything.&rdquo;
             </p>
             <p className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-cream-ink-50)', marginTop: 4, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
               Alex &amp; Kirsten · July 2026

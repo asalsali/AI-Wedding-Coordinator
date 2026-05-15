@@ -705,7 +705,7 @@ export default function OnboardingPage() {
             <div className="mb-8">
               <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>Tone &amp; personality</h1>
               <p className="mt-2 text-sm text-stone-500">
-                Your AI coordinator will match your voice. Choose how it sounds.
+                Your AI secretary will match your voice. Choose how it sounds.
               </p>
             </div>
 
@@ -776,8 +776,8 @@ export default function OnboardingPage() {
             <div className="mb-8">
               <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>Custom FAQs</h1>
               <p className="mt-2 text-sm text-stone-500">
-                Fill in your answers — your AI will use these word for word.
-                You can also add vendor-specific questions, like setup times or delivery instructions.
+                Fill in your answers. Your secretary will use these word for word.
+                You can also add vendor-specific questions like setup times or delivery instructions.
               </p>
             </div>
 
@@ -985,7 +985,7 @@ export default function OnboardingPage() {
                     {provisionedNumber}
                   </p>
                   <p className="text-xs mt-4" style={{ color: C.cream, opacity: 0.6 }}>
-                    Share this number with your guests and vendors — everyone texts the same number.
+                    Share this number with your guests and vendors. Everyone texts the same number.
                   </p>
                   <p className="text-xs mt-3" style={{ color: C.cream, opacity: 0.5 }}>
                     Add your guests&apos; and vendors&apos; phone numbers so they can text your wedding number.
@@ -1048,12 +1048,12 @@ export default function OnboardingPage() {
           <div>
             <div className="mb-8">
               <h1 className="text-2xl font-semibold" style={{ color: C.forest }}>
-                Invite your circle
+                Invite your wedding party
               </h1>
               <p className="mt-2 text-sm text-stone-500">
-                Your maid of honor, best man, or family leads can help tend your guests.
-                Your vendors will coordinate through the same number.
-                They will see tasks you assign and conversations relevant to their role.
+                Your maid of honor, best man, or family leads can help manage guest messages.
+                Your vendors coordinate through the same number.
+                Everyone sees the tasks and conversations relevant to their role.
               </p>
             </div>
 
@@ -1084,7 +1084,7 @@ export default function OnboardingPage() {
                             Copy link
                           </button>
                           <a
-                            href={`sms:?body=${encodeURIComponent(`You're invited to our wedding circle! Join here: ${inv.link}`)}`}
+                            href={`sms:?body=${encodeURIComponent(`You're invited to help with our wedding! Join here: ${inv.link}`)}`}
                             className="text-xs px-2 py-1 rounded-lg transition-colors hover:opacity-70"
                             style={{ color: C.forest, border: `1px solid ${C.forest}30`, textDecoration: 'none' }}
                           >
@@ -1100,7 +1100,7 @@ export default function OnboardingPage() {
 
             {/* Invite form */}
             <div className="p-5 border border-stone-200 rounded-xl mb-6">
-              <p className="text-sm font-medium text-stone-900 mb-4">Add a circle member</p>
+              <p className="text-sm font-medium text-stone-900 mb-4">Add a team member</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div>
@@ -1217,7 +1217,7 @@ export default function OnboardingPage() {
               Invite {formData.partnerName || 'your partner'}
             </h2>
             <p className="text-sm text-stone-400 mb-5">
-              We&apos;ll send them a link to view and manage the wedding coordinator together.
+              We&apos;ll send them a link to view and manage WedFlow together.
               Invites are coming soon.
             </p>
             <label className={labelClass}>Partner&apos;s email</label>

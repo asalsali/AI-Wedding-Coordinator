@@ -203,7 +203,7 @@ export default function PortalClient({
               color: "var(--wf-forest)",
               margin: 0,
             }}>
-              Welcome to {coupleName}'s circle
+              Welcome to {coupleName}'s wedding
             </h2>
             <p style={{
               fontSize: 14,
@@ -323,7 +323,7 @@ export default function PortalClient({
               color: "var(--wf-forest)",
               margin: "0 0 12px",
             }}>
-              Conversations in your circle
+              Conversations
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {initialConversations.map(conv => (

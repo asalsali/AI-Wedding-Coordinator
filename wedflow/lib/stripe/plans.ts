@@ -5,7 +5,7 @@ export const PLANS = [
     price: 29,
     priceId: process.env.STRIPE_STARTER_PRICE_ID!,
     description:
-      'Your dedicated wedding number, ready to answer guests. AI handles the most common questions like venue, dress code, parking and registry so you do not have to.',
+      'Your AI wedding secretary answers the questions guests ask most. Venue, dress code, parking, registry. One number, instant replies, so you do not have to.',
     features: [
       'Dedicated wedding phone number',
       'AI auto-replies for routine questions',
@@ -21,7 +21,7 @@ export const PLANS = [
     price: 49,
     priceId: process.env.STRIPE_ESSENTIAL_PRICE_ID!,
     description:
-      'Everything in Starter plus your AI concierge handles sensitive messages with care. Wedflow drafts replies in your voice for you to review before sending.',
+      'Everything in Starter plus your secretary handles sensitive messages with care. WedFlow drafts replies in your voice for you to review before sending.',
     features: [
       'Everything in Starter',
       'Escalation with AI drafted replies',
@@ -38,7 +38,7 @@ export const PLANS = [
     price: 79,
     priceId: process.env.STRIPE_CONCIERGE_PRICE_ID!,
     description:
-      'The full white-glove experience. Everything in Essential plus a dedicated setup call, priority support and early access to new features.',
+      'The full white-glove experience. Everything in Essential plus a dedicated setup call, priority support, and early access to new features.',
     features: [
       'Everything in Essential',
       'Full guest phone number visibility',

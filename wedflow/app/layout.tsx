@@ -30,9 +30,9 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Wedflow — Your Wedding Concierge",
+  title: "Wedflow — The First AI Wedding Secretary",
   description:
-    "Wedflow handles guest questions so you can be fully present on your wedding day.",
+    "Wedflow answers your guests, coordinates your vendors, and handles the details so you can be present on your wedding day.",
 };
 
 export default function RootLayout({

@@ -133,7 +133,7 @@ function Nav() {
             <>
               <Link href="/partner-login" className="wf-sans" style={{ color: "var(--wf-ink-45)", textDecoration: "none", fontSize: 13 }}>Partner Login</Link>
               <Link href="/sign-in" className="wf-sans" style={{ color: "var(--wf-ink-60)", textDecoration: "none" }}>Sign in</Link>
-              <Link href="/sign-up" className="wf-btn wf-btn-primary">Begin Your Journey →</Link>
+              <Link href="/sign-up" className="wf-btn wf-btn-primary">Get Started →</Link>
             </>
           )}
         </div>
@@ -161,7 +161,7 @@ function Nav() {
             <>
               <Link href="/partner-login" style={{ color: "var(--wf-ink-45)", fontSize: 13 }} onClick={() => setMobileMenuOpen(false)}>Partner Login</Link>
               <Link href="/sign-in" onClick={() => setMobileMenuOpen(false)}>Sign in</Link>
-              <Link href="/sign-up" className="wf-btn wf-btn-primary" style={{ textAlign: "center" }} onClick={() => setMobileMenuOpen(false)}>Begin Your Journey →</Link>
+              <Link href="/sign-up" className="wf-btn wf-btn-primary" style={{ textAlign: "center" }} onClick={() => setMobileMenuOpen(false)}>Get Started →</Link>
             </>
           )}
         </div>
@@ -212,7 +212,7 @@ function CircleDiagram() {
         {/* Middle ring: inner circle */}
         <circle cx={cx} cy={cy} r={120} fill="rgba(123,145,116,0.04)" stroke="rgba(123,145,116,0.3)" strokeWidth="1.5" />
         {/* Ring label */}
-        <text x={cx} y={92} textAnchor="middle" fill="rgba(123,145,116,0.5)" fontSize="9" fontFamily="var(--wf-sans)" letterSpacing="0.12em" style={{ textTransform: "uppercase" } as React.CSSProperties}>YOUR CIRCLE</text>
+        <text x={cx} y={92} textAnchor="middle" fill="rgba(123,145,116,0.5)" fontSize="9" fontFamily="var(--wf-sans)" letterSpacing="0.12em" style={{ textTransform: "uppercase" } as React.CSSProperties}>YOUR WEDDING</text>
 
         {/* Center: couple */}
         <circle cx={cx} cy={cy} r={48} fill="#1C3B2B" />
@@ -282,14 +282,14 @@ function Hero() {
       <div className="wf-hero-container">
         <div className="wf-hero-grid">
           <div className="animate-fade-in-up">
-            <span className="wf-eyebrow">Your Circle of Care</span>
+            <span className="wf-eyebrow">The First AI Wedding Secretary</span>
             <h1 className="wf-serif wf-hero-title">
-              Your wedding takes<br />
-              <em style={{ fontWeight: 500, color: "var(--wf-terracotta)" }}>a village.</em><br />
-              We help you tend it.
+              Every text handled.<br />
+              <em style={{ fontWeight: 500, color: "var(--wf-terracotta)" }}>Every detail covered.</em><br />
+              You stay present.
             </h1>
             <p className="wf-sans animate-fade-in-up-delay wf-hero-subtitle">
-              Guests text with questions. Vendors confirm timelines. Your maid of honor coordinates the bridesmaids. Your mom handles the family dynamics. WedFlow keeps all of it moving so you can be present for what matters.
+              Guests text one number with questions about dress code, parking, and registry. Vendors confirm timelines. WedFlow answers instantly in your voice, coordinates your people, and flags anything that needs your personal touch.
             </p>
             <div className="animate-fade-in-up-delay-2 wf-hero-email">
               <EmailCapture />
@@ -313,7 +313,7 @@ function SocialProofBar() {
   return (
     <div style={{ background: "var(--wf-cream)", borderTop: "1px solid var(--wf-line)", borderBottom: "1px solid var(--wf-line)", padding: "22px 0", textAlign: "center" }}>
       <p className="wf-serif" style={{ fontSize: 15, color: "var(--wf-ink-45)", fontStyle: "italic", letterSpacing: "0.01em" }}>
-        The coordination layer between you, your people, and your vendors. Trusted by couples across Canada.
+        Your guests get instant answers. Your vendors stay in sync. You stay present. Trusted by couples across Canada.
       </p>
     </div>
   );
@@ -325,18 +325,18 @@ function HowItWorks() {
   const steps = [
     {
       num: "01",
-      title: "Everyone texts, WedFlow coordinates",
+      title: "Guests and vendors text, WedFlow answers",
       body: "Guests ask about dress code, parking, and registry. Your photographer confirms the timeline. Your DJ sends the song list. One number handles all of it, in your voice. No app to download.",
     },
     {
       num: "02",
-      title: "Your circle coordinates",
-      body: "Your maid of honor, best man, and family get their own dashboard. Vendors stay in the loop on timelines and logistics. Everyone sees what belongs to them and stays out of what does not.",
+      title: "Your people see what they need",
+      body: "Your maid of honor, best man, and family each get their own view. Vendors stay in the loop on timelines and logistics. Everyone sees what belongs to them and nothing more.",
     },
     {
       num: "03",
-      title: "Hard things, held gently",
-      body: "When a guest shares something emotional, WedFlow holds it. It drafts a reply and waits for you, or hands it to someone you trust.",
+      title: "Sensitive messages, held for you",
+      body: "When a guest shares something emotional, WedFlow pauses. It drafts a reply in your voice and waits for you to review, or passes it to someone you trust.",
     },
   ];
 
@@ -345,14 +345,14 @@ function HowItWorks() {
       <div className="wf-how-inner">
         <div className="wf-how-header">
           <div>
-            <span className="wf-eyebrow wf-eyebrow-forest">How your people are cared for</span>
+            <span className="wf-eyebrow wf-eyebrow-forest">How your secretary works</span>
             <h2 className="wf-serif" style={{ fontSize: "clamp(32px, 5vw, 60px)", lineHeight: 1.05, color: "var(--wf-cream)", margin: "24px 0 0", fontWeight: 500, letterSpacing: "-0.02em" }}>
-              Every person,<br />
-              <em style={{ fontWeight: 400 }}>tended to.</em>
+              Every detail,<br />
+              <em style={{ fontWeight: 400 }}>handled.</em>
             </h2>
           </div>
           <p className="wf-sans" style={{ fontSize: 16, color: "var(--wf-cream-ink)", lineHeight: 1.7, maxWidth: 460 }}>
-            Ten minutes to set up. From that moment, every guest question gets a thoughtful reply. Every task lands in the right hands. Every hard conversation is held with care.
+            Ten minutes to set up. From that moment, every guest question gets an instant reply. Every vendor request lands in the right hands. Every sensitive message is held for you.
           </p>
         </div>
 
@@ -386,13 +386,13 @@ function Features() {
       accent: "In your voice, always.",
     },
     {
-      title: "Your inner circle gets real tools",
+      title: "Your wedding party gets real tools",
       body: "Your maid of honor, best man, and family leads each get their own view. They see what belongs to them, handle their tasks, and keep you out of the details.",
       accent: "Everyone knows their part.",
     },
     {
-      title: "Hard things, held with care",
-      body: "When a guest shares something emotional, WedFlow recognizes it. It pauses, drafts something thoughtful, and holds it for you, or passes it to someone you trust.",
+      title: "Sensitive messages, handled with care",
+      body: "When a guest shares something emotional, WedFlow recognizes it. It pauses, drafts a thoughtful reply in your voice, and holds it for your review.",
       accent: "Care, not automation.",
     },
     {
@@ -402,7 +402,7 @@ function Features() {
     },
     {
       title: "Ten minutes to set up. That is it.",
-      body: "Share your wedding details once. Invite your circle. From that moment, every question, every task, every sensitive message is tended to.",
+      body: "Share your wedding details once. Invite your people. From that moment, every question, every vendor request, every sensitive message is handled.",
       accent: "One setup, always on.",
     },
   ];
@@ -413,7 +413,7 @@ function Features() {
         <div style={{ textAlign: "center", marginBottom: 72 }}>
           <span className="wf-eyebrow wf-eyebrow-centered">What&apos;s included</span>
           <h2 className="wf-serif" style={{ fontSize: "clamp(32px, 5vw, 62px)", lineHeight: 1.05, color: "var(--wf-forest)", margin: "24px 0 0", fontWeight: 500, letterSpacing: "-0.02em" }}>
-            Everything your circle<br />
+            Everything your wedding<br />
             <em style={{ fontWeight: 500 }}>needs.</em>
           </h2>
         </div>
@@ -475,14 +475,14 @@ function FinalCTA() {
           <span style={{ width: 40, height: 1, background: "var(--wf-line-strong)" }} />
         </div>
         <h2 className="wf-serif" style={{ fontSize: "clamp(40px, 6vw, 72px)", lineHeight: 1.05, color: "var(--wf-forest)", margin: "0 0 24px", fontWeight: 500, letterSpacing: "-0.02em" }}>
-          Your celebration deserves<br />
+          Your wedding day deserves<br />
           <em style={{ fontWeight: 500 }}>your full attention.</em>
         </h2>
         <p className="wf-sans" style={{ fontSize: 17, color: "var(--wf-ink-60)", marginBottom: 40, lineHeight: 1.65 }}>
-          Let WedFlow tend to your village. You tend to each other.
+          Let WedFlow handle the details. You be present for each other.
         </p>
         <Link href="/sign-up" className="wf-btn wf-btn-primary wf-btn-lg" style={{ padding: "16px 36px", fontSize: 14 }}>
-          Begin Your Journey →
+          Get Started →
         </Link>
       </div>
     </section>
@@ -501,7 +501,7 @@ function Footer() {
           </div>
           <span className="wf-serif" style={{ fontSize: 16, color: "var(--wf-cream)", fontWeight: 600 }}>Wedflow</span>
           <span className="wf-sans wf-footer-tagline">
-            Made with care for couples everywhere.
+            The AI wedding secretary for couples everywhere.
           </span>
         </div>
         <div className="wf-footer-links">

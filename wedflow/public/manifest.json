@@ -1,7 +1,7 @@
 {
   "name": "WedFlow",
   "short_name": "WedFlow",
-  "description": "Your wedding circle, in one place",
+  "description": "Your AI wedding secretary",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
