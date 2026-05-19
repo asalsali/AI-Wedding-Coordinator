@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
+import SMSPreview from "@/app/components/SMSPreview";
+import type { SMSMessage } from "@/app/components/SMSPreview";
 
 // ─── Email Capture ─────────────────────────────────────────────────────────────
 
@@ -248,7 +250,7 @@ function HowItWorks() {
 
         <div className="wf-how-steps">
           {steps.map((s, i) => {
-            const conversations = [
+            const conversations: SMSMessage[][] = [
               [
                 { from: "guest", text: "Hey! What\u2019s the dress code for Saturday?" },
                 { from: "wedflow", text: "Hi! It\u2019s cocktail attire \u2014 think a nice dress or slacks and a blazer. The ceremony is outdoors on grass, so avoid stilettos! Let us know if you have any other questions." },
@@ -267,42 +269,7 @@ function HowItWorks() {
               <div key={i} className="wf-how-step" style={{ padding: "0" }}>
                 {/* SMS preview */}
                 <div style={{ padding: "28px 24px 20px", borderBottom: "1px solid rgba(253,251,247,0.08)" }}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    {convo.map((msg, j) => (
-                      <div key={j} style={{ display: "flex", flexDirection: "column", alignItems: msg.from === "guest" || msg.from === "vendor" ? "flex-start" : "flex-end", gap: 4 }}>
-                        {msg.from !== "wedflow" && (
-                          <span className="wf-sans" style={{ fontSize: 10, color: "var(--wf-cream-ink-50)", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", padding: "0 8px" }}>
-                            {msg.from === "vendor" ? "Vendor" : "Guest"}
-                          </span>
-                        )}
-                        {msg.from === "wedflow" && "label" in msg && (
-                          <span className="wf-sans" style={{ fontSize: 10, color: "var(--wf-terracotta)", fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", padding: "0 8px", display: "flex", alignItems: "center", gap: 4 }}>
-                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--wf-terracotta)" }} />
-                            {msg.label}
-                          </span>
-                        )}
-                        {msg.from === "wedflow" && !("label" in msg) && (
-                          <span className="wf-sans" style={{ fontSize: 10, color: "var(--wf-sage)", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", padding: "0 8px" }}>
-                            WedFlow
-                          </span>
-                        )}
-                        <div style={{
-                          background: msg.from === "wedflow" ? "rgba(28,59,43,0.85)" : "rgba(253,251,247,0.1)",
-                          color: msg.from === "wedflow" ? "var(--wf-cream)" : "var(--wf-cream-ink)",
-                          padding: "10px 14px",
-                          borderRadius: 14,
-                          borderTopLeftRadius: msg.from !== "wedflow" ? 4 : 14,
-                          borderTopRightRadius: msg.from === "wedflow" ? 4 : 14,
-                          fontSize: 13,
-                          lineHeight: 1.5,
-                          maxWidth: "88%",
-                          fontFamily: "var(--wf-sans)",
-                        }}>
-                          {msg.text}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <SMSPreview messages={convo} theme="dark" />
                 </div>
                 {/* Step label */}
                 <div style={{ padding: "20px 28px 24px" }}>

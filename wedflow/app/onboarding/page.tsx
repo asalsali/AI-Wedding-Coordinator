@@ -406,7 +406,7 @@ export default function OnboardingPage() {
   }
 
   const handleStep8 = () => {
-    router.push('/pricing')
+    router.push('/preview')
   }
 
   // ---- Shared style tokens ----
@@ -1161,9 +1161,17 @@ export default function OnboardingPage() {
             <NavButtons
               onBack={goBack}
               onContinue={handleStep8}
-              continueLabel={circleInvites.length > 0 ? 'Continue to pricing' : 'Skip for now'}
+              continueLabel="See your secretary in action"
               isPending={false}
             />
+            <div className="text-center mt-4">
+              <button
+                onClick={() => router.push('/pricing')}
+                className="text-sm text-stone-400 hover:text-stone-600 transition-colors underline underline-offset-2"
+              >
+                Skip to pricing
+              </button>
+            </div>
           </div>
         )
       }

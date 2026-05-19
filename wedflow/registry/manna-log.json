@@ -1,1094 +1,289 @@
 [
   {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 222,
-    "timestamp": "2026-05-09T04:20:47Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 1527,
-    "timestamp": "2026-05-09T04:20:48Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 184,
-    "timestamp": "2026-05-09T04:20:48Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 169,
-    "timestamp": "2026-05-09T04:20:49Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 174,
-    "timestamp": "2026-05-09T04:20:50Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 146,
-    "timestamp": "2026-05-09T04:20:51Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 185,
-    "timestamp": "2026-05-09T04:20:52Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 178,
-    "timestamp": "2026-05-09T04:20:53Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 1544,
-    "timestamp": "2026-05-09T04:20:57Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 539,
-    "timestamp": "2026-05-09T04:21:02Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 172,
-    "timestamp": "2026-05-09T04:21:03Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 131,
-    "timestamp": "2026-05-09T04:21:04Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 163,
-    "timestamp": "2026-05-09T04:21:05Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 1606,
-    "timestamp": "2026-05-09T04:21:06Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 191,
-    "timestamp": "2026-05-09T04:21:11Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 196,
-    "timestamp": "2026-05-09T04:21:13Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 168,
-    "timestamp": "2026-05-09T04:21:14Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 184,
-    "timestamp": "2026-05-09T04:21:15Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 1888,
-    "timestamp": "2026-05-09T04:21:15Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 242,
-    "timestamp": "2026-05-09T04:21:22Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 154,
-    "timestamp": "2026-05-09T04:21:22Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 1863,
-    "timestamp": "2026-05-09T04:21:24Z"
-  },
-  {
-    "agent": "aaa214833063d7990",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 158,
-    "timestamp": "2026-05-09T04:21:27Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 152,
-    "timestamp": "2026-05-09T04:21:29Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 2007,
-    "timestamp": "2026-05-09T04:21:42Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 165,
-    "timestamp": "2026-05-09T04:22:29Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 160,
-    "timestamp": "2026-05-09T04:22:32Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 167,
-    "timestamp": "2026-05-09T04:22:33Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 1549,
-    "timestamp": "2026-05-09T04:22:47Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 965,
-    "timestamp": "2026-05-09T04:23:01Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 150,
-    "timestamp": "2026-05-09T04:32:12Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 123,
-    "timestamp": "2026-05-09T04:33:21Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 126,
-    "timestamp": "2026-05-09T04:33:22Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 126,
-    "timestamp": "2026-05-09T04:33:22Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 168,
-    "timestamp": "2026-05-09T04:33:27Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 197,
-    "timestamp": "2026-05-09T04:33:28Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 323,
-    "timestamp": "2026-05-09T04:33:30Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 298,
-    "timestamp": "2026-05-09T04:34:10Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 186,
-    "timestamp": "2026-05-09T04:34:11Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Agent",
-    "inputSize": 1959,
-    "timestamp": "2026-05-09T04:34:12Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 123,
-    "timestamp": "2026-05-09T04:34:16Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 126,
-    "timestamp": "2026-05-09T04:34:17Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 126,
-    "timestamp": "2026-05-09T04:34:17Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 158,
-    "timestamp": "2026-05-09T04:34:23Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 196,
-    "timestamp": "2026-05-09T04:34:24Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 312,
-    "timestamp": "2026-05-09T04:34:26Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 176,
-    "timestamp": "2026-05-09T04:34:31Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 153,
-    "timestamp": "2026-05-09T04:34:32Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 143,
-    "timestamp": "2026-05-09T04:34:32Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 177,
-    "timestamp": "2026-05-09T04:34:36Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 154,
-    "timestamp": "2026-05-09T04:34:36Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 211,
-    "timestamp": "2026-05-09T04:34:42Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 148,
-    "timestamp": "2026-05-09T04:34:43Z"
-  },
-  {
-    "agent": "a9feb077c959ee506",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 154,
-    "timestamp": "2026-05-09T04:34:51Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 154,
-    "timestamp": "2026-05-09T04:40:15Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Glob",
-    "inputSize": 121,
-    "timestamp": "2026-05-09T04:40:22Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Glob",
-    "inputSize": 124,
-    "timestamp": "2026-05-09T04:40:22Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Glob",
-    "inputSize": 124,
-    "timestamp": "2026-05-09T04:40:22Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Glob",
-    "inputSize": 121,
-    "timestamp": "2026-05-09T04:40:23Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Read",
     "inputSize": 115,
-    "timestamp": "2026-05-09T04:40:26Z"
+    "timestamp": "2026-05-19T23:46:15Z"
   },
   {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 129,
-    "timestamp": "2026-05-09T04:40:26Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 168,
-    "timestamp": "2026-05-09T04:40:27Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 172,
-    "timestamp": "2026-05-09T04:40:31Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 152,
-    "timestamp": "2026-05-09T04:40:31Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 183,
-    "timestamp": "2026-05-09T04:40:34Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 124,
-    "timestamp": "2026-05-09T04:40:37Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 172,
-    "timestamp": "2026-05-09T04:40:37Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Glob",
-    "inputSize": 128,
-    "timestamp": "2026-05-09T04:40:41Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 170,
-    "timestamp": "2026-05-09T04:41:38Z"
-  },
-  {
-    "agent": "aade4d8b1a656535c",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Read",
     "inputSize": 117,
-    "timestamp": "2026-05-09T04:41:40Z"
+    "timestamp": "2026-05-19T23:46:16Z"
   },
   {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Agent",
-    "inputSize": 577,
-    "timestamp": "2026-05-09T04:41:48Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 285,
-    "timestamp": "2026-05-09T04:41:55Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 281,
-    "timestamp": "2026-05-09T04:42:14Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 1153,
-    "timestamp": "2026-05-09T04:42:27Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 1200,
-    "timestamp": "2026-05-09T04:42:32Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 1296,
-    "timestamp": "2026-05-09T04:42:38Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 1274,
-    "timestamp": "2026-05-09T04:42:44Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 930,
-    "timestamp": "2026-05-09T04:42:51Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 1210,
-    "timestamp": "2026-05-09T04:43:00Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 1335,
-    "timestamp": "2026-05-09T04:43:05Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 1291,
-    "timestamp": "2026-05-09T04:43:10Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 1224,
-    "timestamp": "2026-05-09T04:43:14Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 378,
-    "timestamp": "2026-05-09T04:45:56Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 1017,
-    "timestamp": "2026-05-09T04:47:00Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 129,
-    "timestamp": "2026-05-09T04:48:23Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 144,
-    "timestamp": "2026-05-09T04:48:29Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 1301,
-    "timestamp": "2026-05-09T04:48:39Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 1330,
-    "timestamp": "2026-05-09T04:48:47Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 194,
-    "timestamp": "2026-05-09T04:48:55Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 522,
-    "timestamp": "2026-05-09T04:49:07Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Grep",
-    "inputSize": 52,
-    "timestamp": "2026-05-09T04:49:13Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 135,
-    "timestamp": "2026-05-09T04:49:24Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 153,
-    "timestamp": "2026-05-09T04:49:24Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 310,
-    "timestamp": "2026-05-09T04:49:30Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 328,
-    "timestamp": "2026-05-09T04:49:31Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 396,
-    "timestamp": "2026-05-09T04:50:01Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 168,
-    "timestamp": "2026-05-09T04:50:33Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 168,
-    "timestamp": "2026-05-09T04:50:34Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 163,
-    "timestamp": "2026-05-09T04:50:35Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Read",
-    "inputSize": 159,
-    "timestamp": "2026-05-09T04:50:46Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 4367,
-    "timestamp": "2026-05-09T04:51:27Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Write",
-    "inputSize": 4283,
-    "timestamp": "2026-05-09T04:51:53Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Edit",
-    "inputSize": 320,
-    "timestamp": "2026-05-09T04:51:59Z"
-  },
-  {
-    "agent": "root",
-    "session": "bb39599f-a85c-4272-bce6-5cd65ddbb4a0",
-    "tool": "Bash",
-    "inputSize": 479,
-    "timestamp": "2026-05-09T04:57:09Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 123,
-    "timestamp": "2026-05-09T12:24:32Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Read",
     "inputSize": 126,
-    "timestamp": "2026-05-09T12:24:33Z"
+    "timestamp": "2026-05-19T23:46:16Z"
   },
   {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Read",
-    "inputSize": 126,
-    "timestamp": "2026-05-09T12:24:33Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 141,
-    "timestamp": "2026-05-09T12:24:41Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 130,
-    "timestamp": "2026-05-09T12:24:41Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
     "inputSize": 127,
-    "timestamp": "2026-05-09T12:24:42Z"
+    "timestamp": "2026-05-19T23:46:17Z"
   },
   {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Read",
-    "inputSize": 150,
-    "timestamp": "2026-05-09T12:24:47Z"
+    "inputSize": 127,
+    "timestamp": "2026-05-19T23:46:23Z"
   },
   {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 130,
-    "timestamp": "2026-05-09T12:24:48Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 128,
-    "timestamp": "2026-05-09T12:24:53Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 129,
-    "timestamp": "2026-05-09T12:24:54Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 134,
-    "timestamp": "2026-05-09T12:24:54Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 120,
-    "timestamp": "2026-05-09T12:25:01Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 120,
-    "timestamp": "2026-05-09T12:25:01Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Read",
-    "inputSize": 128,
-    "timestamp": "2026-05-09T12:25:05Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 126,
-    "timestamp": "2026-05-09T12:25:11Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 142,
-    "timestamp": "2026-05-09T12:25:20Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 126,
-    "timestamp": "2026-05-09T12:25:27Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 129,
-    "timestamp": "2026-05-09T12:25:33Z"
-  },
-  {
-    "agent": "af64ffcaa052912cf",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 140,
-    "timestamp": "2026-05-09T12:25:33Z"
+    "inputSize": 115,
+    "timestamp": "2026-05-19T23:46:23Z"
   },
   {
     "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Agent",
-    "inputSize": 919,
-    "timestamp": "2026-05-09T12:26:01Z"
+    "inputSize": 2308,
+    "timestamp": "2026-05-19T23:46:23Z"
   },
   {
-    "agent": "a02cc32b431a81ec2",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Read",
     "inputSize": 129,
-    "timestamp": "2026-05-09T13:39:21Z"
+    "timestamp": "2026-05-19T23:46:24Z"
   },
   {
-    "agent": "a02cc32b431a81ec2",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 126,
-    "timestamp": "2026-05-09T13:39:22Z"
-  },
-  {
-    "agent": "a02cc32b431a81ec2",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Grep",
-    "inputSize": 65,
-    "timestamp": "2026-05-09T13:39:27Z"
-  },
-  {
-    "agent": "a02cc32b431a81ec2",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 142,
-    "timestamp": "2026-05-09T13:39:34Z"
-  },
-  {
-    "agent": "a02cc32b431a81ec2",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Grep",
-    "inputSize": 201,
-    "timestamp": "2026-05-09T13:39:35Z"
-  },
-  {
-    "agent": "a02cc32b431a81ec2",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Write",
-    "inputSize": 2872,
-    "timestamp": "2026-05-09T14:33:17Z"
-  },
-  {
-    "agent": "a02cc32b431a81ec2",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Write",
-    "inputSize": 9936,
-    "timestamp": "2026-05-09T14:33:18Z"
-  },
-  {
-    "agent": "a02cc32b431a81ec2",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Edit",
-    "inputSize": 252,
-    "timestamp": "2026-05-09T14:33:27Z"
-  },
-  {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Skill",
-    "inputSize": 226,
-    "timestamp": "2026-05-09T14:33:36Z"
-  },
-  {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 126,
-    "timestamp": "2026-05-09T14:33:41Z"
-  },
-  {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 150,
-    "timestamp": "2026-05-09T14:33:55Z"
-  },
-  {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 138,
-    "timestamp": "2026-05-09T14:33:56Z"
-  },
-  {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 141,
-    "timestamp": "2026-05-09T14:34:05Z"
-  },
-  {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Edit",
-    "inputSize": 858,
-    "timestamp": "2026-05-09T14:34:13Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 129,
-    "timestamp": "2026-05-09T14:34:40Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 126,
-    "timestamp": "2026-05-09T14:34:41Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Grep",
-    "inputSize": 65,
-    "timestamp": "2026-05-09T14:34:46Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 130,
-    "timestamp": "2026-05-09T14:34:55Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Grep",
-    "inputSize": 173,
-    "timestamp": "2026-05-09T14:34:56Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 142,
-    "timestamp": "2026-05-09T14:34:57Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Glob",
-    "inputSize": 130,
-    "timestamp": "2026-05-09T14:35:02Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 144,
-    "timestamp": "2026-05-09T14:35:06Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Edit",
-    "inputSize": 238,
-    "timestamp": "2026-05-09T14:35:17Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Read",
-    "inputSize": 143,
-    "timestamp": "2026-05-09T14:35:21Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Edit",
-    "inputSize": 471,
-    "timestamp": "2026-05-09T14:35:27Z"
-  },
-  {
-    "agent": "aac54db883daed601",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Edit",
-    "inputSize": 457,
-    "timestamp": "2026-05-09T14:35:29Z"
-  },
-  {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Agent",
-    "inputSize": 2546,
-    "timestamp": "2026-05-09T14:35:41Z"
-  },
-  {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Edit",
-    "inputSize": 1306,
-    "timestamp": "2026-05-09T14:35:54Z"
-  },
-  {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
-    "tool": "Write",
-    "inputSize": 1915,
-    "timestamp": "2026-05-09T14:36:09Z"
-  },
-  {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Bash",
-    "inputSize": 154,
-    "timestamp": "2026-05-09T14:52:37Z"
+    "inputSize": 162,
+    "timestamp": "2026-05-19T23:46:25Z"
   },
   {
-    "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Read",
+    "inputSize": 126,
+    "timestamp": "2026-05-19T23:46:25Z"
+  },
+  {
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Read",
+    "inputSize": 127,
+    "timestamp": "2026-05-19T23:46:27Z"
+  },
+  {
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Read",
+    "inputSize": 115,
+    "timestamp": "2026-05-19T23:46:27Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Grep",
+    "inputSize": 117,
+    "timestamp": "2026-05-19T23:46:30Z"
+  },
+  {
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Read",
+    "inputSize": 126,
+    "timestamp": "2026-05-19T23:46:32Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Grep",
+    "inputSize": 165,
+    "timestamp": "2026-05-19T23:46:34Z"
+  },
+  {
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Edit",
+    "inputSize": 311,
+    "timestamp": "2026-05-19T23:46:38Z"
+  },
+  {
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Edit",
+    "inputSize": 977,
+    "timestamp": "2026-05-19T23:46:48Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Write",
+    "inputSize": 4046,
+    "timestamp": "2026-05-19T23:46:50Z"
+  },
+  {
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Edit",
+    "inputSize": 1162,
+    "timestamp": "2026-05-19T23:46:58Z"
+  },
+  {
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Bash",
+    "inputSize": 180,
+    "timestamp": "2026-05-19T23:47:04Z"
+  },
+  {
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Write",
+    "inputSize": 2018,
+    "timestamp": "2026-05-19T23:47:17Z"
+  },
+  {
+    "agent": "a3db5ebca52742f11",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Edit",
+    "inputSize": 1248,
+    "timestamp": "2026-05-19T23:47:24Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Write",
+    "inputSize": 11431,
+    "timestamp": "2026-05-19T23:47:36Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Write",
+    "inputSize": 2285,
+    "timestamp": "2026-05-19T23:47:49Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Edit",
+    "inputSize": 638,
+    "timestamp": "2026-05-19T23:47:55Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Edit",
+    "inputSize": 5994,
+    "timestamp": "2026-05-19T23:48:21Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Grep",
+    "inputSize": 95,
+    "timestamp": "2026-05-19T23:48:25Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Bash",
     "inputSize": 160,
-    "timestamp": "2026-05-09T14:52:39Z"
+    "timestamp": "2026-05-19T23:48:37Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Bash",
+    "inputSize": 127,
+    "timestamp": "2026-05-19T23:48:45Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Write",
+    "inputSize": 2368,
+    "timestamp": "2026-05-19T23:49:04Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Read",
+    "inputSize": 154,
+    "timestamp": "2026-05-19T23:49:16Z"
+  },
+  {
+    "agent": "a19fd3ce129473de2",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Edit",
+    "inputSize": 703,
+    "timestamp": "2026-05-19T23:49:21Z"
   },
   {
     "agent": "root",
-    "session": "17fbc1a8-ec92-48a4-a79d-4f16e27a348d",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Read",
+    "inputSize": 154,
+    "timestamp": "2026-05-19T23:49:42Z"
+  },
+  {
+    "agent": "root",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Read",
+    "inputSize": 123,
+    "timestamp": "2026-05-19T23:57:00Z"
+  },
+  {
+    "agent": "root",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
     "tool": "Bash",
-    "inputSize": 167,
-    "timestamp": "2026-05-09T14:52:46Z"
+    "inputSize": 154,
+    "timestamp": "2026-05-19T23:57:03Z"
+  },
+  {
+    "agent": "root",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Bash",
+    "inputSize": 159,
+    "timestamp": "2026-05-19T23:57:05Z"
+  },
+  {
+    "agent": "root",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Bash",
+    "inputSize": 211,
+    "timestamp": "2026-05-19T23:57:10Z"
+  },
+  {
+    "agent": "root",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Edit",
+    "inputSize": 601,
+    "timestamp": "2026-05-19T23:57:17Z"
+  },
+  {
+    "agent": "root",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Edit",
+    "inputSize": 339,
+    "timestamp": "2026-05-19T23:57:25Z"
+  },
+  {
+    "agent": "root",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Read",
+    "inputSize": 149,
+    "timestamp": "2026-05-19T23:57:28Z"
+  },
+  {
+    "agent": "root",
+    "session": "d21b498d-4d8e-4be5-b6a2-42ddbad21891",
+    "tool": "Edit",
+    "inputSize": 1085,
+    "timestamp": "2026-05-19T23:57:34Z"
   }
 ]

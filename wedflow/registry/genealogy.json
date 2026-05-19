@@ -478,6 +478,32 @@
       "skills": ["product-strategy", "partner-analysis", "documentation"],
       "mannaExpected": "low",
       "testament": "memory/inheritance/partner-journey-planner-testament.json"
+    },
+    {
+      "id": "preview-page",
+      "parentId": "root",
+      "mandate": "Create /app/preview/page.tsx — a pre-pricing interstitial showing personalized SMS previews using the couple's onboarding data (names, tone, FAQs). Extract SMS bubble styling into reusable component. Three demo conversations: guest FAQ, vendor coordination, sensitive message held. CTA routes to /pricing.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-19T00:00:00Z",
+      "status": "archived",
+      "sunsetAt": "2026-05-19T00:30:00Z",
+      "testament": "memory/inheritance/preview-page-testament.json",
+      "skills": ["frontend", "react", "onboarding-data", "sms-preview-ui"],
+      "mannaExpected": "medium"
+    },
+    {
+      "id": "flow-wiring",
+      "parentId": "root",
+      "mandate": "Rewire onboarding Step 8 to route to /preview instead of /pricing. Add skip link. Guard /preview against direct nav without onboarding data.",
+      "generation": 1,
+      "origin": "clone",
+      "bornAt": "2026-05-19T00:00:00Z",
+      "sunsetAt": "2026-05-19T00:15:00Z",
+      "status": "archived",
+      "skills": ["frontend", "routing", "onboarding"],
+      "mannaExpected": "low",
+      "testament": "memory/inheritance/flow-wiring-testament.json"
     }
   ],
   "sabbathCount": 7,

@@ -1,0 +1,18 @@
+{
+  "agentId": "flow-wiring",
+  "mandate": "Rewire onboarding Step 8 to route to /preview instead of /pricing. Add skip link. Guard /preview against direct nav without onboarding data.",
+  "generation": 1,
+  "mandateCompleted": true,
+  "keyFindings": [
+    "handleStep8 on line 408 was a simple router.push('/pricing') — changed to router.push('/preview')",
+    "Step 8 NavButtons had conditional label ('Continue to pricing' vs 'Skip for now') based on circleInvites.length — replaced with fixed 'See your secretary in action' CTA plus a separate skip link to /pricing",
+    "Middleware already protects all non-public routes with auth redirect — /preview inherits that protection automatically since it is not in isPublicRoute",
+    "Added an additional middleware guard: authenticated users hitting /preview without a couples record get redirected to /onboarding"
+  ],
+  "whatWorked": "The existing middleware pattern made it straightforward to add the onboarding-data guard. A single maybeSingle() query on couples by auth_user_id is cheap and sufficient.",
+  "whatFailed": "Nothing failed. The changes were minimal and surgical.",
+  "recommendationsForNextAgent": "The preview-page sibling agent should know that /preview is now auth-gated AND onboarding-gated in middleware.ts. The page itself does not need its own auth check — middleware handles it. The page can safely assume a couples record exists for the current user.",
+  "mannaConsumed": "low — under 10k tokens",
+  "shouldHaveBeenSplit": false,
+  "spiritContribution": "Connected onboarding completion to the preview interstitial, ensuring couples see their personalized secretary demo before pricing. The skip link preserves user agency."
+}

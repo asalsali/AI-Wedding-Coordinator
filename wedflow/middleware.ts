@@ -61,6 +61,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/sign-in', request.url))
   }
 
+  // Guard /preview — requires onboarding data (a couples record)
+  if (user && pathname === '/preview') {
+    const { data: couple } = await supabase
+      .from('couples')
+      .select('id')
+      .eq('auth_user_id', user.id)
+      .maybeSingle()
+
+    if (!couple) {
+      return NextResponse.redirect(new URL('/onboarding', request.url))
+    }
+  }
+
   return response
 }
 
