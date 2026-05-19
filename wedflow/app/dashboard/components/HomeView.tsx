@@ -87,7 +87,7 @@ export function HomeView({
           )}
         </div>
         <div style={{ background: 'var(--wf-cream-warm)', position: 'relative', overflow: 'hidden', minHeight: isMobile ? 180 : undefined }}>
-          <Image src="/Couple1.png" alt="Couple illustration" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
+          <Image src="/photos/couple-smiling.jpg" alt="Alex and Kirsten engagement photo" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
         </div>
       </div>
 

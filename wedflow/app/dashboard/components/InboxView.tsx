@@ -194,7 +194,7 @@ export function InboxView({
       <div className="wf-scroll" style={{ flex: 1, overflow: 'auto', padding: isMobile ? '4px 8px 20px' : '4px 10px 20px' }}>
         {isEmpty ? (
           <div style={{ padding: '48px 24px', textAlign: 'center' }}>
-            <Image src="/Couple2.png" alt="No messages" width={160} height={128} style={{ margin: '0 auto 16px', opacity: 0.7 }} />
+            <Image src="/photos/together-smiling.jpg" alt="Alex and Kirsten smiling together" width={140} height={140} style={{ margin: '0 auto 16px', opacity: 0.5, borderRadius: 16, objectFit: 'cover' }} />
             <p className="wf-sans" style={{ color: 'var(--wf-ink-60)', fontWeight: 500, fontSize: 13 }}>
               {inboxTab === 'needs-reply' ? 'Nothing needs a reply right now.' : 'No conversations yet.'}
             </p>

@@ -298,8 +298,17 @@ function Hero() {
               </p>
             </div>
           </div>
-          <div className="animate-fade-in-up-delay wf-hero-diagram">
-            <CircleDiagram />
+          <div className="animate-fade-in-up-delay wf-hero-diagram" style={{ position: "relative" }}>
+            <div style={{ position: "relative", width: "100%", aspectRatio: "3/4", maxWidth: 480, margin: "0 auto", borderRadius: 24, overflow: "hidden", boxShadow: "0 24px 64px rgba(28,59,43,0.12)" }}>
+              <Image
+                src="/photos/hero-sunset-kiss.jpg"
+                alt="Alex and Kirsten sharing a kiss at sunset on the beach"
+                fill
+                style={{ objectFit: "cover", objectPosition: "center 20%" }}
+                priority
+                sizes="(max-width: 768px) 100vw, 480px"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -357,19 +366,35 @@ function HowItWorks() {
         </div>
 
         <div className="wf-how-steps">
-          {steps.map((s, i) => (
-            <div key={i} className="wf-how-step">
-              <div className="wf-serif" style={{ fontSize: 72, color: "var(--wf-terracotta)", lineHeight: 1, fontStyle: "italic", fontWeight: 500, marginBottom: 32, letterSpacing: "-0.02em" }}>
-                {s.num}
+          {steps.map((s, i) => {
+            const stepPhotos = ["/photos/hands-detail.jpg", "/photos/walking-beach.jpg", "/photos/dancing-playful.jpg"];
+            const stepAlts = ["Close-up of couple holding hands with ring visible", "Couple walking hand in hand on the beach at sunset", "Couple dancing playfully together on the sand"];
+            return (
+              <div key={i} className="wf-how-step" style={{ padding: "0 0 48px" }}>
+                <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
+                  <Image
+                    src={stepPhotos[i]}
+                    alt={stepAlts[i]}
+                    fill
+                    style={{ objectFit: "cover", objectPosition: "center" }}
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(28,59,43,0) 40%, rgba(28,59,43,0.7) 100%)" }} />
+                </div>
+                <div style={{ padding: "32px 40px 0" }}>
+                  <div className="wf-serif" style={{ fontSize: 72, color: "var(--wf-terracotta)", lineHeight: 1, fontStyle: "italic", fontWeight: 500, marginBottom: 24, letterSpacing: "-0.02em" }}>
+                    {s.num}
+                  </div>
+                  <h3 className="wf-serif" style={{ fontSize: 22, color: "var(--wf-cream)", fontWeight: 600, marginBottom: 12, lineHeight: 1.3 }}>
+                    {s.title}
+                  </h3>
+                  <p className="wf-sans" style={{ fontSize: 14, color: "var(--wf-cream-ink)", lineHeight: 1.65 }}>
+                    {s.body}
+                  </p>
+                </div>
               </div>
-              <h3 className="wf-serif" style={{ fontSize: 22, color: "var(--wf-cream)", fontWeight: 600, marginBottom: 12, lineHeight: 1.3 }}>
-                {s.title}
-              </h3>
-              <p className="wf-sans" style={{ fontSize: 14, color: "var(--wf-cream-ink)", lineHeight: 1.65 }}>
-                {s.body}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -466,8 +491,18 @@ function Testimonial() {
 
 function FinalCTA() {
   return (
-    <section className="wf-final-cta">
-      <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
+    <section className="wf-final-cta" style={{ position: "relative", overflow: "hidden" }}>
+      {/* Background photo accent */}
+      <div style={{ position: "absolute", inset: 0, opacity: 0.06 }}>
+        <Image
+          src="/photos/silhouette-reflection.jpg"
+          alt=""
+          fill
+          style={{ objectFit: "cover", objectPosition: "center" }}
+          sizes="100vw"
+        />
+      </div>
+      <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1 }}>
         {/* Ornamental divider */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 40 }}>
           <span style={{ width: 40, height: 1, background: "var(--wf-line-strong)" }} />

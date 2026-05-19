@@ -31,7 +31,7 @@ export default function SignInPage() {
         {/* Middle — illustration + copy */}
         <div style={{ zIndex: 2, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
           <div style={{ background: 'rgba(253,251,247,0.06)', border: '1px solid rgba(253,251,247,0.12)', borderRadius: 28, padding: 20, marginBottom: 32 }}>
-            <Image src="/Couple2.png" alt="Couple" width={300} height={220} style={{ width: 300, height: 220, objectFit: 'cover', borderRadius: 16, display: 'block' }} />
+            <Image src="/photos/sunset-portrait.jpg" alt="Alex and Kirsten portrait at sunset" width={300} height={400} style={{ width: 300, height: 400, objectFit: 'cover', borderRadius: 16, display: 'block' }} />
           </div>
           <span className="wf-eyebrow wf-eyebrow-centered wf-eyebrow-forest">Welcome back</span>
           <h2 className="wf-serif" style={{ fontSize: 36, lineHeight: 1.2, color: 'var(--wf-cream)', fontWeight: 400, fontStyle: 'italic', margin: '20px 0 12px', letterSpacing: '-0.01em', textAlign: 'center' }}>

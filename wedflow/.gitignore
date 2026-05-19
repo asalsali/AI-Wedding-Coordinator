@@ -42,6 +42,9 @@ yarn-error.log*
 # claude local settings
 .claude/settings.local.json
 
+# raw engagement photos (large originals)
+/photos/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
