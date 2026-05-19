@@ -301,14 +301,17 @@ function Hero() {
           <div className="animate-fade-in-up-delay wf-hero-diagram" style={{ position: "relative" }}>
             <div style={{ position: "relative", width: "100%", aspectRatio: "3/4", maxWidth: 480, margin: "0 auto", borderRadius: 24, overflow: "hidden", boxShadow: "0 24px 64px rgba(28,59,43,0.12)" }}>
               <Image
-                src="/photos/hero-sunset-kiss.jpg"
-                alt="Alex and Kirsten sharing a kiss at sunset on the beach"
+                src="/photos/hands-detail.jpg"
+                alt="Couple holding hands on the beach at sunset, engagement ring visible"
                 fill
-                style={{ objectFit: "cover", objectPosition: "center 20%" }}
+                style={{ objectFit: "cover", objectPosition: "center 30%" }}
                 priority
                 sizes="(max-width: 768px) 100vw, 480px"
               />
             </div>
+            <p className="wf-serif" style={{ textAlign: "center", fontSize: 13, color: "var(--wf-ink-45)", fontStyle: "italic", marginTop: 14, letterSpacing: "0.01em" }}>
+              That&apos;s us, after letting WedFlow handle everything.
+            </p>
           </div>
         </div>
       </div>
@@ -367,21 +370,64 @@ function HowItWorks() {
 
         <div className="wf-how-steps">
           {steps.map((s, i) => {
-            const stepPhotos = ["/photos/hands-detail.jpg", "/photos/walking-beach.jpg", "/photos/dancing-playful.jpg"];
-            const stepAlts = ["Close-up of couple holding hands with ring visible", "Couple walking hand in hand on the beach at sunset", "Couple dancing playfully together on the sand"];
+            const conversations = [
+              [
+                { from: "guest", text: "Hey! What\u2019s the dress code for Saturday?" },
+                { from: "wedflow", text: "Hi! It\u2019s cocktail attire \u2014 think a nice dress or slacks and a blazer. The ceremony is outdoors on grass, so avoid stilettos! Let us know if you have any other questions." },
+              ],
+              [
+                { from: "vendor", text: "What time should we arrive for setup on Saturday?" },
+                { from: "wedflow", text: "Setup access starts at 2pm. The ceremony is at 5pm, so you\u2019ll have three hours. The venue contact is Maria \u2014 she\u2019ll meet you at the side entrance." },
+              ],
+              [
+                { from: "guest", text: "I\u2019m not sure I can make it anymore. Things have been really hard lately." },
+                { from: "wedflow", label: "Held for your review", text: "I\u2019m so sorry to hear that. We completely understand, and there\u2019s no pressure at all. Just know you\u2019re loved and we\u2019re thinking of you." },
+              ],
+            ];
+            const convo = conversations[i];
             return (
-              <div key={i} className="wf-how-step" style={{ padding: "0 0 48px" }}>
-                <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", overflow: "hidden", borderRadius: "12px 12px 0 0" }}>
-                  <Image
-                    src={stepPhotos[i]}
-                    alt={stepAlts[i]}
-                    fill
-                    style={{ objectFit: "cover", objectPosition: "center" }}
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(28,59,43,0) 40%, rgba(28,59,43,0.7) 100%)" }} />
+              <div key={i} className="wf-how-step" style={{ padding: "0" }}>
+                {/* SMS preview */}
+                <div style={{ padding: "28px 24px 20px", borderBottom: "1px solid rgba(253,251,247,0.08)" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {convo.map((msg, j) => (
+                      <div key={j} style={{ display: "flex", flexDirection: "column", alignItems: msg.from === "guest" || msg.from === "vendor" ? "flex-start" : "flex-end", gap: 4 }}>
+                        {msg.from !== "wedflow" && (
+                          <span className="wf-sans" style={{ fontSize: 10, color: "var(--wf-cream-ink-50)", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", padding: "0 8px" }}>
+                            {msg.from === "vendor" ? "Vendor" : "Guest"}
+                          </span>
+                        )}
+                        {msg.from === "wedflow" && "label" in msg && (
+                          <span className="wf-sans" style={{ fontSize: 10, color: "var(--wf-terracotta)", fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", padding: "0 8px", display: "flex", alignItems: "center", gap: 4 }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--wf-terracotta)" }} />
+                            {msg.label}
+                          </span>
+                        )}
+                        {msg.from === "wedflow" && !("label" in msg) && (
+                          <span className="wf-sans" style={{ fontSize: 10, color: "var(--wf-sage)", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", padding: "0 8px" }}>
+                            WedFlow
+                          </span>
+                        )}
+                        <div style={{
+                          background: msg.from === "wedflow" ? "rgba(28,59,43,0.85)" : "rgba(253,251,247,0.1)",
+                          color: msg.from === "wedflow" ? "var(--wf-cream)" : "var(--wf-cream-ink)",
+                          padding: "10px 14px",
+                          borderRadius: 14,
+                          borderTopLeftRadius: msg.from !== "wedflow" ? 4 : 14,
+                          borderTopRightRadius: msg.from === "wedflow" ? 4 : 14,
+                          fontSize: 13,
+                          lineHeight: 1.5,
+                          maxWidth: "88%",
+                          fontFamily: "var(--wf-sans)",
+                        }}>
+                          {msg.text}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div style={{ padding: "32px 40px 0" }}>
+                {/* Step content */}
+                <div style={{ padding: "28px 32px 36px" }}>
                   <div className="wf-serif" style={{ fontSize: 72, color: "var(--wf-terracotta)", lineHeight: 1, fontStyle: "italic", fontWeight: 500, marginBottom: 24, letterSpacing: "-0.02em" }}>
                     {s.num}
                   </div>
