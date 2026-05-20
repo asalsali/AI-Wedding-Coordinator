@@ -360,10 +360,9 @@ html, body {
 .wf-how-steps {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: rgba(253,251,247,0.08);
+  gap: 20px;
 }
-.wf-how-step { background: var(--wf-forest); padding: 48px 32px; min-height: 280px; }
+.wf-how-step { background: rgba(253,251,247,0.06); border-radius: 16px; padding: 0; min-height: 280px; }
 
 .wf-features-section { background: var(--wf-cream); padding: 80px 20px; }
 .wf-features-inner { max-width: 1160px; margin: 0 auto; }
@@ -453,8 +452,8 @@ html, body {
 
   .wf-how-section { padding: 60px 16px; }
   .wf-how-header { grid-template-columns: 1fr; gap: 24px; margin-bottom: 48px; }
-  .wf-how-steps { grid-template-columns: 1fr; gap: 0; }
-  .wf-how-step { padding: 36px 24px; min-height: auto; border-bottom: 1px solid rgba(253,251,247,0.08); }
+  .wf-how-steps { grid-template-columns: 1fr; gap: 16px; }
+  .wf-how-step { padding: 0; min-height: auto; }
 
   .wf-features-section { padding: 60px 16px; }
   .wf-features-grid { grid-template-columns: 1fr; }

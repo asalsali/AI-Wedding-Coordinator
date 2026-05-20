@@ -97,16 +97,16 @@ export default function SMSPreview({ messages, theme = "light" }: SMSPreviewProp
               background:
                 msg.from === "wedflow"
                   ? isDark
-                    ? "rgba(28,59,43,0.85)"
+                    ? "rgba(28,59,43,0.9)"
                     : "#2D5016"
                   : isDark
-                    ? "rgba(253,251,247,0.1)"
+                    ? "rgba(253,251,247,0.18)"
                     : "rgba(28,59,43,0.06)",
               color:
                 msg.from === "wedflow"
                   ? "var(--wf-cream)"
                   : isDark
-                    ? "var(--wf-cream-ink)"
+                    ? "#ffffff"
                     : "var(--wf-ink)",
               padding: "10px 14px",
               borderRadius: 14,
