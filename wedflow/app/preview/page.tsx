@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceRoleClient } from "@/lib/supabase/server";
 import type { ToneStyle } from "@/types";
 import PreviewClient from "./PreviewClient";
 
@@ -14,8 +15,11 @@ export default async function PreviewPage() {
     redirect("/sign-in");
   }
 
+  // Use service role client for DB queries (RLS blocks anon key reads)
+  const serviceClient = createServiceRoleClient();
+
   // Fetch couple record
-  const { data: couple } = await supabase
+  const { data: couple } = await serviceClient
     .from("couples")
     .select("id, your_name, partner_name")
     .eq("auth_user_id", user.id)
@@ -27,14 +31,14 @@ export default async function PreviewPage() {
 
   // Fetch profile and FAQs in parallel
   const [profileResult, faqsResult] = await Promise.all([
-    supabase
+    serviceClient
       .from("wedding_profiles")
       .select(
         "tone, venue_name, venue_address, wedding_date, ceremony_time, dress_code, parking_info"
       )
       .eq("couple_id", couple.id)
       .maybeSingle(),
-    supabase
+    serviceClient
       .from("faqs")
       .select("question, answer, display_order")
       .eq("couple_id", couple.id)
