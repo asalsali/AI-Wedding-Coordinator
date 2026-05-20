@@ -362,7 +362,7 @@ html, body {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
-.wf-how-step { background: rgba(253,251,247,0.06); border-radius: 16px; padding: 0; min-height: 280px; }
+.wf-how-step { background: rgba(253,251,247,0.12); border-radius: 16px; padding: 0; min-height: 280px; }
 
 .wf-features-section { background: var(--wf-cream); padding: 80px 20px; }
 .wf-features-inner { max-width: 1160px; margin: 0 auto; }
