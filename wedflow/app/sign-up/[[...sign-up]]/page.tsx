@@ -42,18 +42,6 @@ export default function SignUpPage() {
           </p>
         </div>
 
-        {/* Bottom — testimonial */}
-        <div style={{ borderTop: '1px solid rgba(253,251,247,0.12)', paddingTop: 24, width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'flex-start', gap: 16, zIndex: 2 }}>
-          <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'var(--wf-terracotta)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--wf-serif)', fontWeight: 600, fontSize: 16, color: 'var(--wf-cream)', flexShrink: 0 }}>AK</div>
-          <div>
-            <p className="wf-serif" style={{ fontSize: 13, color: 'var(--wf-cream)', margin: 0, lineHeight: 1.5, fontStyle: 'italic' }}>
-              &ldquo;It felt like having a thoughtful friend handling everything.&rdquo;
-            </p>
-            <p className="wf-sans" style={{ fontSize: 11, color: 'var(--wf-cream-ink-50)', marginTop: 4, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              Alex &amp; Kirsten · July 2026
-            </p>
-          </div>
-        </div>
 
         {/* Decorative circles */}
         <div style={{ position: 'absolute', right: -120, top: -120, width: 300, height: 300, borderRadius: '50%', background: 'rgba(196,113,74,0.08)', zIndex: 1 }} />
